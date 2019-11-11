@@ -14,7 +14,7 @@ export default class Main extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(()=> {
+        setTimeout(() => {
             this.setState({
                 username: this.state.username,
                 screen: 'home'
@@ -29,7 +29,7 @@ export default class Main extends React.Component {
             );
         } else if (this.state.screen === 'home') {
             return (
-              <Home/>
+                <Home/>
             );
         }
     }

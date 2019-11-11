@@ -30,7 +30,7 @@ export default class InteractiveTextImage extends React.Component {
     render() {
         return (
             <View style={[styles.centeredContainer, {margin: 20}]}>
-                <TouchableOpacity style = {styles.centeredContainer} onPress={() => this.onTap()}>
+                <TouchableOpacity style={styles.centeredContainer} onPress={() => this.onTap()}>
                     <Image style={{width: this.state.width, height: this.state.height}} source={this.state.image}/>
                     <Text style={this.state.textStyle}>{this.state.text}</Text>
                 </TouchableOpacity>
