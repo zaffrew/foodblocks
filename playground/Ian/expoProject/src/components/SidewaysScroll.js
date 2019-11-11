@@ -1,7 +1,7 @@
 import React from 'react'
 import {ScrollView, Text, View} from "react-native";
 
-import FoodBlock from "./FoodBlock";
+import InteractiveTextImage from "./InteractiveTextImage";
 
 import beans from "../../assets/beans.png";
 import pasta from "../../assets/pasta.jpg";
@@ -24,12 +24,12 @@ export default class SidewaysScroll extends React.Component {
             <View>
                 <Text style = {styles.subtitle}>{this.state.title}</Text>
                 <ScrollView contentContainerStyle={{height: 200}} horizontal={true} alwaysBounceHorizontal={true}>
-                    <FoodBlock image={curry} text='curry'/>
-                    <FoodBlock image={applePie} text='apple pie'/>
-                    <FoodBlock image={bananaBread} text='banana bread'/>
-                    <FoodBlock image={beans} text='beans'/>
-                    <FoodBlock image={pasta} text='pasta'/>
-                    <FoodBlock image={sushi} text='sushi'/>
+                    <InteractiveTextImage image={curry} text='curry'/>
+                    <InteractiveTextImage image={applePie} text='apple pie'/>
+                    <InteractiveTextImage image={bananaBread} text='banana bread'/>
+                    <InteractiveTextImage image={beans} text='beans'/>
+                    <InteractiveTextImage image={pasta} text='pasta'/>
+                    <InteractiveTextImage image={sushi} text='sushi'/>
                 </ScrollView>
             </View>
         );

@@ -4,12 +4,13 @@ import styles from "./styles";
 
 import SidewaysScroll from "./SidewaysScroll";
 import DeadSpaceStatusBar from "./deadSpaceStatusBar";
+import Tabs from "./Tabs";
 
 export default class Home extends React.Component {
 
     render() {
         return (
-            <View style = {styles.container}>
+            <View style={styles.container}>
                 <DeadSpaceStatusBar/>
                 <ScrollView style={styles.container}>
                     <SidewaysScroll title={"Taste Breakers"}/>
@@ -18,6 +19,7 @@ export default class Home extends React.Component {
                     <SidewaysScroll title={"Recent Meals"}/>
                     <SidewaysScroll title={"Pantry to Plate"}/>
                 </ScrollView>
+                <Tabs/>
             </View>
         );
     }
