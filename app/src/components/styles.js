@@ -11,9 +11,9 @@ export default styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
-    content:{
-        flex:1
-    } ,
+    content: {
+        flex: 1
+    },
 
     foodblocksTitle: {
         fontFamily: 'Courier-Bold',

@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/blur": "^3.3.1",
     "assets": "^3.0.1",
     "expo": "^35.0.0",
     "react": "16.8.3",
