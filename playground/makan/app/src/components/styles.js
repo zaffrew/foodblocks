@@ -20,6 +20,16 @@ export default styles = StyleSheet.create({
         fontSize: 45
     },
 
+    subtitle: {
+        fontFamily: 'Arial',
+        fontSize: 30,
+    },
+
+    heading: {
+        fontFamily: 'Arial',
+        fontSize: 20,
+    },
+
     greeting: {
         fontFamily: 'Courier-Bold',
         fontSize: 35,
