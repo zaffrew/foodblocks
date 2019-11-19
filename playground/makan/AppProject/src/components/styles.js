@@ -16,26 +16,29 @@ export default styles = StyleSheet.create({
     } ,
 
     foodblocksTitle: {
-        fontFamily: 'Roboto',
+        //fontFamily: 'Arial',
         fontSize: 45
     },
 
     subtitle: {
-        fontFamily: 'Roboto',
+        //fontFamily: 'Arial',
         fontSize: 30,
     },
 
     heading: {
-        fontFamily: 'Roboto',
+        //fontFamily: 'Arial',
         fontSize: 20,
     },
 
     greeting: {
-        fontFamily: 'Roboto',
+        //fontFamily: 'Arial',
         fontSize: 35,
     },
 
     splashColor: {
-        backgroundColor: '#ff769b',
+        backgroundColor: '#E43938',
+    },
+    homeColour: {
+        backgroundColor: '#D6D6D6',
     },
 });
