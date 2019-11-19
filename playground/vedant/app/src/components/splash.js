@@ -18,7 +18,6 @@ export default class SplashScreen extends React.Component {
                 <DeadSpaceStatusBar/>
                 <View style={styles.centeredContainer}>
                     <Text style={styles.foodblocksTitle}>foodblocks</Text>
-                    <Text style={styles.greeting}>Hello {this.state.name}!</Text>
                 </View>
             </View>
         );

@@ -24,12 +24,12 @@ export default class SidewaysScroll extends React.Component {
             <View>
                 <Text style = {styles.subtitle}>{this.state.title}</Text>
                 <ScrollView contentContainerStyle={{height: 200}} horizontal={true} alwaysBounceHorizontal={true}>
-                    <InteractiveTextImage image={curry} text='curry'/>
-                    <InteractiveTextImage image={applePie} text='apple pie'/>
-                    <InteractiveTextImage image={bananaBread} text='banana bread'/>
-                    <InteractiveTextImage image={beans} text='beans'/>
-                    <InteractiveTextImage image={pasta} text='pasta'/>
-                    <InteractiveTextImage image={sushi} text='sushi'/>
+                    <InteractiveTextImage image={curry} text='Curry'/>
+                    <InteractiveTextImage image={applePie} text='Apple Pie'/>
+                    <InteractiveTextImage image={bananaBread} text='Banana Bread'/>
+                    <InteractiveTextImage image={beans} text='Beans'/>
+                    <InteractiveTextImage image={pasta} text='Pasta'/>
+                    <InteractiveTextImage image={sushi} text='Sushi'/>
                 </ScrollView>
             </View>
         );

@@ -1,13 +1,13 @@
 import React from 'react'
 
 import styles from './styles'
-import {TouchableOpacity, View, Image, Text} from 'react-native'
+import {TouchableOpacity, View, Image, Text, Navigator} from 'react-native'
 
 export default class InteractiveTextImage extends React.Component {
     static defaultProps = {
         width: 100,
         height: 100,
-        textStyle: styles.heading,
+        textStyle: styles.foodName,
     };
 
     constructor(props) {
@@ -24,12 +24,14 @@ export default class InteractiveTextImage extends React.Component {
     }
 
     onTap = function () {
-        console.log(this.props.text, "was tapped.")
+        console.log(this.props.text, "was tapped.");
+
+
     };
 
     render() {
         return (
-            <View style={[styles.centeredContainer, {margin: 20}]}>
+            <View style={[styles.centeredContainer, {margin: 8}]}>
                 <TouchableOpacity style = {styles.centeredContainer} onPress={() => this.onTap()}>
                     <Image style={{width: this.state.width, height: this.state.height}} source={this.state.image}/>
                     <Text style={this.state.textStyle}>{this.state.text}</Text>
