@@ -1,5 +1,6 @@
 import {StyleSheet} from "react-native";
 
+
 export default styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -16,26 +17,36 @@ export default styles = StyleSheet.create({
     } ,
 
     foodblocksTitle: {
-        fontFamily: 'Courier-Bold',
-        fontSize: 45
+        fontFamily: 'montserrat',
+        fontSize: 45,
+        color: 'white'
+    },
+
+    foodName: {
+        fontFamily: 'montserrat',
+        fontSize: 16,
+        color:  '#D32240'
     },
 
     subtitle: {
-        fontFamily: 'Arial',
+        fontFamily: 'montserrat',
         fontSize: 30,
+        textAlign: "center",
+
     },
 
     heading: {
-        fontFamily: 'Arial',
+        fontFamily: 'montserrat',
         fontSize: 20,
+        color: 'white'
     },
 
     greeting: {
-        fontFamily: 'Courier-Bold',
+        fontFamily: 'montserrat',
         fontSize: 35,
     },
 
     splashColor: {
-        backgroundColor: '#ff769b',
+        backgroundColor: '#D32240',
     },
 });
