@@ -15,7 +15,7 @@ export default class Tabs extends React.Component {
 
     render() {
         return (
-            <View style = {[styles.centeredContainer,{flexDirection: 'row',flex: 1/8, backgroundColor: '#D32240'}]}>
+            <View style = {[styles.bottomView,{flexDirection: 'row',flex: 1/8, backgroundColor: '#D32240'}]}>
                 <InteractiveTextImage textStyle = {[styles.heading, {fontSize: 12}]} width = {30} height = {30} image={homeButton} text = {'Home'}/>
                 <InteractiveTextImage textStyle = {[styles.heading, {fontSize: 12}]} width = {30} height = {30} image={forYou} text = {'For You'}/>
                 <InteractiveTextImage textStyle = {[styles.heading, {fontSize: 12}]} width = {30} height = {30} image={search} text = {'Search'}/>
