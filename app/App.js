@@ -1,5 +1,7 @@
 import React from 'react';
-import {SafeAreaView, View} from 'react-native';
+import {Platform, SafeAreaView, View} from 'react-native';
+
+import Constants from 'expo-constants'
 
 import styles from './settings/styles.js';
 import * as Font from 'expo-font';
@@ -30,7 +32,9 @@ export default class App extends React.Component {
         if (this.state.fontLoaded) {
             return (
                 <View style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
-                    <SafeAreaView style={[styles.container]}>
+                    {/*The safe area view only works for ios so we add the padding for android devices*/}
+                    <SafeAreaView
+                        style={[styles.container, {paddingTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0}]}>
                         <AppNavigator/>
                     </SafeAreaView>
                 </View>
