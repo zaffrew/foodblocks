@@ -1,23 +1,19 @@
-import React from 'react'
-import {Text, View, ScrollView} from "react-native";
-import styles from "./styles";
-
-import SidewaysScroll from "./SidewaysScroll";
-import DeadSpaceStatusBar from "./deadSpaceStatusBar";
-import Tabs from "./Tabs";
-
-const username = "Vedant";
+import React from "react";
+import {ScrollView, Text, View} from "react-native";
+import styles from "../../../settings/styles";
+import SidewaysScroll from "../SidewaysScroll";
 
 export default class Home extends React.Component {
-
-    state = {
-        username: username
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: props.username
+        }
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <DeadSpaceStatusBar/>
                 <Text style={styles.greeting}>Hello {this.state.username}!</Text>
                 <ScrollView style={styles.container}>
                     <SidewaysScroll title={"Taste Breakers"}/>
@@ -26,7 +22,7 @@ export default class Home extends React.Component {
                     <SidewaysScroll title={"Recent Meals"}/>
                     <SidewaysScroll title={"Pantry to Plate"}/>
                 </ScrollView>
-                <Tabs/>
+                {/*<Tabs/>*/}
             </View>
         );
     }

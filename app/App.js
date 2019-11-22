@@ -1,16 +1,11 @@
 import React from 'react';
-//import Main from "./src/components/Main";
-import {
-    StyleSheet,
-    Text,
-    View
-} from 'react-native';
-import styles from './src/components/styles.js';
-import * as Font from 'expo-font';
-import SplashScreen from "./src/components/splash.js";
-import Home from './src/components/home.js';
+import {SafeAreaView, View} from 'react-native';
 
-const splashTransitionTime = 2000;
+import styles from './settings/styles.js';
+import * as Font from 'expo-font';
+import AppNavigator from "./src/components/AppNavigator";
+import colors from "./settings/colors";
+
 const username = "Vedant";
 
 export default class App extends React.Component {
@@ -25,34 +20,23 @@ export default class App extends React.Component {
     }
 
     async componentDidMount() {
-
         await Font.loadAsync({
             'montserrat': require('./assets/fonts/Montserrat-Regular.ttf')
-        })
-        this.setState({ fontLoaded: true });
-
-        setTimeout(()=> {
-            this.setState({
-                username: this.state.username,
-                screen: 'home'
-            })
-        }, splashTransitionTime)
-
+        });
+        this.setState({fontLoaded: true});
     }
 
     render() {
         if (this.state.fontLoaded) {
-            if (this.state.screen === 'splash') {
-                return (
-                    <SplashScreen name = {this.state.username}/>
-                );
-            } else if (this.state.screen === 'home') {
-                return (
-                  <Home/>
-                );
-            }
+            return (
+                <View style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
+                    <SafeAreaView style={[styles.container]}>
+                        <AppNavigator/>
+                    </SafeAreaView>
+                </View>
+
+            );
         }
         return null;
     }
-
 }
