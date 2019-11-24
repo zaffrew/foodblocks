@@ -1,4 +1,5 @@
 import {StyleSheet} from "react-native";
+import colors from "./colors";
 
 
 export default styles = StyleSheet.create({
@@ -12,10 +13,6 @@ export default styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
-    content:{
-        flex:1
-    } ,
-
     foodblocksTitle: {
         fontFamily: 'montserrat',
         fontSize: 45,
@@ -25,28 +22,26 @@ export default styles = StyleSheet.create({
     foodName: {
         fontFamily: 'montserrat',
         fontSize: 16,
-        color:  '#D32240'
+        color: colors.foodblocksRed,
     },
 
     subtitle: {
         fontFamily: 'montserrat',
         fontSize: 30,
         textAlign: "center",
-
     },
 
     heading: {
         fontFamily: 'montserrat',
-        fontSize: 20,
-        color: 'white'
+        fontSize:
+            20,
+        color:
+            'white'
     },
 
     greeting: {
         fontFamily: 'montserrat',
-        fontSize: 35,
-    },
-
-    splashColor: {
-        backgroundColor: '#D32240',
+        fontSize:
+            35,
     },
 });
