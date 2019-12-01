@@ -1,12 +1,41 @@
 import React from 'react';
-import {Platform, SafeAreaView} from 'react-native';
-
-import Constants from 'expo-constants'
-
-import styles from './settings/styles.js';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Font from 'expo-font';
+
+import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
 import AppNavigator from "./src/components/AppNavigator";
-import colors from "./settings/colors";
+
+const fontConfig = {
+    default: {
+        regular: {
+            fontFamily: 'montserrat',
+            fontWeight: 'regular',
+        },
+        medium: {
+            fontFamily: 'montserrat',
+            fontWeight: 'medium',
+        },
+        light: {
+            fontFamily: 'montserrat',
+            fontWeight: 'light',
+        },
+        thin: {
+            fontFamily: 'montserrat',
+            fontWeight: 'thin',
+        },
+    },
+};
+
+const theme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        primary: '#D32240',
+        accent: '#891425',
+        background: 'white',
+    },
+    fonts: configureFonts(fontConfig),
+};
 
 export default class App extends React.Component {
 
@@ -31,15 +60,11 @@ export default class App extends React.Component {
     render() {
         if (this.state.fontLoaded) {
             return (
-                //The safe area view only works for ios so we add the padding for android devices
-                <SafeAreaView
-                    style={[styles.container, {
-                        backgroundColor: colors.foodblocksRed,
-                        paddingTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0
-                    }]}>
-                    <AppNavigator/>
-                </SafeAreaView>
-
+                <PaperProvider theme={theme}>
+                    <SafeAreaProvider>
+                        <AppNavigator/>
+                    </SafeAreaProvider>
+                </PaperProvider>
             );
         }
         return null;

@@ -1,18 +1,14 @@
 import React from 'react'
 
 import styles from '../../settings/styles'
-import {View, Text} from "react-native";
+import {AsyncStorage, View} from "react-native";
 
-import {Input} from 'react-native-elements'
+import {TextInput, Title, withTheme} from 'react-native-paper'
 
-import colors from '../../settings/colors'
+export default withTheme(class Login extends React.Component {
 
-import {AsyncStorage} from 'react-native';
-
-export default class Login extends React.Component {
-
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {username: ''}
     }
 
@@ -22,28 +18,40 @@ export default class Login extends React.Component {
         })
     }
 
+    //TODO: android safe safe area
+
     async onSubmit() {
-        AsyncStorage.setItem('username', this.state.username);
+        await AsyncStorage.setItem('username', this.state.username);
         this.props.navigation.navigate("MainPage")
     }
 
     render() {
+        const oldColors = this.props.theme.colors;
+
+        const theme = {
+            colors: {
+                primary: oldColors.background,
+                background: oldColors.primary,
+                text: oldColors.background,
+                placeholder: oldColors.background,
+            }
+        };
+
         return (
-            <View style={[styles.centeredContainer]}>
-                <Text style={styles.heading}>
+            <View style={[styles.centeredContainer, {backgroundColor: theme.colors.background}]}>
+                <Title theme={theme}>
                     What is your name?
-                </Text>
+                </Title>
                 <View style={{margin: 20, flexDirection: 'row'}}>
-                    <Input
+                    <TextInput
+                        style={{flex: 0.5}}
+                        theme={theme}
                         onEndEditing={() => this.onSubmit()}
                         onChangeText={text => this.onChangeText(text)}
                         value={this.state.username}
-                        placeholderTextColor={'white'}
-                        inputStyle={[styles.foodName, {color: 'white'}]}
-                        containerStyle={{margin: 0, backgroundColor: colors.darkerRed, flex: 0.5}}
                         placeholder="Name"/>
                 </View>
             </View>
         );
     }
-}
+})

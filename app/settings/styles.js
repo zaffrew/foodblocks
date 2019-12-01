@@ -13,12 +13,6 @@ export default styles = StyleSheet.create({
         justifyContent: 'center'
     },
 
-    foodblocksTitle: {
-        fontFamily: 'montserrat',
-        fontSize: 45,
-        color: 'white'
-    },
-
     foodName: {
         fontFamily: 'montserrat',
         fontSize: 16,

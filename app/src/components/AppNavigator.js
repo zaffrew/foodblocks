@@ -1,17 +1,26 @@
-import {createSwitchNavigator} from "react-navigation";
 import MainPage from "./MainPage";
-import {createAppContainer} from "react-navigation";
 import Splash from "./Splash";
 import Login from "./Login";
 
-const RootStack = createSwitchNavigator(
-    {
-        MainPage,
-        Login,
-        Splash
-    },
-    {
-        initialRouteName: "Splash",
-    });
+import {createStackNavigator} from '@react-navigation/stack';
+import {NavigationNativeContainer} from '@react-navigation/native';
+import React from "react";
 
-export default createAppContainer(RootStack);
+
+const Stack = createStackNavigator();
+
+export default class AppNavigator extends React.Component {
+
+    render() {
+        return (
+            <NavigationNativeContainer>
+                <Stack.Navigator headerMode={"none"} initialRouteName="Splash">
+                    <Stack.Screen name="MainPage" component={MainPage}/>
+                    <Stack.Screen name="Splash" component={Splash}/>
+                    <Stack.Screen name="Login" component={Login}/>
+                </Stack.Navigator>
+            </NavigationNativeContainer>
+        )
+    }
+
+}
