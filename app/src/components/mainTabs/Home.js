@@ -1,19 +1,24 @@
 import React from "react";
-import {ScrollView, Text, View} from "react-native";
+import {ScrollView, Text, View, AsyncStorage} from "react-native";
 import styles from "../../../settings/styles";
 import SidewaysScroll from "../SidewaysScroll";
 
 export default class Home extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
-            username: props.username
+            username:''
         }
+    }
+
+    async componentDidMount() {
+        const username = await AsyncStorage.getItem('username')
+        this.setState({username})
     }
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, {backgroundColor: 'white'}]}>
                 <Text style={styles.greeting}>Hello {this.state.username}!</Text>
                 <ScrollView style={styles.container}>
                     <SidewaysScroll title={"Taste Breakers"}/>
@@ -22,7 +27,6 @@ export default class Home extends React.Component {
                     <SidewaysScroll title={"Recent Meals"}/>
                     <SidewaysScroll title={"Pantry to Plate"}/>
                 </ScrollView>
-                {/*<Tabs/>*/}
             </View>
         );
     }

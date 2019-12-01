@@ -1,23 +1,17 @@
-import {createStackNavigator} from "react-navigation-stack";
+import {createSwitchNavigator} from "react-navigation";
 import MainPage from "./MainPage";
 import {createAppContainer} from "react-navigation";
 import Splash from "./Splash";
+import Login from "./Login";
 
-const RootStack = createStackNavigator(
+const RootStack = createSwitchNavigator(
     {
-        MainPage: {
-            screen: MainPage,
-        },
-
-        Splash: {
-            screen: Splash,
-        },
+        MainPage,
+        Login,
+        Splash
     },
     {
         initialRouteName: "Splash",
-        //This removes the header from the stack navigator.
-        //I dont want the header for the main menu/splash navigator
-        headerMode: 'none'
     });
 
 export default createAppContainer(RootStack);
