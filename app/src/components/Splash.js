@@ -25,7 +25,9 @@ export default class SplashScreen extends React.Component {
 
     componentDidMount() {
         setTimeout(() => {
-            this.props.navigation.navigate('MainPage')
+            this.props.navigation.navigate('Login')
         }, splashTransitionTime);
     }
+
+
 }

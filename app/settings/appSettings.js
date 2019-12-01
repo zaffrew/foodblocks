@@ -1,3 +1,3 @@
 export default {
-    splashTransitionTime: 200,
+    splashTransitionTime: 2000,
 }
