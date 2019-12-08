@@ -18,8 +18,6 @@ export default withTheme(class Login extends React.Component {
         })
     }
 
-    //TODO: android safe safe area
-
     async onSubmit() {
         await AsyncStorage.setItem('username', this.state.username);
         this.props.navigation.navigate("MainPage")
