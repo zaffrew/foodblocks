@@ -5,23 +5,35 @@ import * as Font from 'expo-font';
 import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
 import AppNavigator from "./src/components/AppNavigator";
 
+const fontWeights = {
+    Thin: '100',
+    UltraLight: '200',
+    Light: '300',
+    Regular: '400',
+    Medium: '500',
+    Semibold: '600',
+    Bold: '700',
+    Heavy: '800',
+    Black: '900',
+};
+
 const fontConfig = {
     default: {
         regular: {
             fontFamily: 'montserrat',
-            fontWeight: 'regular',
+            fontWeight: fontWeights.Regular,
         },
         medium: {
             fontFamily: 'montserrat',
-            fontWeight: 'medium',
+            fontWeight: fontWeights.Medium,
         },
         light: {
             fontFamily: 'montserrat',
-            fontWeight: 'light',
+            fontWeight: fontWeights.Light,
         },
         thin: {
             fontFamily: 'montserrat',
-            fontWeight: 'thin',
+            fontWeight: fontWeights.Thin,
         },
     },
 };
