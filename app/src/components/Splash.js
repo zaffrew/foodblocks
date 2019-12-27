@@ -1,13 +1,13 @@
 import React from 'react'
 import styles from '../../settings/styles'
 
-import {Text, View} from 'react-native'
-import colors from "../../settings/colors";
+import {View} from 'react-native'
 import settings from "../../settings/appSettings";
+import {Title, withTheme} from "react-native-paper";
 
 const splashTransitionTime = settings.splashTransitionTime;
 
-export default class SplashScreen extends React.Component {
+export default withTheme(class SplashScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -16,16 +16,22 @@ export default class SplashScreen extends React.Component {
     }
 
     render() {
+        const theme = {
+            colors: {
+                text: this.props.theme.colors.background
+            }
+        };
+
         return (
-            <View style={[styles.centeredContainer, {backgroundColor: colors.foodblocksRed}]}>
-                <Text style={styles.foodblocksTitle}>foodblocks</Text>
+            <View style={[styles.centeredContainer, {backgroundColor: this.props.theme.colors.primary}]}>
+                <Title theme={theme} style={{padding: 30, fontSize: 50}}>foodblocks</Title>
             </View>
         );
     }
 
     componentDidMount() {
         setTimeout(() => {
-            this.props.navigation.navigate('MainPage')
+            this.props.navigation.navigate('Login')
         }, splashTransitionTime);
     }
-}
+})
