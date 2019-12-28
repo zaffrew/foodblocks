@@ -15,6 +15,7 @@ import ForYou from "./mainTabs/ForYou";
 import Search from "./mainTabs/Search";
 import Groceries from "./mainTabs/Groceries";
 import Meals from "./mainTabs/Meals";
+import UserPage from "./mainTabs/UserPage";
 
 const iconMap = {
     Home: homeButton,
@@ -22,6 +23,7 @@ const iconMap = {
     Search: search,
     Groceries: groceries,
     Meals: meals,
+    UserPage: forYou,
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -76,6 +78,11 @@ export default class MainPage extends React.Component {
                 <Tab.Screen name="Meals" component={Meals} options={{
                     tabBarIcon: (focused, color) => {
                         return (getImage("Meals", focused, color))
+                    }
+                }}/>
+                <Tab.Screen name="User" component={UserPage} options={{
+                    tabBarIcon: (focused, color) => {
+                        return (getImage("UserPage", focused, color))
                     }
                 }}/>
             </Tab.Navigator>
