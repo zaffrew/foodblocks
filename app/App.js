@@ -1,58 +1,84 @@
 import React from 'react';
-//import Main from "./src/components/Main";
-import {
-    StyleSheet,
-    Text,
-    View
-} from 'react-native';
-import styles from './src/components/styles.js';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Font from 'expo-font';
-import SplashScreen from "./src/components/splash.js";
-import Home from './src/components/home.js';
 
-const splashTransitionTime = 2000;
-const username = "Vedant";
+import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
+import AppNavigator from "./src/components/AppNavigator";
+
+const fontWeights = {
+    Thin: '100',
+    UltraLight: '200',
+    Light: '300',
+    Regular: '400',
+    Medium: '500',
+    Semibold: '600',
+    Bold: '700',
+    Heavy: '800',
+    Black: '900',
+};
+
+const fontConfig = {
+    default: {
+        regular: {
+            fontFamily: 'montserrat',
+            fontWeight: fontWeights.Regular,
+        },
+        medium: {
+            fontFamily: 'montserrat',
+            fontWeight: fontWeights.Medium,
+        },
+        light: {
+            fontFamily: 'montserrat',
+            fontWeight: fontWeights.Light,
+        },
+        thin: {
+            fontFamily: 'montserrat',
+            fontWeight: fontWeights.Thin,
+        },
+    },
+};
+
+const theme = {
+    ...DefaultTheme,
+    colors: {
+        ...DefaultTheme.colors,
+        primary: '#D32240',
+        accent: '#891425',
+        background: 'white',
+    },
+    fonts: configureFonts(fontConfig),
+};
 
 export default class App extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            username: username,
-            screen: "splash",
             fontLoaded: false
         }
     }
 
-    async componentDidMount() {
-
+    async loadSplashFont() {
         await Font.loadAsync({
             'montserrat': require('./assets/fonts/Montserrat-Regular.ttf')
-        })
-        this.setState({ fontLoaded: true });
+        });
+        this.setState({fontLoaded: true});
+    }
 
-        setTimeout(()=> {
-            this.setState({
-                username: this.state.username,
-                screen: 'home'
-            })
-        }, splashTransitionTime)
-
+    componentDidMount() {
+        this.loadSplashFont()
     }
 
     render() {
         if (this.state.fontLoaded) {
-            if (this.state.screen === 'splash') {
-                return (
-                    <SplashScreen name = {this.state.username}/>
-                );
-            } else if (this.state.screen === 'home') {
-                return (
-                  <Home/>
-                );
-            }
+            return (
+                <PaperProvider theme={theme}>
+                    <SafeAreaProvider>
+                        <AppNavigator/>
+                    </SafeAreaProvider>
+                </PaperProvider>
+            );
         }
         return null;
     }
-
 }
