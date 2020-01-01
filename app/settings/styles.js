@@ -23,6 +23,7 @@ export default styles = StyleSheet.create({
         fontFamily: 'montserrat',
         fontSize: 30,
         textAlign: "center",
+        paddingBottom: 20,
     },
 
     heading: {
@@ -30,7 +31,8 @@ export default styles = StyleSheet.create({
         fontSize:
             20,
         color:
-            'white'
+            'white',
+        padding: 20,
     },
 
     greeting: {
