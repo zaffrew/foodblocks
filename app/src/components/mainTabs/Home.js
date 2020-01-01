@@ -5,6 +5,7 @@ import SidewaysScroll from "../SidewaysScroll";
 import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
 
+
 export default class Home extends React.Component {
     constructor(props) {
         super(props);

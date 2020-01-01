@@ -1,6 +1,7 @@
 import MainPage from "./MainPage";
 import Splash from "./Splash";
 import Login from "./Login";
+import Food from "./Food"
 
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationNativeContainer} from '@react-navigation/native';

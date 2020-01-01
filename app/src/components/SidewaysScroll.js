@@ -23,7 +23,7 @@ export default class SidewaysScroll extends React.Component {
         return (
             <View>
                 <Text style={styles.subtitle}>{this.state.title}</Text>
-                <ScrollView contentContainerStyle={{height: 200}} horizontal={true} alwaysBounceHorizontal={true}>
+                <ScrollView contentContainerStyle={{height: 250}} horizontal={true} alwaysBounceHorizontal={true} showsHorizontalScrollIndicator={false}>
                     <InteractiveTextImage image={curry} text='Curry'/>
                     <InteractiveTextImage image={applePie} text='Apple Pie'/>
                     <InteractiveTextImage image={bananaBread} text='Banana Bread'/>
