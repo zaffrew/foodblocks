@@ -17,25 +17,31 @@ const fontWeights = {
     Black: '900',
 };
 
-const fontConfig = {
-    default: {
-        regular: {
-            fontFamily: 'montserrat',
-            fontWeight: fontWeights.Regular,
-        },
-        medium: {
-            fontFamily: 'montserrat',
-            fontWeight: fontWeights.Medium,
-        },
-        light: {
-            fontFamily: 'montserrat',
-            fontWeight: fontWeights.Light,
-        },
-        thin: {
-            fontFamily: 'montserrat',
-            fontWeight: fontWeights.Thin,
-        },
+//TODO: android has a problem with fonts that are certain weights other than nortmal
+
+const platformFontConfig = {
+    regular: {
+        fontFamily: 'montserrat',
+        fontWeight: 'normal',
     },
+    medium: {
+        fontFamily: 'montserrat',
+        fontWeight: 'normal',
+    },
+    light: {
+        fontFamily: 'montserrat',
+        fontWeight: 'normal',
+    },
+    thin: {
+        fontFamily: 'montserrat',
+        fontWeight: 'normal',
+    },
+}
+
+const fontConfig = {
+    ios: platformFontConfig,
+    android: platformFontConfig,
+    default: platformFontConfig,
 };
 
 const theme = {
@@ -72,11 +78,11 @@ export default class App extends React.Component {
     render() {
         if (this.state.fontLoaded) {
             return (
-                <PaperProvider theme={theme}>
-                    <SafeAreaProvider>
+                <SafeAreaProvider>
+                    <PaperProvider theme={theme}>
                         <AppNavigator/>
-                    </SafeAreaProvider>
-                </PaperProvider>
+                    </PaperProvider>
+                </SafeAreaProvider>
             );
         }
         return null;
