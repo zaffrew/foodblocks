@@ -4,8 +4,9 @@ import styles from '../../settings/styles'
 import {AsyncStorage, View} from "react-native";
 
 import {TextInput, Title, withTheme} from 'react-native-paper'
+import withRouteParams from "./withRouteParams";
 
-export default withTheme(class Login extends React.Component {
+export default withRouteParams(withTheme(class Username extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +21,7 @@ export default withTheme(class Login extends React.Component {
 
     async onSubmit() {
         await AsyncStorage.setItem('username', this.state.username);
-        this.props.navigation.navigate("MainPage")
+        this.props.onSubmit();
     }
 
     render() {
@@ -52,4 +53,4 @@ export default withTheme(class Login extends React.Component {
             </View>
         );
     }
-})
+}));

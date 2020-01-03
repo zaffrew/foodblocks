@@ -4,10 +4,10 @@ import {Avatar, IconButton, Subheading, Surface} from 'react-native-paper';
 import SafeView from "../SafeView";
 import {List} from 'react-native-paper';
 import {createStackNavigator} from "@react-navigation/stack";
-import Username from "./userPageOptions/Username";
 import Payment from "./userPageOptions/Payment";
 import Help from "./userPageOptions/Help";
 import Logout from "./userPageOptions/Logout";
+import Username from "../Username";
 
 
 const Stack = createStackNavigator();
@@ -64,7 +64,7 @@ class UserScreen extends React.Component {
                         justifyContent: 'flex-start'
                     }}>
                     <List.Section>
-                        {getListItem('Edit Username', 'account', this.props.navigation)}
+                        {getListItem('Edit Username', 'account', this.props.navigation, {onSubmit: () => this.props.navigation.goBack()})}
                         {getListItem('Payment Information', 'currency-usd', this.props.navigation)}
                         {getListItem('Help', 'help-rhombus', this.props.navigation)}
                         {getListItem('Logout', 'logout', this.props.navigation)}
@@ -76,7 +76,7 @@ class UserScreen extends React.Component {
 }
 
 
-function getListItem(title, iconName, navigator) {
+function getListItem(title, iconName, navigator, props) {
     return (
         <List.Item
             title={title}
@@ -87,7 +87,7 @@ function getListItem(title, iconName, navigator) {
                 return <IconButton icon={'chevron-right'}/>
             }}
             onPress={() => {
-                navigator.navigate(title)
+                navigator.navigate(title, props)
             }}
         />
     )
