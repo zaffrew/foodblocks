@@ -1,7 +1,7 @@
 import React from 'react'
 
 import styles from '../../settings/styles'
-import {AsyncStorage, View} from "react-native";
+import {View} from "react-native";
 
 import {TextInput, Title, withTheme} from 'react-native-paper'
 import withRouteParams from "./withRouteParams";

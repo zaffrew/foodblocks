@@ -1,7 +1,6 @@
 import React from 'react'
-import {Avatar, IconButton, Subheading, Surface} from 'react-native-paper';
+import {Avatar, IconButton, List, Subheading, Surface} from 'react-native-paper';
 import SafeView from "../SafeView";
-import {List} from 'react-native-paper';
 import {createStackNavigator} from "@react-navigation/stack";
 import Payment from "./userPageOptions/Payment";
 import Help from "./userPageOptions/Help";

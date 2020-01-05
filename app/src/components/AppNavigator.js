@@ -3,7 +3,6 @@ import Splash from "./Splash";
 import Username from "./Username";
 
 import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationNativeContainer} from '@react-navigation/native';
 import React from "react";
 
 
