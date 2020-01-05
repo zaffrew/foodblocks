@@ -1,5 +1,5 @@
 import React from "react";
-import {AsyncStorage, ScrollView} from "react-native";
+import {ScrollView} from "react-native";
 import styles from "../../../settings/styles";
 import SidewaysScroll from "../SidewaysScroll";
 import SafeView from '../SafeView'
