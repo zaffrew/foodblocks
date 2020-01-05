@@ -1,9 +1,13 @@
 import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Font from 'expo-font';
+import {Provider} from 'react-redux'
+import {createStore} from 'redux'
+
 
 import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
 import AppNavigator from "./src/components/AppNavigator";
+import {NavigationNativeContainer} from "@react-navigation/native";
 
 const fontWeights = {
     Thin: '100',
@@ -60,7 +64,7 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            fontLoaded: false
+            fontLoaded: false,
         }
     }
 
@@ -78,13 +82,26 @@ export default class App extends React.Component {
     render() {
         if (this.state.fontLoaded) {
             return (
-                <SafeAreaProvider>
-                    <PaperProvider theme={theme}>
-                        <AppNavigator/>
-                    </PaperProvider>
-                </SafeAreaProvider>
+                <Provider store={createStore(reducer)}>
+                    <NavigationNativeContainer>
+                        <SafeAreaProvider>
+                            <PaperProvider theme={theme}>
+                                <AppNavigator/>
+                            </PaperProvider>
+                        </SafeAreaProvider>
+                    </NavigationNativeContainer>
+                </Provider>
             );
         }
         return null;
+    }
+}
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'USERNAME':
+            return {...state, username: action.username}
+        default:
+            return state
     }
 }

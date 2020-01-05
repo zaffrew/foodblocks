@@ -1,5 +1,4 @@
 import React from 'react'
-import {AsyncStorage} from "react-native";
 import {Avatar, IconButton, Subheading, Surface} from 'react-native-paper';
 import SafeView from "../SafeView";
 import {List} from 'react-native-paper';
@@ -9,6 +8,8 @@ import Help from "./userPageOptions/Help";
 import Logout from "./userPageOptions/Logout";
 import Username from "../Username";
 
+import {connect} from 'react-redux'
+
 
 const Stack = createStackNavigator();
 
@@ -16,7 +17,8 @@ export default class UserPage extends React.Component {
     render() {
         return (
             <Stack.Navigator initialRouteName="UserScreen">
-                <Stack.Screen options={{headerShown: false}} name="UserScreen" component={UserScreen}/>
+                <Stack.Screen options={{headerShown: false}} name="UserScreen"
+                              component={connect((state) => ({username: state.username}))(UserScreen)}/>
                 <Stack.Screen name="Edit Username" component={Username}/>
                 <Stack.Screen name="Payment Information" component={Payment}/>
                 <Stack.Screen name="Help" component={Help}/>
@@ -30,21 +32,21 @@ class UserScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {avatar: this.getAvatar()}
     }
 
-    async componentDidMount() {
-        const username = await AsyncStorage.getItem('username');
+    componentDidUpdate() {
+        this.setState({avatar: this.getAvatar()})
+    }
 
+    getAvatar() {
         let avatar;
-        if (username) {
-            const initials = username.split(" ").filter(word => word.length !== 0).map(word => word[0]).reduce((sum, next) => sum += next, "");
-            avatar = <Avatar.Text label={initials.toUpperCase()}/>
+        if (this.props.username) {
+            const initials = this.props.username.split(" ").filter(word => word.length !== 0).map(word => word[0]).reduce((sum, next) => sum += next, "");
+            return <Avatar.Text label={initials.toUpperCase()}/>
         } else {
-            avatar = <Avatar.Icon icon="account"/>
+            return <Avatar.Icon icon="account"/>
         }
-
-        this.setState({username, avatar})
     }
 
     render() {
@@ -53,7 +55,7 @@ class UserScreen extends React.Component {
                 <Surface
                     style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
                     {this.state.avatar}
-                    <Subheading>{this.state.username}</Subheading>
+                    <Subheading>{this.props.username}</Subheading>
                 </Surface>
                 <Surface
                     style={{

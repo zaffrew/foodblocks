@@ -5,8 +5,15 @@ import {AsyncStorage, View} from "react-native";
 
 import {TextInput, Title, withTheme} from 'react-native-paper'
 import withRouteParams from "./withRouteParams";
+import {connect} from 'react-redux'
 
-export default withRouteParams(withTheme(class Username extends React.Component {
+
+export default connect(null, {
+    updateUsername: (username) => ({
+        type: 'USERNAME',
+        username
+    }),
+})(withRouteParams(withTheme(class Username extends React.Component {
 
     constructor(props) {
         super(props);
@@ -20,7 +27,7 @@ export default withRouteParams(withTheme(class Username extends React.Component 
     }
 
     async onSubmit() {
-        await AsyncStorage.setItem('username', this.state.username);
+        this.props.updateUsername(this.state.username)
         this.props.onSubmit();
     }
 
@@ -53,4 +60,4 @@ export default withRouteParams(withTheme(class Username extends React.Component 
             </View>
         );
     }
-}));
+})));

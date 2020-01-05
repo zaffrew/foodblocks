@@ -13,13 +13,11 @@ export default class AppNavigator extends React.Component {
 
     render() {
         return (
-            <NavigationNativeContainer>
-                <Stack.Navigator headerMode={"none"} initialRouteName="Splash">
-                    <Stack.Screen name="MainPage" component={MainPage}/>
-                    <Stack.Screen name="Splash" component={Splash}/>
-                    <Stack.Screen name="Login" component={Username}/>
-                </Stack.Navigator>
-            </NavigationNativeContainer>
+            <Stack.Navigator headerMode={"none"} initialRouteName="Splash">
+                <Stack.Screen name="MainPage" component={MainPage}/>
+                <Stack.Screen name="Splash" component={Splash}/>
+                <Stack.Screen name="Login" component={Username}/>
+            </Stack.Navigator>
         )
     }
 
