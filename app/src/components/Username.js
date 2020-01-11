@@ -52,7 +52,7 @@ export default connect(null, {
                     <TextInput
                         style={{flex: 0.5}}
                         theme={theme}
-                        onEndEditing={() => this.onSubmit()}
+                        onSubmitEditing={() => this.onSubmit()}
                         onChangeText={text => this.onChangeText(text)}
                         value={this.state.username}
                         placeholder="Name"/>
