@@ -1,9 +1,13 @@
 import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Font from 'expo-font';
+import {Provider} from 'react-redux'
+import {createStore} from 'redux'
+
 
 import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
 import AppNavigator from "./src/components/AppNavigator";
+import {NavigationNativeContainer} from "@react-navigation/native";
 
 const fontWeights = {
     Thin: '100',
@@ -17,25 +21,31 @@ const fontWeights = {
     Black: '900',
 };
 
-const fontConfig = {
-    default: {
-        regular: {
-            fontFamily: 'montserrat',
-            fontWeight: fontWeights.Regular,
-        },
-        medium: {
-            fontFamily: 'montserrat',
-            fontWeight: fontWeights.Medium,
-        },
-        light: {
-            fontFamily: 'montserrat',
-            fontWeight: fontWeights.Light,
-        },
-        thin: {
-            fontFamily: 'montserrat',
-            fontWeight: fontWeights.Thin,
-        },
+//TODO: android has a problem with fonts that are certain weights other than nortmal
+
+const platformFontConfig = {
+    regular: {
+        fontFamily: 'montserrat',
+        fontWeight: 'normal',
     },
+    medium: {
+        fontFamily: 'montserrat',
+        fontWeight: 'normal',
+    },
+    light: {
+        fontFamily: 'montserrat',
+        fontWeight: 'normal',
+    },
+    thin: {
+        fontFamily: 'montserrat',
+        fontWeight: 'normal',
+    },
+}
+
+const fontConfig = {
+    ios: platformFontConfig,
+    android: platformFontConfig,
+    default: platformFontConfig,
 };
 
 const theme = {
@@ -54,7 +64,7 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            fontLoaded: false
+            fontLoaded: false,
         }
     }
 
@@ -72,13 +82,26 @@ export default class App extends React.Component {
     render() {
         if (this.state.fontLoaded) {
             return (
-                <PaperProvider theme={theme}>
-                    <SafeAreaProvider>
-                        <AppNavigator/>
-                    </SafeAreaProvider>
-                </PaperProvider>
+                <Provider store={createStore(reducer)}>
+                    <NavigationNativeContainer>
+                        <SafeAreaProvider>
+                            <PaperProvider theme={theme}>
+                                <AppNavigator/>
+                            </PaperProvider>
+                        </SafeAreaProvider>
+                    </NavigationNativeContainer>
+                </Provider>
             );
         }
         return null;
+    }
+}
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'USERNAME':
+            return {...state, username: action.username}
+        default:
+            return state
     }
 }
