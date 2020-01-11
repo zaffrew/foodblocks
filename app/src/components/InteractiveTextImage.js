@@ -31,16 +31,10 @@ export default withTheme(class InteractiveTextImage extends React.Component {
         }
     }
 
-    onTap = function () {
-        console.log(this.props.text, "was tapped.");
-        // open a page instead
-
-    };
-
     render() {
 
         return (
-                <Card style={[cardStyle.container]} onPress={() => this.onTap()}>
+                <Card style={[cardStyle.container]} onPress={() => this.state.onTap()}>
                 <Card.Content>
                     <Title>{this.state.text}</Title>
                 </Card.Content>
