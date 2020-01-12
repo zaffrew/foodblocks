@@ -31,7 +31,7 @@ export default withTheme(class SplashScreen extends React.Component {
 
     componentDidMount() {
         setTimeout(() => {
-            this.props.navigation.navigate('Login')
+            this.props.navigation.navigate('Login', {onSubmit: () => this.props.navigation.navigate('MainPage')})
         }, splashTransitionTime);
     }
 })
