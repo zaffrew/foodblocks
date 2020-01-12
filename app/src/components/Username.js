@@ -1,11 +1,19 @@
 import React from 'react'
 
 import styles from '../../settings/styles'
-import {AsyncStorage, View} from "react-native";
+import {View} from "react-native";
 
 import {TextInput, Title, withTheme} from 'react-native-paper'
+import withRouteParams from "./withRouteParams";
+import {connect} from 'react-redux'
 
-export default withTheme(class Login extends React.Component {
+
+export default connect(null, {
+    updateUsername: (username) => ({
+        type: 'USERNAME',
+        username
+    }),
+})(withRouteParams(withTheme(class Username extends React.Component {
 
     constructor(props) {
         super(props);
@@ -19,8 +27,8 @@ export default withTheme(class Login extends React.Component {
     }
 
     async onSubmit() {
-        await AsyncStorage.setItem('username', this.state.username);
-        this.props.navigation.navigate("MainPage")
+        this.props.updateUsername(this.state.username)
+        this.props.onSubmit();
     }
 
     render() {
@@ -44,7 +52,7 @@ export default withTheme(class Login extends React.Component {
                     <TextInput
                         style={{flex: 0.5}}
                         theme={theme}
-                        onEndEditing={() => this.onSubmit()}
+                        onSubmitEditing={() => this.onSubmit()}
                         onChangeText={text => this.onChangeText(text)}
                         value={this.state.username}
                         placeholder="Name"/>
@@ -52,4 +60,4 @@ export default withTheme(class Login extends React.Component {
             </View>
         );
     }
-})
+})));
