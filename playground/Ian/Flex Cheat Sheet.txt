@@ -1,0 +1,20 @@
+FlexBox Cheat Sheet:
+
+flexDirection: direction of the main axis (the flex of a child determines how much of the main axis it takes up
+	row, **column**, row-reverse, column-reverse 
+
+justifyContent: how to align children along the main axis
+	**flex-start**, flex-end, centre, space-between, space-around, space-evenly
+
+alignItems: how to align children along the cross axis
+	**stretch**, flex-start, flex-end, centre
+
+alignSelf: aligns a child along the cross axis (similar to alignItems but only affects the child
+	**stretch**, flex-start, flex-end, centre
+
+position: an absolute position is relative to the top left corner of the flex box
+	**relative**, absolute
+
+flex: determines how much of the main axis a child will take up
+
+A child can ignore the flexbox rules by setting its position component to absolute
