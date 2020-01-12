@@ -5,19 +5,9 @@ import SidewaysScroll from "../SidewaysScroll";
 import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
 
-export default class Home extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: ''
-        }
-    }
+export default connect((state) => ({username: state.username}))(Home);
 
-    async componentDidMount() {
-        const username = await AsyncStorage.getItem('username');
-        this.setState({username})
-    }
-
+class Home extends React.Component {
     openFood = () => {
         console.log("Entered function");
         this.props.navigation.navigate('Food');
