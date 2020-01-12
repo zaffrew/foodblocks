@@ -19,7 +19,6 @@ export default class Home extends React.Component {
     }
 
     openFood = () => {
-        console.log("Entered function");
         this.props.navigation.navigate('Food');
     }
 
