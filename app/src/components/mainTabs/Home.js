@@ -1,10 +1,9 @@
 import React from "react";
-import {ScrollView} from "react-native";
+import {AsyncStorage, ScrollView} from "react-native";
 import styles from "../../../settings/styles";
 import SidewaysScroll from "../SidewaysScroll";
 import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
-import {connect} from 'react-redux'
 
 export default connect((state) => ({username: state.username}))(Home);
 
