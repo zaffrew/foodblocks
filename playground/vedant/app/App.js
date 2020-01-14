@@ -8,6 +8,7 @@ import {
 import styles from './src/components/styles.js';
 import * as Font from 'expo-font';
 import SplashScreen from "./src/components/splash.js";
+import FoodPage from './src/components/foodPage.js';
 import Home from './src/components/home.js';
 
 const splashTransitionTime = 2000;
@@ -34,7 +35,8 @@ export default class App extends React.Component {
         setTimeout(()=> {
             this.setState({
                 username: this.state.username,
-                screen: 'home'
+                //screen: 'home'
+                screen: 'foodPage'
             })
         }, splashTransitionTime)
 
@@ -46,9 +48,10 @@ export default class App extends React.Component {
                 return (
                     <SplashScreen name = {this.state.username}/>
                 );
-            } else if (this.state.screen === 'home') {
+            } else if (this.state.screen === 'foodPage') {
                 return (
-                  <Home/>
+                  //<Home/>
+                  <FoodPage/>
                 );
             }
         }

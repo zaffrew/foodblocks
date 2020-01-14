@@ -38,7 +38,6 @@ export default styles = StyleSheet.create({
     heading: {
         fontFamily: 'montserrat',
         fontSize: 20,
-        color: 'white'
     },
 
     greeting: {
@@ -49,4 +48,16 @@ export default styles = StyleSheet.create({
     splashColor: {
         backgroundColor: '#D32240',
     },
+
+    bottomView:{
+ 
+        width: '100%', 
+        height: 64, 
+        backgroundColor: '#D32240', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 0
+      },
+
 });

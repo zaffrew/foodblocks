@@ -15,7 +15,8 @@ export default class SidewaysScroll extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: this.props.title
+            title: this.props.title,
+            onTap: this.props.onTap
         }
     }
 
@@ -23,13 +24,13 @@ export default class SidewaysScroll extends React.Component {
         return (
             <View>
                 <Text style={styles.subtitle}>{this.state.title}</Text>
-                <ScrollView contentContainerStyle={{height: 200}} horizontal={true} alwaysBounceHorizontal={true}>
-                    <InteractiveTextImage image={curry} text='Curry'/>
-                    <InteractiveTextImage image={applePie} text='Apple Pie'/>
-                    <InteractiveTextImage image={bananaBread} text='Banana Bread'/>
-                    <InteractiveTextImage image={beans} text='Beans'/>
-                    <InteractiveTextImage image={pasta} text='Pasta'/>
-                    <InteractiveTextImage image={sushi} text='Sushi'/>
+                <ScrollView contentContainerStyle={{height: 250}} horizontal={true} alwaysBounceHorizontal={true} showsHorizontalScrollIndicator={false}>
+                    <InteractiveTextImage image={curry} text='Curry' onTap={this.state.onTap}/>
+                    <InteractiveTextImage image={applePie} text='Apple Pie' onTap={this.state.onTap}/>
+                    <InteractiveTextImage image={bananaBread} text='Banana Bread' onTap={this.state.onTap}/>
+                    <InteractiveTextImage image={beans} text='Beans' onTap={this.state.onTap}/>
+                    <InteractiveTextImage image={pasta} text='Pasta' onTap={this.state.onTap}/>
+                    <InteractiveTextImage image={sushi} text='Sushi' onTap={this.state.onTap}/>
                 </ScrollView>
             </View>
         );

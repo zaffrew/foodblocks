@@ -15,6 +15,7 @@ import ForYou from "./mainTabs/ForYou";
 import Search from "./mainTabs/Search";
 import Groceries from "./mainTabs/Groceries";
 import Meals from "./mainTabs/Meals";
+import HomeNavigator from "./HomeNavigator";
 import UserPage from "./mainTabs/UserPage";
 
 const iconMap = {
@@ -55,7 +56,7 @@ export default class MainPage extends React.Component {
     render() {
         return (
             <Tab.Navigator initialRouteName="Home" shifting={false}>
-                <Tab.Screen name="Home" component={Home} options={{
+                <Tab.Screen name="Home" component={HomeNavigator} options={{
                     tabBarIcon: (focused, color) => {
                         return (getImage("Home", focused, color))
                     }
