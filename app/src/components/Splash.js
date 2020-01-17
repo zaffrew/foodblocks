@@ -30,8 +30,14 @@ export default withTheme(class SplashScreen extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            this.props.navigation.navigate('Login', {onSubmit: () => this.props.navigation.navigate('MainPage')})
-        }, splashTransitionTime);
+        this.focusListener = this.props.navigation.addListener('focus', () => {
+            setTimeout(() => {
+                this.props.navigation.navigate('Login', {onSubmit: () => this.props.navigation.navigate('MainPage')})
+            }, splashTransitionTime);
+        })
+    }
+
+    componentWillUnmount() {
+        this.focusListener.remove()
     }
 })
