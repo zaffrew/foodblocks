@@ -8,6 +8,7 @@ import Logout from "./userPageOptions/Logout";
 import Username from "../Username";
 
 import {connect} from 'react-redux'
+import withRouteParams from "../withRouteParams";
 
 
 const Stack = createStackNavigator();
@@ -15,10 +16,11 @@ const Stack = createStackNavigator();
 export default class UserPage extends React.Component {
     render() {
         return (
-            <Stack.Navigator initialRouteName="UserScreen">
+            <Stack.Navigator initialRouteName="UserScreen"
+                             screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
                 <Stack.Screen options={{headerShown: false}} name="UserScreen"
                               component={connect((state) => ({username: state.username}))(UserScreen)}/>
-                <Stack.Screen name="Edit Username" component={Username}/>
+                <Stack.Screen name="Edit Username" component={withRouteParams(Username)}/>
                 <Stack.Screen name="Payment Information" component={Payment}/>
                 <Stack.Screen name="Help" component={Help}/>
                 <Stack.Screen name="Logout" component={Logout}/>
@@ -65,10 +67,21 @@ class UserScreen extends React.Component {
                         justifyContent: 'flex-start'
                     }}>
                     <List.Section>
+                        <List.Item title={"Edit Username"}/>
                         {getListItem('Edit Username', 'account', this.props.navigation, {onSubmit: () => this.props.navigation.goBack()})}
                         {getListItem('Payment Information', 'currency-usd', this.props.navigation)}
                         {getListItem('Help', 'help-rhombus', this.props.navigation)}
-                        {getListItem('Logout', 'logout', this.props.navigation)}
+                    </List.Section>
+                    <List.Section>
+                        <List.Item
+                            title={"Logout"}
+                            left={() => {
+                                return <IconButton icon={'logout'}/>
+                            }}
+                            onPress={() => {
+                                this.props.navigation.navigate('Splash')
+                            }}
+                        />
                     </List.Section>
                 </Surface>
             </SafeView>
@@ -77,12 +90,12 @@ class UserScreen extends React.Component {
 }
 
 
-function getListItem(title, iconName, navigator, props) {
+function getListItem(title, iconLeft, navigator, props) {
     return (
         <List.Item
             title={title}
             left={() => {
-                return <IconButton icon={iconName}/>
+                return <IconButton icon={iconLeft}/>
             }}
             right={() => {
                 return <IconButton icon={'chevron-right'}/>
