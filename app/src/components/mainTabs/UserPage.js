@@ -14,13 +14,19 @@ import withRouteParams from "../withRouteParams";
 const Stack = createStackNavigator();
 
 export default class UserPage extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.WithRouteUsername = withRouteParams(Username);
+    }
+
     render() {
         return (
             <Stack.Navigator initialRouteName="UserScreen"
                              screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
                 <Stack.Screen options={{headerShown: false}} name="UserScreen"
-                              component={connect((state) => ({username: state.username}))(UserScreen)}/>
-                <Stack.Screen name="Edit Username" component={withRouteParams(Username)}/>
+                              component={(UserScreen)}/>
+                <Stack.Screen name="Edit Username" component={this.WithRouteUsername}/>
                 <Stack.Screen name="Payment Information" component={Payment}/>
                 <Stack.Screen name="Help" component={Help}/>
                 <Stack.Screen name="Logout" component={Logout}/>
@@ -29,24 +35,17 @@ export default class UserPage extends React.Component {
     }
 }
 
-class UserScreen extends React.Component {
+const UserScreen = connect((state) => ({username: state.username}))(class extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {avatar: this.getAvatar()}
+        this.state = {avatar: getAvatar(props.username)}
     }
 
-    componentDidUpdate() {
-        this.setState({avatar: this.getAvatar()})
-    }
-
-    getAvatar() {
-        let avatar;
-        if (this.props.username) {
-            const initials = this.props.username.split(" ").filter(word => word.length !== 0).map(word => word[0]).reduce((sum, next) => sum += next, "");
-            return <Avatar.Text label={initials.toUpperCase()}/>
-        } else {
-            return <Avatar.Icon icon="account"/>
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const newName = this.props.username
+        if (prevProps.username != newName) {
+            this.setState({avatar: getAvatar(newName)})
         }
     }
 
@@ -87,8 +86,7 @@ class UserScreen extends React.Component {
             </SafeView>
         )
     }
-}
-
+})
 
 function getListItem(title, iconLeft, navigator, props) {
     return (
@@ -105,4 +103,14 @@ function getListItem(title, iconLeft, navigator, props) {
             }}
         />
     )
+}
+
+function getAvatar(username) {
+    let avatar;
+    if (username) {
+        const initials = username.split(" ").filter(word => word.length !== 0).map(word => word[0]).reduce((sum, next) => sum += next, "");
+        return <Avatar.Text label={initials.toUpperCase()}/>
+    } else {
+        return <Avatar.Icon icon="account"/>
+    }
 }
