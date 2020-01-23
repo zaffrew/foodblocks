@@ -101,6 +101,8 @@ function reducer(state, action) {
     switch (action.type) {
         case 'USERNAME':
             return {...state, username: action.username}
+        case 'EMAIL':
+            return {...state, email: action.email}
         default:
             return state
     }

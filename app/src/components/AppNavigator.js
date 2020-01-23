@@ -3,7 +3,7 @@ import Splash from "./Splash";
 
 import {createStackNavigator} from '@react-navigation/stack';
 import React from "react";
-import Login from "./Login";
+import Login from "./login/Login";
 
 
 const Stack = createStackNavigator();

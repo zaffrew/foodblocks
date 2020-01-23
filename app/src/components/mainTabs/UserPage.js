@@ -5,7 +5,7 @@ import {createStackNavigator} from "@react-navigation/stack";
 import Payment from "./userPageOptions/Payment";
 import Help from "./userPageOptions/Help";
 import Logout from "./userPageOptions/Logout";
-import Username from "../Username";
+import Username from "../login/Username";
 
 import {connect} from 'react-redux'
 import withRouteParams from "../withRouteParams";
