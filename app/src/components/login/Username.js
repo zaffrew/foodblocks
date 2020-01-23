@@ -1,8 +1,8 @@
 import React from 'react'
 
 import {connect} from 'react-redux'
-import withProps from "./withProps";
-import SingleUserSetting from "./SingleUserSetting";
+import withProps from "../withProps";
+import SingleUserSetting from "../SingleUserSetting";
 
 
 export default connect(null, {

@@ -42,7 +42,8 @@ export default withTheme(class extends React.Component {
                 </Title>
                 <View style={{margin: 20, flexDirection: 'row'}}>
                     <TextInput
-                        style={{flex: 0.5}}
+                        {...this.props.textInputProps}
+                        style={{flex: 0.9}}
                         theme={theme}
                         onSubmitEditing={() => this.onSubmit()}
                         onChangeText={text => this.onChangeText(text)}
