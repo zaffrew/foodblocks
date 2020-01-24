@@ -1,14 +1,15 @@
 import React from 'react'
-import {Avatar, IconButton, List, Subheading, Surface} from 'react-native-paper';
-import SafeView from "../SafeView";
+import {Avatar, IconButton, List, Subheading, Surface, Title} from 'react-native-paper';
+import SafeView from "../../SafeView";
 import {createStackNavigator} from "@react-navigation/stack";
-import Payment from "./userPageOptions/Payment";
-import Help from "./userPageOptions/Help";
-import Logout from "./userPageOptions/Logout";
-import Username from "../login/Username";
+import Payment from "./Payment";
+import Help from "./Help";
+import Logout from "./Logout";
+import Username from "../../login/Username";
 
 import {connect} from 'react-redux'
-import withRouteParams from "../withRouteParams";
+import withRouteParams from "../../withRouteParams";
+import Email from "../../login/Email";
 
 
 const Stack = createStackNavigator();
@@ -17,7 +18,8 @@ export default class UserPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.WithRouteUsername = withRouteParams(Username);
+        this.Username = withRouteParams(Username);
+        this.Email = withRouteParams(Email);
     }
 
     render() {
@@ -26,7 +28,8 @@ export default class UserPage extends React.Component {
                              screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
                 <Stack.Screen options={{headerShown: false}} name="UserScreen"
                               component={(UserScreen)}/>
-                <Stack.Screen name="Edit Username" component={this.WithRouteUsername}/>
+                <Stack.Screen name="Username" component={this.Username}/>
+                <Stack.Screen name="Email" component={this.Email}/>
                 <Stack.Screen name="Payment Information" component={Payment}/>
                 <Stack.Screen name="Help" component={Help}/>
                 <Stack.Screen name="Logout" component={Logout}/>
@@ -35,7 +38,7 @@ export default class UserPage extends React.Component {
     }
 }
 
-const UserScreen = connect((state) => ({username: state.username}))(class extends React.Component {
+const UserScreen = connect((state) => ({email: state.email, username: state.username}))(class extends React.Component {
 
     constructor(props) {
         super(props);
@@ -55,7 +58,8 @@ const UserScreen = connect((state) => ({username: state.username}))(class extend
                 <Surface
                     style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
                     {this.state.avatar}
-                    <Subheading>{this.props.username}</Subheading>
+                    <Title>{this.props.username}</Title>
+                    <Subheading>{this.props.email}</Subheading>
                 </Surface>
                 <Surface
                     style={{
@@ -66,8 +70,8 @@ const UserScreen = connect((state) => ({username: state.username}))(class extend
                         justifyContent: 'flex-start'
                     }}>
                     <List.Section>
-                        <List.Item title={"Edit Username"}/>
-                        {getListItem('Edit Username', 'account', this.props.navigation, {onSubmit: () => this.props.navigation.goBack()})}
+                        {getListItem('Username', 'account', this.props.navigation, {onSubmit: () => this.props.navigation.goBack()})}
+                        {getListItem('Email', 'email', this.props.navigation, {onSubmit: () => this.props.navigation.goBack()})}
                         {getListItem('Payment Information', 'currency-usd', this.props.navigation)}
                         {getListItem('Help', 'help-rhombus', this.props.navigation)}
                     </List.Section>

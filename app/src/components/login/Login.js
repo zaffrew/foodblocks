@@ -3,7 +3,7 @@ import {createStackNavigator} from "@react-navigation/stack";
 import Username from "./Username";
 
 import withProps from '../withProps'
-import EmailPage from "./EmailPage";
+import Email from "./Email";
 
 const Stack = createStackNavigator();
 
@@ -21,24 +21,29 @@ export default class Login extends React.Component {
             }
         })
 
-        this.EmailPage = withProps(EmailPage, {
+        this.Email = withProps(Email, {
             onSubmit: () => {
-                this.props.navigation.navigate('MainPage')
+                this.moveToMainPage()
             },
             textInputProps: {
                 autoCompleteType: 'email',
                 keyboardType: 'email-address',
                 textContentType: 'emailAddress',
                 autoCapitalize: 'none'
-            }
+            },
+            invalidMessage: 'Invalid Email',
         })
+    }
+
+    moveToMainPage = () => {
+        this.props.navigation.navigate('MainPage')
     }
 
     render() {
         return (
             <Stack.Navigator screenOptions={{gestureEnabled: false}} headerMode={"none"} initialRouteName="Username">
                 <Stack.Screen name="Username" component={this.Username}/>
-                <Stack.Screen name="Email" component={this.EmailPage}/>
+                <Stack.Screen name="Email" component={this.Email}/>
             </Stack.Navigator>
         );
     }
