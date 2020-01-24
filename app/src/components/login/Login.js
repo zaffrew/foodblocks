@@ -31,7 +31,6 @@ export default class Login extends React.Component {
                 textContentType: 'emailAddress',
                 autoCapitalize: 'none'
             },
-            invalidMessage: 'Invalid Email',
         })
     }
 

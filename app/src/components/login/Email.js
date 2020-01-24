@@ -16,5 +16,6 @@ export default connect(null, {
     question: 'What is your email?',
     valid: (email) => {
         return validator.validate(email);
-    }
+    },
+    invalidMessage: 'Invalid Email',
 }));
