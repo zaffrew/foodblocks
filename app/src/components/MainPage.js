@@ -16,7 +16,7 @@ import Search from "./mainTabs/Search";
 import Groceries from "./mainTabs/Groceries";
 import Meals from "./mainTabs/Meals";
 import HomeNavigator from "./HomeNavigator";
-import UserPage from "./mainTabs/UserPage";
+import UserPage from "./mainTabs/userPage/UserPage";
 
 const iconMap = {
     Home: homeButton,
