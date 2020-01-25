@@ -3,11 +3,13 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Font from 'expo-font';
 import {Provider} from 'react-redux'
 import {createStore} from 'redux'
-
+import {persistStore, persistReducer} from 'redux-persist';
+import {PersistGate} from 'redux-persist/integration/react';
 
 import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
 import AppNavigator from "./src/components/AppNavigator";
 import {NavigationNativeContainer} from "@react-navigation/native";
+import {AsyncStorage} from "react-native";
 
 const fontWeights = {
     Thin: '100',
@@ -81,14 +83,16 @@ export default class App extends React.Component {
     render() {
         if (this.state.fontLoaded) {
             return (
-                <Provider store={createStore(reducer)}>
-                    <NavigationNativeContainer>
-                        <SafeAreaProvider>
-                            <PaperProvider theme={theme}>
-                                <AppNavigator/>
-                            </PaperProvider>
-                        </SafeAreaProvider>
-                    </NavigationNativeContainer>
+                <Provider store={store}>
+                    <PersistGate loading={null} persistor={persistor}>
+                        <NavigationNativeContainer>
+                            <SafeAreaProvider>
+                                <PaperProvider theme={theme}>
+                                    <AppNavigator/>
+                                </PaperProvider>
+                            </SafeAreaProvider>
+                        </NavigationNativeContainer>
+                    </PersistGate>
                 </Provider>
             );
         }
@@ -98,6 +102,8 @@ export default class App extends React.Component {
 
 function reducer(state, action) {
     switch (action.type) {
+        case 'RESET':
+            return {};
         case 'USERNAME':
             return {...state, username: action.username};
         case 'EMAIL':
@@ -106,3 +112,15 @@ function reducer(state, action) {
             return state
     }
 }
+
+const persistConfig = {
+    key: 'root',
+    storage: AsyncStorage,
+    whitelist: ['username', 'email']
+};
+
+const persistedReducer = persistReducer(persistConfig, reducer);
+
+const store = createStore(persistedReducer);
+
+const persistor = persistStore(store);
