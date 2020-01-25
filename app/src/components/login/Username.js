@@ -8,7 +8,7 @@ import SingleUserSetting from "../SingleUserSetting";
 export default connect(null, {
     updateValue: (username) => ({
         type: 'USERNAME',
-        username
+        username,
     }),
 })(withProps(SingleUserSetting, {
     placeholder: 'Name',

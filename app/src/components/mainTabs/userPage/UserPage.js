@@ -4,7 +4,6 @@ import SafeView from "../../SafeView";
 import {createStackNavigator} from "@react-navigation/stack";
 import Payment from "./Payment";
 import Help from "./Help";
-import Logout from "./Logout";
 import Username from "../../login/Username";
 
 import {connect} from 'react-redux'
@@ -32,13 +31,16 @@ export default class UserPage extends React.Component {
                 <Stack.Screen name="Email" component={this.Email}/>
                 <Stack.Screen name="Payment Information" component={Payment}/>
                 <Stack.Screen name="Help" component={Help}/>
-                <Stack.Screen name="Logout" component={Logout}/>
             </Stack.Navigator>
         )
     }
 }
 
-const UserScreen = connect((state) => ({email: state.email, username: state.username}))(class extends React.Component {
+const UserScreen = connect((state) => ({email: state.email, username: state.username}), {
+    logout: () => ({
+        type: 'RESET',
+    }),
+})(class extends React.Component {
 
     constructor(props) {
         super(props);
@@ -82,6 +84,7 @@ const UserScreen = connect((state) => ({email: state.email, username: state.user
                                 return <IconButton icon={'logout'}/>
                             }}
                             onPress={() => {
+                                this.props.logout();
                                 this.props.navigation.popToTop()
                             }}
                         />
