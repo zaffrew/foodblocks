@@ -13,29 +13,14 @@ export default class Login extends React.Component {
         this.Username = withProps(Username, {
             onSubmit: () => {
                 this.props.navigation.navigate('Email')
-            },
-            textInputProps: {
-                autoCompleteType: 'name',
-                textContentType: 'name',
-                autoCapitalize: 'words'
             }
-        })
+        });
 
         this.Email = withProps(Email, {
             onSubmit: () => {
-                this.moveToMainPage()
-            },
-            textInputProps: {
-                autoCompleteType: 'email',
-                keyboardType: 'email-address',
-                textContentType: 'emailAddress',
-                autoCapitalize: 'none'
-            },
+                this.props.navigation.navigate('MainPage')
+            }
         })
-    }
-
-    moveToMainPage = () => {
-        this.props.navigation.navigate('MainPage')
     }
 
     render() {

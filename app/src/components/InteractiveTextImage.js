@@ -1,9 +1,8 @@
 import React from 'react'
 
 import styles from '../../settings/styles'
-import {Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native'
-import {createStackNavigator} from '@react-navigation/stack';
-import { Avatar, Button, Card, Title, Paragraph, withTheme } from 'react-native-paper';
+import {StyleSheet} from 'react-native'
+import { Card, Title, withTheme } from 'react-native-paper';
 import defaultImage from "../../assets/default-image.jpg";
 //import FoodScreen from './Food';
 
