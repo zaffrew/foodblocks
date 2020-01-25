@@ -45,9 +45,9 @@ const UserScreen = connect((state) => ({email: state.email, username: state.user
         this.state = {avatar: getAvatar(props.username)}
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        const newName = this.props.username
-        if (prevProps.username != newName) {
+    componentDidUpdate(prevProps) {
+        const newName = this.props.username;
+        if (prevProps.username !== newName) {
             this.setState({avatar: getAvatar(newName)})
         }
     }
@@ -82,7 +82,7 @@ const UserScreen = connect((state) => ({email: state.email, username: state.user
                                 return <IconButton icon={'logout'}/>
                             }}
                             onPress={() => {
-                                this.props.navigation.navigate('Splash')
+                                this.props.navigation.popToTop()
                             }}
                         />
                     </List.Section>
@@ -90,7 +90,7 @@ const UserScreen = connect((state) => ({email: state.email, username: state.user
             </SafeView>
         )
     }
-})
+});
 
 function getListItem(title, iconLeft, navigator, props) {
     return (
@@ -110,9 +110,8 @@ function getListItem(title, iconLeft, navigator, props) {
 }
 
 function getAvatar(username) {
-    let avatar;
     if (username) {
-        const initials = username.split(" ").filter(word => word.length !== 0).map(word => word[0]).reduce((sum, next) => sum += next, "");
+        const initials = username.split(" ").filter(word => word.length !== 0).map(word => word[0]).reduce((sum, next) => sum + next, "");
         return <Avatar.Text label={initials.toUpperCase()}/>
     } else {
         return <Avatar.Icon icon="account"/>

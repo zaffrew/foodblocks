@@ -21,7 +21,7 @@ const fontWeights = {
     Black: '900',
 };
 
-//TODO: android has a problem with fonts that are certain weights other than nortmal
+//TODO: android has a problem with fonts that are certain weights other than normal
 
 const platformFontConfig = {
     regular: {
@@ -40,7 +40,7 @@ const platformFontConfig = {
         fontFamily: 'montserrat',
         fontWeight: 'normal',
     },
-}
+};
 
 const fontConfig = {
     ios: platformFontConfig,
@@ -72,11 +72,10 @@ export default class App extends React.Component {
         await Font.loadAsync({
             'montserrat': require('./assets/fonts/Montserrat-Regular.ttf')
         });
-        this.setState({fontLoaded: true});
     }
 
     componentDidMount() {
-        this.loadSplashFont()
+        this.loadSplashFont().then(() => this.setState({fontLoaded: true}))
     }
 
     render() {
@@ -100,9 +99,9 @@ export default class App extends React.Component {
 function reducer(state, action) {
     switch (action.type) {
         case 'USERNAME':
-            return {...state, username: action.username}
+            return {...state, username: action.username};
         case 'EMAIL':
-            return {...state, email: action.email}
+            return {...state, email: action.email};
         default:
             return state
     }

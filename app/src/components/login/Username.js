@@ -13,4 +13,9 @@ export default connect(null, {
 })(withProps(SingleUserSetting, {
     placeholder: 'Name',
     question: 'What is your name?',
+    textInputProps: {
+        autoCompleteType: 'name',
+        textContentType: 'name',
+        autoCapitalize: 'words'
+    }
 }))
