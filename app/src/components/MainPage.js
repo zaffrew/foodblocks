@@ -1,8 +1,6 @@
 import React from 'react'
 
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-
-
 import {Image} from 'react-native'
 import homeButton from "../../assets/homeButton.png";
 import forYou from "../../assets/forYou.png";
@@ -16,7 +14,9 @@ import Search from "./mainTabs/Search";
 import Groceries from "./mainTabs/Groceries";
 import Meals from "./mainTabs/Meals";
 import HomeNavigator from "./HomeNavigator";
+
 import UserPage from "./mainTabs/UserPage";
+import Webpage from "./Webpage";
 
 const iconMap = {
     Home: homeButton,
@@ -86,6 +86,13 @@ export default class MainPage extends React.Component {
                         return (getImage("UserPage", focused, color))
                     }
                 }}/>
+                <Tab.Screen name="Webpage"
+                            component={Webpage}
+                            options={{
+                                tabBarIcon: (focused, color) => {
+                                    return (getImage("UserPage", focused, color))
+                                }
+                            }}/>
             </Tab.Navigator>
         );
     }
