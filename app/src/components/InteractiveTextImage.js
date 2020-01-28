@@ -27,27 +27,27 @@ export default withTheme(class InteractiveTextImage extends React.Component {
             text: props.text,
             page: props.page, // the page to open when you click the image
             onTap: props.onTap,
-            textStyle: props.textStyle,
+            textSize: props.textSize,
         }
     }
 
     render() {
 
         return (
-                <Card style={[cardStyle.container]} onPress={() => this.state.onTap()}>
-                <Card.Content>
-                    <Title>{this.state.text}</Title>
-                </Card.Content>
-                <Card.Cover style={[cardStyle.image]} source={this.state.image}/>
-                </Card>
+                <View style={{paddingRight: 5, padding: 10}}>
+                  <Card style={[cardStyle.container], {width: this.state.width, height: this.state.height}} onPress={() => this.state.onTap()}>
+                  <Card.Content>
+                      <Title style={{fontSize: this.state.textSize}}>{this.state.text}</Title>
+                  </Card.Content>
+                  <Card.Cover style={{width: this.state.width, height: this.state.height * 0.70}} source={this.state.image}/>
+                  </Card>
+                </View>
         );
     }
 });
 
 const cardStyle = StyleSheet.create({
     container: {
-      width: 200,
-      height: 200,
       margin: 8,
     },
     content: {
@@ -56,8 +56,4 @@ const cardStyle = StyleSheet.create({
     card: {
       margin: 4,
     },
-    image: {
-        width: 200,
-        height: 150,
-    }
   });
