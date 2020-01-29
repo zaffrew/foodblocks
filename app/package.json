@@ -1,4 +1,5 @@
 {
+  "//": "TODO: Upgrade Expo once react navigation is finalized for that version",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
@@ -13,9 +14,8 @@
     "@react-navigation/material-bottom-tabs": "^5.0.0-alpha.21",
     "@react-navigation/native": "^5.0.0-alpha.16",
     "@react-navigation/stack": "^5.0.0-alpha.38",
-    "assets": "^3.0.1",
     "expo": "^35.0.1",
-    "expo-font": "latest",
+    "expo-font": "~7.0.0",
     "react": "16.8.3",
     "react-dom": "16.8.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",
@@ -24,11 +24,7 @@
     "react-native-paper": "^3.2.1",
     "react-native-reanimated": "~1.2.0",
     "react-native-safe-area-context": "~0.3.6",
-    "react-native-vector-icons": "^6.6.0",
-    "react-native-web": "^0.11.7",
-    "react-navigation": "^4.0.10",
-    "react-navigation-stack": "^1.10.3",
-    "react-navigation-tabs": "^2.5.6",
+    "react-native-screens": "~1.0.0-alpha.23",
     "react-redux": "^7.1.3",
     "redux": "^4.0.5"
   },
