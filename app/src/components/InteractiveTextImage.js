@@ -1,9 +1,8 @@
 import React from 'react'
 
 import styles from '../../settings/styles'
-import {Image, Text, TouchableOpacity, View, StyleSheet} from 'react-native'
-import {createStackNavigator} from '@react-navigation/stack';
-import { Avatar, Button, Card, Title, Paragraph, withTheme } from 'react-native-paper';
+import {StyleSheet, View} from 'react-native'
+import {Card, Title, withTheme} from 'react-native-paper';
 import defaultImage from "../../assets/default-image.jpg";
 //import FoodScreen from './Food';
 
@@ -34,26 +33,32 @@ export default withTheme(class InteractiveTextImage extends React.Component {
     render() {
 
         return (
-                <View style={{paddingRight: 5, padding: 10}}>
-                  <Card style={[cardStyle.container], {width: this.state.width, height: this.state.height}} onPress={() => this.state.onTap()}>
-                  <Card.Content>
-                      <Title style={{fontSize: this.state.textSize}}>{this.state.text}</Title>
-                  </Card.Content>
-                  <Card.Cover style={{width: this.state.width, height: this.state.height * 0.70}} source={this.state.image}/>
-                  </Card>
-                </View>
+            <View style={{paddingRight: 5, padding: 10}}>
+                <Card style={[cardStyle.container, {width: this.state.width, height: this.state.height}]}
+                      onPress={() => this.state.onTap()}>
+                    <Card.Content>
+                        <Title style={{fontSize: this.state.textSize}}>{this.state.text}</Title>
+                    </Card.Content>
+                    <Card.Cover style={{width: this.state.width, height: this.state.height * 0.70}}
+                                source={this.state.image}/>
+                </Card>
+            </View>
         );
     }
 });
 
 const cardStyle = StyleSheet.create({
     container: {
-      margin: 8,
+        margin: 8,
     },
     content: {
-      padding: 4,
+        padding: 4,
     },
     card: {
-      margin: 4,
+        margin: 4,
     },
-  });
+    image: {
+        width: 200,
+        height: 150,
+    }
+});

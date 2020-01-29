@@ -10,7 +10,7 @@ class Home extends React.Component {
 
     openFood = () => {
         this.props.navigation.navigate('Food');
-    }
+    };
 
     render() {
         return (
