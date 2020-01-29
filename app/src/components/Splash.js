@@ -4,10 +4,14 @@ import styles from '../../settings/styles'
 import {View} from 'react-native'
 import settings from "../../settings/appSettings";
 import {Title, withTheme} from "react-native-paper";
+import {connect} from "react-redux";
 
 const splashTransitionTime = settings.splashTransitionTime;
 
-export default withTheme(class SplashScreen extends React.Component {
+export default connect((state) => ({
+    email: state.email,
+    username: state.username
+}))(withTheme(class SplashScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,8 +34,18 @@ export default withTheme(class SplashScreen extends React.Component {
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            this.props.navigation.navigate('Login', {onSubmit: () => this.props.navigation.navigate('MainPage')})
-        }, splashTransitionTime);
+        this.focusListener = this.props.navigation.addListener('focus', () => {
+            setTimeout(() => {
+                if (this.props.username) {
+                    this.props.navigation.navigate('MainPage')
+                } else {
+                    this.props.navigation.navigate('Login', {onSubmit: () => this.props.navigation.navigate('MainPage')})
+                }
+            }, splashTransitionTime);
+        })
     }
-})
+
+    componentWillUnmount() {
+        this.focusListener.remove()
+    }
+}))
