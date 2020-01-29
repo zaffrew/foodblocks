@@ -1,10 +1,7 @@
 import React from "react";
 import {WebView} from 'react-native-webview';
 import SafeView from "./SafeView";
-import {Button, Dialog, Paragraph, Portal, Subheading} from "react-native-paper";
-import styles from "../../settings/styles"
 import {ActivityIndicator} from "react-native";
-import {exp} from "react-native-reanimated";
 
 const URL = require('url-parse');
 
