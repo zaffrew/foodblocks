@@ -1,18 +1,32 @@
 import React from 'react'
 import {Text, View, ScrollView, StyleSheet} from 'react-native'
 import SafeView from '../components/SafeView'
-import {Title, List, Surface, Paragraph} from "react-native-paper";
-import styles from "../../settings/styles"
-import pasta from "../../assets/pasta.jpg";
+import {Card, Title, List, Surface, Paragraph} from "react-native-paper";
+import styles from "../../settings/styles";
+import pasta from "../../assets/curry.jpg";
+import colors from '../../settings/colors';
 
 export default class Food extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            image: props.image,
+        }
+    }
+
     render() {
         return (
             <SafeView style={styles.container}>
-                <View>
-                    <Title style={{padding: 5, fontSize: 30}}>Pasta</Title>
-                </View>
                 <ScrollView>
+                    <View>
+                        <Card style={{width: 500, height: 200}}>
+                        <Card.Cover style={{width: 500, height: 200}}
+                                    source={pasta}/>
+                        </Card>
+                        <Title style={{padding: 20, fontSize: 40, textAlign:'center'}}>Curry</Title>
+                    </View>
                     <View style={{paddingVertical: 10}}>
                         <Title style={styles.subtitle}>Get started</Title>
                         <Surface style={surfaceStyles.surface}>
