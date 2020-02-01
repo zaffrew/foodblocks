@@ -10,6 +10,7 @@ import {connect} from 'react-redux'
 import withRouteParams from "../../withRouteParams";
 import Email from "../../login/Email";
 
+import memoizeOne from "memoize-one";
 
 const Stack = createStackNavigator();
 
@@ -41,17 +42,10 @@ const UserScreen = connect((state) => ({email: state.email, username: state.user
         type: 'RESET',
     }),
 })(class extends React.Component {
+    memoizedAvatar = memoizeOne(getAvatar);
 
     constructor(props) {
         super(props);
-        this.state = {avatar: getAvatar(props.username)}
-    }
-
-    componentDidUpdate(prevProps) {
-        const newName = this.props.username;
-        if (prevProps.username !== newName) {
-            this.setState({avatar: getAvatar(newName)})
-        }
     }
 
     render() {
@@ -59,7 +53,7 @@ const UserScreen = connect((state) => ({email: state.email, username: state.user
             <SafeView style={{flex: 1, flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start'}}>
                 <Surface
                     style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
-                    {this.state.avatar}
+                    {this.memoizedAvatar(this.props.username)}
                     <Title>{this.props.username}</Title>
                     <Subheading>{this.props.email}</Subheading>
                 </Surface>
