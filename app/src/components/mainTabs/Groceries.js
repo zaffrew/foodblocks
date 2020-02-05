@@ -70,7 +70,7 @@ export default class Groceries extends React.Component {
                         right={props => <List.Icon color={Colors.grey400} icon="menu" />}
                     />
                     <List.Item
-                        title="Crackers"
+                        title="Chips"
                         style={{paddingVertical:0}}
                         left={props => <List.Icon color={Colors.black} icon="square-outline" />}
                         right={props => <List.Icon color={Colors.grey400} icon="menu" />}
