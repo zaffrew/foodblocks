@@ -28,6 +28,18 @@ export default async function loadHTML(URL) {
 
             json['src'] = $('img.recipe-print__recipe-img').attr('src')
 
+            $('li.prepTime__item').each((i, e) => {
+                const timeElement = $(e).children('time')
+                if (timeElement.length != 0) {
+                    const prepType = timeElement.attr('itemprop').trim()
+                    let prepTimeString = timeElement.attr('datetime').trim()
+                    prepTimeString = prepTimeString.replace('PT', '')
+                    let timeUnit = prepTimeString.charAt(prepTimeString.length - 1)
+
+                    json[prepType] = {time: prepTimeString.substring(0, prepTimeString.length - 1), timeUnit}
+                }
+            })
+
             console.log(json)
             return json
         })

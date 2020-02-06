@@ -16,6 +16,7 @@ import Meals from "./mainTabs/Meals";
 import HomeNavigator from "./HomeNavigator";
 import Webpage from "./Webpage";
 import UserPage from "./mainTabs/userPage/UserPage";
+import allRecipeFetcher from "../allRecipeFetcher";
 
 const iconMap = {
     Home: homeButton,
@@ -53,6 +54,7 @@ function getImage(name, focused, color) {
 
 export default class MainPage extends React.Component {
     render() {
+        allRecipeFetcher('https://www.allrecipes.com/recipe/223042/chicken-parmesan/print/')
         return (
             <Tab.Navigator initialRouteName="Home" shifting={false}>
                 <Tab.Screen name="Home" component={HomeNavigator} options={{
