@@ -5,7 +5,9 @@ const ORIGIN = "https://www.allrecipes.com"
 
 function getPrintURL(URL) {
     URL = new URL_PARSE(URL)
-    URL.set('pathname', URL.pathname + 'print/')
+    if (!URL.pathname.endsWith('print')) {
+        URL.set('pathname', URL.pathname + 'print/')
+    }
     return URL.href
 }
 
@@ -15,6 +17,9 @@ function getSearchURL(search) {
     return URL
 }
 
+/**
+ * Returns the top URLs for the given search term on allrecipes.com
+ */
 export async function search(search, num) {
     const res = []
     return await getDOM(getSearchURL(search)).then($ => {
@@ -36,9 +41,6 @@ async function getDOM(URL) {
         .then(html => cheerio.load(html))
 }
 
-/**
- * This method requires the URL to direct to the print page of a allrecipe page.
- */
 export async function getData(URL) {
     URL = getPrintURL(URL)
 

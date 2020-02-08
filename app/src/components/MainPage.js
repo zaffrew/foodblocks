@@ -93,13 +93,6 @@ export default class MainPage extends React.Component {
                         return (getImage("UserPage", focused, color))
                     }
                 }}/>
-                <Tab.Screen name="Webpage"
-                            component={Webpage}
-                            options={{
-                                tabBarIcon: (focused, color) => {
-                                    return (getImage("UserPage", focused, color))
-                                }
-                            }}/>
             </Tab.Navigator>
         );
     }
