@@ -1,71 +1,67 @@
 import React from 'react'
-import {Text, View, ScrollView, StyleSheet} from 'react-native'
+import {View, ScrollView, StyleSheet, Image} from 'react-native'
 import SafeView from '../components/SafeView'
-import {Card, Title, List, Surface, Paragraph} from "react-native-paper";
+import {Card, Title, Surface, Paragraph} from "react-native-paper";
 import styles from "../../settings/styles";
-import pasta from "../../assets/curry.jpg";
-import colors from '../../settings/colors';
 
 export default class Food extends React.Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            image: props.image,
-        }
-    }
-
     render() {
+        const ingredients = this.props.ingredients.map((text, i) =>
+            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
+
+        const directions = this.props.directions.map((text, i) =>
+            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
+
         return (
-            <SafeView style={styles.container}>
+            <SafeView style={{flex: 1}}>
                 <ScrollView>
-                    <View>
-                        <Card style={{width: 500, height: 200}}>
-                        <Card.Cover style={{width: 500, height: 200}}
-                                    source={pasta}/>
-                        </Card>
-                        <Title style={{padding: 20, fontSize: 40, textAlign:'center'}}>Curry</Title>
-                    </View>
+                    <Card style={{height: 300}}>
+                        <Image style={{flex: 1, resizeMode: 'stretch'}} source={{uri: this.props.img}}/>
+                    </Card>
+                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>{this.props.title}</Title>
                     <View style={{paddingVertical: 10}}>
                         <Title style={styles.subtitle}>Get started</Title>
                         <Surface style={surfaceStyles.surface}>
-                            <Title style={{padding:5, fontSize: 18}}>Ingredients needed</Title>
-                            <Paragraph style={{padding:5, fontSize:12}}>Ingredient 1</Paragraph>
+                            <Title style={{padding: 5, fontSize: 18}}>Ingredients needed</Title>
+                            {ingredients}
                         </Surface>
                     </View>
+                    {/*<View style={{paddingVertical: 10}}>*/}
+                    {/*    <Surface style={surfaceStyles.surface}>*/}
+                    {/*        <Title style={{padding: 5, fontSize: 18}}>Tools needed</Title>*/}
+                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Tool 1</Paragraph>*/}
+                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Tool 2</Paragraph>*/}
+                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Makan</Paragraph>*/}
+                    {/*    </Surface>*/}
+                    {/*</View>*/}
                     <View style={{paddingVertical: 10}}>
                         <Surface style={surfaceStyles.surface}>
-                            <Title style={{padding:5, fontSize: 18}}>Tools needed</Title>
-                            <Paragraph style={{padding:5, fontSize:12}}>Tool 1</Paragraph>
-                            <Paragraph style={{padding:5, fontSize:12}}>Tool 2</Paragraph>
-                            <Paragraph style={{padding:5, fontSize:12}}>Makan</Paragraph>
-                        </Surface>
-                    </View>
-                    <View style={{paddingVertical: 10}}>
-                        <Surface style={surfaceStyles.surface}>
-                            <Title style={{padding:5, fontSize: 18}}>Time needed</Title>
-                            <Paragraph style={{padding:5, fontSize:12}}>30 Mins</Paragraph>
+                            <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
+                            {this.props.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
+                                Time: {this.props.prepTime.asMinutes()}M</Paragraph>}
+                            {this.props.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
+                                Time: {this.props.cookTime.asMinutes()}M</Paragraph>}
+                            {this.props.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
+                                Time: {this.props.totalTime.asMinutes()}M</Paragraph>}
                         </Surface>
                     </View>
                     <View>
                         <Title style={[styles.subtitle, {paddingVertical: 10}]}>Steps</Title>
                         <View style={{paddingVertical: 10}}>
                             <Surface style={surfaceStyles.surface}>
-                                <Paragraph style={{padding:5, fontSize:12}}>Yummly is a scam</Paragraph>
+                                {directions}
                             </Surface>
                         </View>
                     </View>
                 </ScrollView>
             </SafeView>
-
-        );
+        )
     }
 }
 
 const surfaceStyles = StyleSheet.create({
     surface: {
-      padding: 20,
-      elevation: 4,
+        padding: 20,
+        elevation: 4,
     },
-  });
+});

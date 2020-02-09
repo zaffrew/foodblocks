@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const cheerio = require('react-native-cheerio')
 const URL_PARSE = require('url-parse');
 
@@ -12,17 +14,15 @@ function getPrintURL(URL) {
 }
 
 function getSearchURL(search) {
-    search = encodeURIComponent(search)
-    const URL = 'https://www.allrecipes.com/search/results/?wt=' + search
-    return URL
+    return 'https://www.allrecipes.com/search/results/?wt=' + encodeURIComponent(search)
 }
 
 /**
  * Returns the top URLs for the given search term on allrecipes.com
  */
 export async function search(search, num) {
-    const res = []
     return await getDOM(getSearchURL(search)).then($ => {
+        const res = []
         $('h3.fixed-recipe-card__h3').each((i, e) => {
             if (i >= num) {
                 return false
@@ -31,7 +31,7 @@ export async function search(search, num) {
         })
         return res
     }).catch(err => {
-        alert('Error searching: ' + err)
+        console.log('Error searching: ' + err)
     })
 }
 
@@ -68,17 +68,12 @@ export async function getData(URL) {
         $('li.prepTime__item').each((i, e) => {
             const timeElement = $(e).children('time')
             if (timeElement.length != 0) {
-                const prepType = timeElement.attr('itemprop').trim()
-                let prepTimeString = timeElement.attr('datetime').trim()
-                prepTimeString = prepTimeString.replace('PT', '')
-                let timeUnit = prepTimeString.charAt(prepTimeString.length - 1)
-
-                json[prepType] = {time: prepTimeString.substring(0, prepTimeString.length - 1), timeUnit}
+                json[timeElement.attr('itemprop').trim()] = moment.duration(timeElement.attr('datetime').trim())
             }
         })
 
         return json
     }).catch(err => {
-        alert('Error loading data: ' + err)
+        console.log('Error loading data: ' + err)
     })
 }

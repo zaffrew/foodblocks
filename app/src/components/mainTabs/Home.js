@@ -5,12 +5,13 @@ import SidewaysScroll from "../SidewaysScroll";
 import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
 import {connect} from 'react-redux'
+import {getData, search} from "../../AllRecipe"
 
 class Home extends React.Component {
 
-    openFood = () => {
-        this.props.navigation.navigate('Food');
-    };
+    openFood = async function (searchTerm) {
+        this.props.navigation.navigate('Food', await getData((await search(searchTerm, 1))[0]));
+    }.bind(this);
 
     render() {
         return (

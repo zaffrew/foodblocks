@@ -53,13 +53,6 @@ function getImage(name, focused, color) {
 }
 
 export default class MainPage extends React.Component {
-    async componentDidMount() {
-        const searchRes = await recipeSearch('chicken parm', 1)
-        console.log(searchRes)
-        getData(searchRes[0])
-            .then(res => console.log(res))
-    }
-
     render() {
         return (
             <Tab.Navigator initialRouteName="Home" shifting={false}>
