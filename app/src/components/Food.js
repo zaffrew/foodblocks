@@ -22,6 +22,13 @@ export default class Food extends React.Component {
                     <View style={{paddingVertical: 10}}>
                         <Title style={styles.subtitle}>Get started</Title>
                         <Surface style={surfaceStyles.surface}>
+                            <Title style={{padding: 5, fontSize: 18}}>Author: {this.props.author}</Title>
+                            <Paragraph>{this.props.description}</Paragraph>
+                        </Surface>
+                    </View>
+                    <View style={{paddingVertical: 10}}>
+                        <Title style={styles.subtitle}>Get started</Title>
+                        <Surface style={surfaceStyles.surface}>
                             <Title style={{padding: 5, fontSize: 18}}>Ingredients needed</Title>
                             {ingredients}
                         </Surface>

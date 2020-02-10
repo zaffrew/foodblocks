@@ -1,19 +1,14 @@
 import React from 'react'
-import {Text, View, StyleSheet} from 'react-native'
-import {Searchbar, Title, TextInput, Subheading, Chip} from 'react-native-paper';
+import {StyleSheet, Text, View} from 'react-native'
+import {Chip, Searchbar, Subheading} from 'react-native-paper';
 import SafeView from '../SafeView'
-import VerticalScroll from '../VerticalScroll'
 import colors from '../../../settings/colors'
 import styles from "../../../settings/styles"
 import {getData, search} from "../../AllRecipe";
-import FoodBlock from "../FoodBlock";
 import FoodBlockScroll from "./FoodBlockScroll";
-import withProps from "../withProps";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
-
-//TODO: stop the scroll view from unscrolling everytime it is updated.
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -39,11 +34,13 @@ class Search extends React.Component {
     }
 
     async updateSearchResults() {
-        const searchResults = await search(this.state.query, 7);
-        const results = []
+        const query = this.state.query;
+        const searchResults = await search(this.state.query, 20);
         for (const URL of searchResults) {
-            results.push(await getData(URL))
-            this.setState({blockData: results})
+            this.setState({blockData: this.state.blockData.concat(await getData(URL))});
+            if (query !== this.state.query) {
+                return;
+            }
         }
     }
 
@@ -77,19 +74,15 @@ class Search extends React.Component {
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Vegan</Text>
                             </Chip>
-
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Halal</Text>
                             </Chip>
-
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Gluten-free</Text>
                             </Chip>
-
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Keto</Text>
                             </Chip>
-
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Dairy-free</Text>
                             </Chip>
@@ -100,7 +93,8 @@ class Search extends React.Component {
                 <View style={{flex: 2 / 3, backgroundColor: colors.grey}}>
                     <FoodBlockScroll onPress={(data) => {
                         this.props.navigation.navigate('Food', {...data})
-                    }} columns={2} blockData={this.state.blockData}/>
+                    }}
+                                     columns={2} blockData={this.state.blockData}/>
                 </View>
             </SafeView>
 

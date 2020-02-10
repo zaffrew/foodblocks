@@ -72,6 +72,16 @@ export async function getData(URL) {
             }
         })
 
+        json['description'] = $('.recipe-print__description').text().trim()
+
+        $('.recipe-print__container2').children('div').each((i, e) => {
+            const children = $(e).children('span')
+            if (children.length == 2 && $(children[0]).attr('class') === 'recipe-print__by') {
+                json['author'] = $(children[1]).text().trim()
+                return false;
+            }
+        });
+
         return json
     }).catch(err => {
         console.log('Error loading data: ' + err)
