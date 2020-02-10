@@ -1,17 +1,17 @@
 import React from 'react'
-import {StyleSheet, View} from "react-native";
+import {Image, StyleSheet, View} from "react-native";
 import {Card, Text} from "react-native-paper";
 
 export default (props) => {
     return (
-        <View style={{paddingRight: 5, padding: 10}}>
-            <Card style={[cardStyle.container, {width: props.width, height: props.height}]}
+        <View style={{flex: 1, paddingRight: 5, padding: 10}}>
+            <Card style={[cardStyle.container, {height: props.height}]}
                   onPress={props.onPress}>
                 <Card.Content>
                     <Text>{props.text}</Text>
                 </Card.Content>
-                <Card.Cover style={{width: props.width, height: props.height * 0.70}}
-                            source={{uri: props.image}}/>
+                <Image style={{flex: 1, resizeMode: 'cover'}}
+                       source={{uri: props.image}}/>
             </Card>
         </View>
     )

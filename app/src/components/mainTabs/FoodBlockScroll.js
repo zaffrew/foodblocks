@@ -1,51 +1,44 @@
 import React from 'react'
 import {ScrollView, View} from "react-native";
-import {createStackNavigator} from "@react-navigation/stack";
-import withRouteParams from "../withRouteParams";
-import Food from "../Food";
-import withProps from "../withProps";
 import FoodBlock from "../FoodBlock";
 
-const FoodStack = createStackNavigator();
-
-const FoodWithProps = withRouteParams(Food);
-
-const FoodNavigator = (props) => {
-    return (
-        <FoodStack.Navigator headerMode={"none"} initialRouteName="Scroll">
-            <FoodStack.Screen name="Scroll" component={withProps(FoodBlockScroll, props)}/>
-            <FoodStack.Screen name="Food" component={FoodWithProps}/>
-        </FoodStack.Navigator>
-    )
-}
-
-const FoodBlockScroll = (props) => {
+export default (props) => {
     //block data is a list of data about the foods in the all recipe format
-    const blocks = props.blockData.map((data) => {
+    const blocks = props.blockData.map((data, i) => {
         return (
-            <FoodBlock image={data.img} text={data.title} height={160} width={160} textSize={16}
+            <FoodBlock key={i} image={data.img} text={data.title} height={160} width={160} textSize={16}
                        onPress={() => {
-                           props.navigation.navigate("Food", {...data});
+                           props.onPress(data)
                        }}
             />
         )
     })
 
+    const columns = props.columns;
+    const rows = Math.floor(blocks.length / columns);
+    const remainder = blocks.length % columns;
     const blockViews = []
+    let i = 0
 
-    for (let i = 0; i < blocks.length - 1; i += 2) {
+    for (; i < rows; i++) {
         blockViews.push(
-            <View key={i} style={{flexDirection: 'row', justifyContent: 'center'}}>
-                {blocks[i]}
-                {blocks[i + 1]}
+            <View key={i} style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
+                {blocks.slice(i * columns, (i + 1) * columns)}
             </View>
         )
     }
 
-    if (blocks.length % 2 == 1) {
-        blocks.push(<View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-            {blocks[blocks.length - 1]}
-        </View>)
+    if (remainder != 0) {
+        const paddingViews = []
+        for (let i = 0; i < columns - remainder; i++) {
+            paddingViews.push(<View key={i} style={{flex: 1}}/>)
+        }
+        blockViews.push(
+            <View key={i} style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
+                {blocks.slice(i * columns)}
+                {paddingViews}
+            </View>
+        )
     }
 
     return (
@@ -54,6 +47,3 @@ const FoodBlockScroll = (props) => {
         </ScrollView>
     );
 }
-
-
-export default FoodNavigator;

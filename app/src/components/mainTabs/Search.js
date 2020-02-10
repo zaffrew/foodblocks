@@ -8,9 +8,26 @@ import styles from "../../../settings/styles"
 import {getData, search} from "../../AllRecipe";
 import FoodBlock from "../FoodBlock";
 import FoodBlockScroll from "./FoodBlockScroll";
+import withProps from "../withProps";
+import {createStackNavigator} from "@react-navigation/stack";
+import withRouteParams from "../withRouteParams";
+import Food from "../Food";
 
+//TODO: stop the scroll view from unscrolling everytime it is updated.
 
-export default class Search extends React.Component {
+const Navigator = createStackNavigator();
+const FoodWithParams = withRouteParams(Food);
+
+const SearchNavigator = (props) => {
+    return (
+        <Navigator.Navigator headerMode={"none"} initialRouteName="Search">
+            <Navigator.Screen name="Search" component={Search}/>
+            <Navigator.Screen name="Food" component={FoodWithParams}/>
+        </Navigator.Navigator>
+    )
+}
+
+class Search extends React.Component {
 
     constructor(props) {
         super(props);
@@ -22,7 +39,7 @@ export default class Search extends React.Component {
     }
 
     async updateSearchResults() {
-        const searchResults = await search(this.state.query, 10);
+        const searchResults = await search(this.state.query, 7);
         const results = []
         for (const URL of searchResults) {
             results.push(await getData(URL))
@@ -81,7 +98,9 @@ export default class Search extends React.Component {
                     </View>
                 </View>
                 <View style={{flex: 2 / 3, backgroundColor: colors.grey}}>
-                    <FoodBlockScroll blockData={this.state.blockData}/>
+                    <FoodBlockScroll onPress={(data) => {
+                        this.props.navigation.navigate('Food', {...data})
+                    }} columns={2} blockData={this.state.blockData}/>
                 </View>
             </SafeView>
 
@@ -129,3 +148,4 @@ const chipStyle = StyleSheet.create({
     }
 });
 
+export default SearchNavigator;
