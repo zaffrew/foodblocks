@@ -47,6 +47,8 @@ export async function getData(URL) {
     return await getDOM(URL).then($ => {
         const json = {URL}
 
+        json['timeOfScrape'] = moment();
+
         json['title'] = $('.recipe-print__title').text().trim()
 
         const directions = []
@@ -81,6 +83,8 @@ export async function getData(URL) {
                 return false;
             }
         });
+
+        json['rating'] = $('.rating-stars').attr('data-ratingstars').trim()
 
         return json
     }).catch(err => {
