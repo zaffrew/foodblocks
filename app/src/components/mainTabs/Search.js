@@ -34,6 +34,7 @@ class Search extends React.Component {
     }
 
     async updateSearchResults() {
+        this.setState({blockData: []})
         const query = this.state.query;
         const searchResults = await search(this.state.query, 20);
         for (const URL of searchResults) {
