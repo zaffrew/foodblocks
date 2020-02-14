@@ -15,8 +15,9 @@ const FoodWithParams = withRouteParams(Food);
 
 const SearchNavigator = (props) => {
     return (
-        <Navigator.Navigator headerMode={"none"} initialRouteName="Search">
-            <Navigator.Screen name="Search" component={Search}/>
+        <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
+                             initialRouteName="Search">
+            <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
             <Navigator.Screen name="Food" component={FoodWithParams}/>
         </Navigator.Navigator>
     )
