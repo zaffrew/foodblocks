@@ -11,6 +11,7 @@ import withRouteParams from "../../withRouteParams";
 import Email from "../../login/Email";
 
 import memoizeOne from "memoize-one";
+import {ACTIONS} from "../../../State";
 
 const Stack = createStackNavigator();
 
@@ -39,7 +40,7 @@ export default class UserPage extends React.Component {
 
 const UserScreen = connect((state) => ({email: state.email, username: state.username}), {
     logout: () => ({
-        type: 'RESET',
+        type: ACTIONS.LOGOUT,
     }),
 })(class extends React.Component {
     memoizedAvatar = memoizeOne(getAvatar);

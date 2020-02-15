@@ -10,7 +10,7 @@ import {getData, search} from "../../AllRecipe"
 class Home extends React.Component {
 
     openFood = async function (searchTerm) {
-        this.props.navigation.navigate('Food', await getData((await search(searchTerm, 1))[0]));
+        this.props.navigation.navigate('Food', {data: await getData((await search(searchTerm, 1))[0])});
     }.bind(this);
 
     render() {

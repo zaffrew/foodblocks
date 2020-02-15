@@ -94,7 +94,7 @@ class Search extends React.Component {
                 </View>
                 <View style={{flex: 2 / 3, backgroundColor: colors.grey}}>
                     <FoodBlockScroll onPress={(data) => {
-                        this.props.navigation.navigate('Food', {...data})
+                        this.props.navigation.navigate('Food', {data})
                     }}
                                      columns={2} blockData={this.state.blockData}/>
                 </View>

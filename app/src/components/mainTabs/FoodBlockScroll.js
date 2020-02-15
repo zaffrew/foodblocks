@@ -44,7 +44,7 @@ export default (props) => {
     }
 
     return (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView horizontal={props.horizontal} showsVerticalScrollIndicator={false}>
             {blockViews}
         </ScrollView>
     );

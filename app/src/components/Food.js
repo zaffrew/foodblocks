@@ -1,29 +1,70 @@
 import React from 'react'
 import {View, ScrollView, StyleSheet, Image} from 'react-native'
 import SafeView from '../components/SafeView'
-import {Card, Title, Surface, Paragraph} from "react-native-paper";
+import {Card, Title, Surface, Paragraph, Button, IconButton} from "react-native-paper";
 import styles from "../../settings/styles";
+import {connect} from "react-redux";
+import {ACTIONS} from "../State";
 
-export default class Food extends React.Component {
+//TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
+
+export default connect((state, ownProps) => {
+    const saved = state.recipe_save && state.recipe_save.filter(data => {
+        return ownProps.data.URL === data.URL
+    }).length === 1
+
+    return {saved}
+}, {
+    save: (data) => ({
+        type: ACTIONS.SAVE_RECIPE,
+        data
+    }),
+    unsave: (data) => ({
+        type: ACTIONS.UNSAVE_RECIPE,
+        data
+    })
+})
+(class Food extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {pressed: props.saved}
+    }
+
+    onPress() {
+        console.log('pressed')
+        const pressed = !this.state.pressed;
+        this.setState({pressed});
+        (pressed ? this.props.save : this.props.unsave)(this.props.data);
+    }
+
     render() {
-        const ingredients = this.props.ingredients.map((text, i) =>
+        const data = this.props.data
+        const ingredients = data.ingredients.map((text, i) =>
             <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
 
-        const directions = this.props.directions.map((text, i) =>
+        const directions = data.directions.map((text, i) =>
             <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
 
         return (
             <SafeView style={{flex: 1}}>
                 <ScrollView>
                     <Card style={{height: 300}}>
-                        <Image style={{flex: 1, resizeMode: 'stretch'}} source={{uri: this.props.img}}/>
+                        <Image style={{flex: 1, resizeMode: 'stretch'}} source={{uri: data.img}}/>
                     </Card>
-                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>{this.props.title}</Title>
+                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>{data.title}</Title>
                     <View style={{paddingVertical: 10}}>
-                        <Title style={styles.subtitle}>Get started</Title>
+                        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                            <Title style={styles.subtitle}>Get started</Title>
+                            <IconButton
+                                color={this.state.pressed ? 'red' : 'black'}
+                                icon={'star'}
+                                onPress={() => this.onPress()}
+                                size={30}
+                            />
+                        </View>
                         <Surface style={surfaceStyles.surface}>
-                            <Title style={{padding: 5, fontSize: 18}}>Author: {this.props.author}</Title>
-                            <Paragraph>{this.props.description}</Paragraph>
+                            <Title style={{padding: 5, fontSize: 18}}>Author: {data.author}</Title>
+                            <Paragraph>{data.description}</Paragraph>
                         </Surface>
                     </View>
                     <View style={{paddingVertical: 10}}>
@@ -41,17 +82,18 @@ export default class Food extends React.Component {
                     {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Makan</Paragraph>*/}
                     {/*    </Surface>*/}
                     {/*</View>*/}
+                    {(data.prepTime || data.cookTime || data.totalTime) &&
                     <View style={{paddingVertical: 10}}>
                         <Surface style={surfaceStyles.surface}>
                             <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
-                            {this.props.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
-                                Time: {this.props.prepTime.asMinutes()}M</Paragraph>}
-                            {this.props.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
-                                Time: {this.props.cookTime.asMinutes()}M</Paragraph>}
-                            {this.props.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
-                                Time: {this.props.totalTime.asMinutes()}M</Paragraph>}
+                            {data.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
+                                Time: {data.prepTime.asMinutes()}M</Paragraph>}
+                            {data.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
+                                Time: {data.cookTime.asMinutes()}M</Paragraph>}
+                            {data.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
+                                Time: {data.totalTime.asMinutes()}M</Paragraph>}
                         </Surface>
-                    </View>
+                    </View>}
                     <View>
                         <Title style={[styles.subtitle, {paddingVertical: 10}]}>Steps</Title>
                         <View style={{paddingVertical: 10}}>
@@ -64,8 +106,7 @@ export default class Food extends React.Component {
             </SafeView>
         )
     }
-}
-
+})
 const surfaceStyles = StyleSheet.create({
     surface: {
         padding: 20,
