@@ -1,21 +1,51 @@
 import React from 'react'
-import {Text, View, StyleSheet, ScrollView} from 'react-native'
-import {Searchbar, Title, Card, Subheading, Chip} from 'react-native-paper';
+import {StyleSheet, Text, View} from 'react-native'
+import {Chip, Searchbar, Subheading} from 'react-native-paper';
 import SafeView from '../SafeView'
-import VerticalScroll from '../VerticalScroll'
 import colors from '../../../settings/colors'
 import styles from "../../../settings/styles"
+import {getData, search} from "../../AllRecipe";
+import FoodBlockScroll from "./FoodBlockScroll";
+import {createStackNavigator} from "@react-navigation/stack";
+import withRouteParams from "../withRouteParams";
+import Food from "../Food";
 
-export default class Search extends React.Component {
+const Navigator = createStackNavigator();
+const FoodWithParams = withRouteParams(Food);
+
+const SearchNavigator = (props) => {
+    return (
+        <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
+                             initialRouteName="Search">
+            <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
+            <Navigator.Screen name="Food" component={FoodWithParams}/>
+        </Navigator.Navigator>
+    )
+}
+
+class Search extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {userQuery: '',}
+        this.state = {query: '', blockData: []}
     }
 
     onTap() {
         console.log('Pressed')
     }
+
+    async updateSearchResults() {
+        this.setState({blockData: []})
+        const query = this.state.query;
+        const searchResults = await search(this.state.query, 20);
+        for (const URL of searchResults) {
+            this.setState({blockData: this.state.blockData.concat(await getData(URL))});
+            if (query !== this.state.query) {
+                return;
+            }
+        }
+    }
+
 
     render() {
         return (
@@ -28,9 +58,12 @@ export default class Search extends React.Component {
                     <Searchbar
                         placeholder="Search"
                         onChangeText={query => {
-                            this.setState({userQuery: query});
+                            this.setState({query})
                         }}
-                        value={this.state.userQuery}
+                        value={this.state.query}
+                        onSubmitEditing={() => {
+                            this.updateSearchResults()
+                        }}
                     />
                     <View>
                         <Subheading style={{
@@ -39,24 +72,19 @@ export default class Search extends React.Component {
                             paddingTop: 10,
                             paddingBottom: 5
                         }}>Filters</Subheading>
-
                         <View style={chipStyle.row}>
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Vegan</Text>
                             </Chip>
-
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Halal</Text>
                             </Chip>
-
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Gluten-free</Text>
                             </Chip>
-
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Keto</Text>
                             </Chip>
-
                             <Chip onPress={this.onTap} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Dairy-free</Text>
                             </Chip>
@@ -65,7 +93,10 @@ export default class Search extends React.Component {
                     </View>
                 </View>
                 <View style={{flex: 2 / 3, backgroundColor: colors.grey}}>
-                    <VerticalScroll onTap={this.onTap}></VerticalScroll>
+                    <FoodBlockScroll onPress={(data) => {
+                        this.props.navigation.navigate('Food', {data})
+                    }}
+                                     columns={2} blockData={this.state.blockData}/>
                 </View>
             </SafeView>
 
@@ -113,3 +144,4 @@ const chipStyle = StyleSheet.create({
     }
 });
 
+export default SearchNavigator;

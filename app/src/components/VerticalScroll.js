@@ -1,5 +1,5 @@
 import React from 'react'
-import {ScrollView, Text, View} from "react-native";
+import {ScrollView, View} from "react-native";
 
 import InteractiveTextImage from "./InteractiveTextImage";
 
@@ -10,7 +10,7 @@ import applePie from "../../assets/applePie.jpeg";
 import bananaBread from "../../assets/bananaBread.jpeg";
 import curry from "../../assets/curry.jpg";
 
-export default class SidewaysScroll extends React.Component {
+export default class VerticalScroll extends React.Component {
 
     render() {
         return (

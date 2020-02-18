@@ -3,12 +3,13 @@ import React from 'react'
 import withProps from "../withProps";
 import SingleUserSetting from "../SingleUserSetting";
 import {connect} from "react-redux";
+import {ACTIONS} from "../../State";
 
 const validator = require("email-validator");
 
 export default connect(null, {
     updateValue: (email) => ({
-        type: 'EMAIL',
+        type: ACTIONS.EMAIL,
         email: email.trim(),
     }),
 })(withProps(SingleUserSetting, {

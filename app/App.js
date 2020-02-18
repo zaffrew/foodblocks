@@ -2,14 +2,13 @@ import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import * as Font from 'expo-font';
 import {Provider} from 'react-redux'
-import {createStore} from 'redux'
-import {persistStore, persistReducer} from 'redux-persist';
 import {PersistGate} from 'redux-persist/integration/react';
 
 import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
 import AppNavigator from "./src/components/AppNavigator";
-import {NavigationContainer} from "@react-navigation/native";
-import {AsyncStorage} from "react-native";
+import { NavigationContainer } from '@react-navigation/native';
+
+import {store, persistor} from './src/State'
 
 const fontWeights = {
     Thin: '100',
@@ -99,28 +98,3 @@ export default class App extends React.Component {
         return null;
     }
 }
-
-function reducer(state, action) {
-    switch (action.type) {
-        case 'RESET':
-            return {};
-        case 'USERNAME':
-            return {...state, username: action.username};
-        case 'EMAIL':
-            return {...state, email: action.email};
-        default:
-            return state
-    }
-}
-
-const persistConfig = {
-    key: 'root',
-    storage: AsyncStorage,
-    whitelist: ['username', 'email']
-};
-
-const persistedReducer = persistReducer(persistConfig, reducer);
-
-const store = createStore(persistedReducer);
-
-const persistor = persistStore(store);

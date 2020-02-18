@@ -3,11 +3,12 @@ import React from 'react'
 import {connect} from 'react-redux'
 import withProps from "../withProps";
 import SingleUserSetting from "../SingleUserSetting";
+import {ACTIONS} from "../../State";
 
 
 export default connect(null, {
     updateValue: (username) => ({
-        type: 'USERNAME',
+        type: ACTIONS.USERNAME,
         username,
     }),
 })(withProps(SingleUserSetting, {
