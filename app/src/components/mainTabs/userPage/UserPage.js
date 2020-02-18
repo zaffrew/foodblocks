@@ -7,10 +7,10 @@ import Help from "./Help";
 import Username from "../../login/Username";
 
 import {connect} from 'react-redux'
-import withRouteParams from "../../withRouteParams";
 import Email from "../../login/Email";
 
 import memoizeOne from "memoize-one";
+import withProps from "../../withProps";
 
 const Stack = createStackNavigator();
 
@@ -18,8 +18,16 @@ export default class UserPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.Username = withRouteParams(Username);
-        this.Email = withRouteParams(Email);
+        this.Username = withProps(Username, {
+            onSubmit: () => {
+                this.props.navigation.navigate('UserScreen')
+            }
+        });
+        this.Email = withProps(Email, {
+            onSubmit: () => {
+                this.props.navigation.navigate('UserScreen')
+            }
+        });
     }
 
     render() {
@@ -66,8 +74,8 @@ const UserScreen = connect((state) => ({email: state.email, username: state.user
                         justifyContent: 'flex-start'
                     }}>
                     <List.Section>
-                        {getListItem('Username', 'account', this.props.navigation, {onSubmit: () => this.props.navigation.goBack()})}
-                        {getListItem('Email', 'email', this.props.navigation, {onSubmit: () => this.props.navigation.goBack()})}
+                        {getListItem('Username', 'account', this.props.navigation)}
+                        {getListItem('Email', 'email', this.props.navigation)}
                         {getListItem('Payment Information', 'currency-usd', this.props.navigation)}
                         {getListItem('Help', 'help-rhombus', this.props.navigation)}
                     </List.Section>
@@ -89,7 +97,7 @@ const UserScreen = connect((state) => ({email: state.email, username: state.user
     }
 });
 
-function getListItem(title, iconLeft, navigator, props) {
+function getListItem(title, iconLeft, navigator) {
     return (
         <List.Item
             title={title}
@@ -100,7 +108,7 @@ function getListItem(title, iconLeft, navigator, props) {
                 return <IconButton icon={'chevron-right'}/>
             }}
             onPress={() => {
-                navigator.navigate(title, props)
+                navigator.navigate(title)
             }}
         />
     )

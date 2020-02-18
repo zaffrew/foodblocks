@@ -39,7 +39,7 @@ export default connect((state) => ({
                 if (this.props.username) {
                     this.props.navigation.navigate('MainPage')
                 } else {
-                    this.props.navigation.navigate('Login', {onSubmit: () => this.props.navigation.navigate('MainPage')})
+                    this.props.navigation.navigate('Login')
                 }
             }, splashTransitionTime);
         })
