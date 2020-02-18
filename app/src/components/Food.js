@@ -30,8 +30,13 @@ export default connect((state, ownProps) => {
         this.state = {pressed: props.saved}
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.props.saved !== this.state.pressed) {
+            this.setState({pressed: this.props.saved})
+        }
+    }
+
     onPress() {
-        console.log('pressed')
         const pressed = !this.state.pressed;
         this.setState({pressed});
         (pressed ? this.props.save : this.props.unsave)(this.props.data);
