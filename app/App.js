@@ -6,7 +6,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
 import AppNavigator from "./src/components/AppNavigator";
-import {NavigationNativeContainer} from "@react-navigation/native";
+import { NavigationContainer } from '@react-navigation/native';
 
 import {store, persistor} from './src/State'
 
@@ -84,13 +84,13 @@ export default class App extends React.Component {
             return (
                 <Provider store={store}>
                     <PersistGate loading={null} persistor={persistor}>
-                        <NavigationNativeContainer>
+                        <NavigationContainer>
                             <SafeAreaProvider>
                                 <PaperProvider theme={theme}>
                                     <AppNavigator/>
                                 </PaperProvider>
                             </SafeAreaProvider>
-                        </NavigationNativeContainer>
+                        </NavigationContainer>
                     </PersistGate>
                 </Provider>
             );
