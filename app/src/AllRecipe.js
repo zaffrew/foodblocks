@@ -47,7 +47,7 @@ export async function getData(URL) {
     return await getDOM(URL).then($ => {
         const json = {URL}
 
-        json['timeOfScrape'] = moment();
+        json['timeOfScrape'] = moment().toISOString();
 
         json['title'] = $('.recipe-print__title').text().trim()
 
@@ -70,7 +70,7 @@ export async function getData(URL) {
         $('li.prepTime__item').each((i, e) => {
             const timeElement = $(e).children('time')
             if (timeElement.length != 0) {
-                json[timeElement.attr('itemprop').trim()] = moment.duration(timeElement.attr('datetime').trim())
+                json[timeElement.attr('itemprop').trim()] = timeElement.attr('datetime').trim()
             }
         })
 

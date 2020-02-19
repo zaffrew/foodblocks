@@ -6,6 +6,9 @@ import styles from "../../settings/styles";
 import {connect} from "react-redux";
 import {ACTIONS} from "../State";
 
+const moment = require('moment');
+
+
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 
 export default connect((state, ownProps) => {
@@ -92,11 +95,11 @@ export default connect((state, ownProps) => {
                         <Surface style={surfaceStyles.surface}>
                             <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
                             {data.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
-                                Time: {data.prepTime.asMinutes()}M</Paragraph>}
+                                Time: {moment.duration(data.prepTime).asMinutes()}M</Paragraph>}
                             {data.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
-                                Time: {data.cookTime.asMinutes()}M</Paragraph>}
+                                Time: {moment.duration(data.cookTime).asMinutes()}M</Paragraph>}
                             {data.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
-                                Time: {data.totalTime.asMinutes()}M</Paragraph>}
+                                Time: {moment.duration(data.totalTime).asMinutes()}M</Paragraph>}
                         </Surface>
                     </View>}
                     <View>
