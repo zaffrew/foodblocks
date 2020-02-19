@@ -1,6 +1,6 @@
 import React from 'react'
 import {StyleSheet, Text, View} from 'react-native'
-import {Chip, Searchbar, Subheading} from 'react-native-paper';
+import {Chip, Searchbar, Subheading, Provider, Portal, Modal, Surface, TextInput} from 'react-native-paper';
 import SafeView from '../SafeView'
 import colors from '../../../settings/colors'
 import styles from "../../../settings/styles"
@@ -9,6 +9,7 @@ import FoodBlockScroll from "./FoodBlockScroll";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -27,15 +28,22 @@ class Search extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {query: '', blockData: []}
+        this.state = {query: '', 
+                    blockData: [], 
+                    searchEmpty: true,
+                    showFilters: false,
+                    newFilter: '',}
     }
 
-    onTap() {
-        console.log('Pressed')
+    onTap(filter) {
+        console.log(filter);
     }
+
+    showModal = () => this.setState({showFilters: true});
+    hideModal = () => this.setState({showFilters: false});
 
     async updateSearchResults() {
-        this.setState({blockData: []})
+        this.setState({blockData: [], searchEmpty: false})
         const query = this.state.query;
         const searchResults = await search(this.state.query, 20);
         for (const URL of searchResults) {
@@ -46,10 +54,23 @@ class Search extends React.Component {
         }
     }
 
-
     render() {
         return (
             <SafeView style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
+                <Provider>
+                <Portal>
+                    <Modal visible={this.state.showFilters} onDismiss={this.hideModal} style={{margin:20}}>
+                        <TextInput
+                            label='Add a filter'
+                            selectionColor={colors.foodblocksRed}
+                            underlineColor={colors.foodblocksRed}
+                            underlineColorAndroid={colors.foodblocksRed}
+                            value={this.state.newFilter}
+                            onChangeText={filter => this.setState({newFilter: filter})}
+                            onSubmitEditing={() => console.log(this.state.newFilter)}
+                        />
+                    </Modal>
+                </Portal>
                 <View style={[styles.centeredContainer, {
                     flex: 1 / 3,
                     backgroundColor: colors.foodblocksRed,
@@ -73,31 +94,38 @@ class Search extends React.Component {
                             paddingBottom: 5
                         }}>Filters</Subheading>
                         <View style={chipStyle.row}>
-                            <Chip onPress={this.onTap} style={chipStyle.chip}>
+                            <Chip onPress={() => this.onTap('vegan')} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Vegan</Text>
                             </Chip>
-                            <Chip onPress={this.onTap} style={chipStyle.chip}>
+                            <Chip onPress={() => this.onTap('halal')} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Halal</Text>
                             </Chip>
-                            <Chip onPress={this.onTap} style={chipStyle.chip}>
+                            <Chip onPress={() => this.onTap('gluten free')} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Gluten-free</Text>
                             </Chip>
-                            <Chip onPress={this.onTap} style={chipStyle.chip}>
+                            <Chip onPress={() => this.onTap('keto')} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Keto</Text>
                             </Chip>
-                            <Chip onPress={this.onTap} style={chipStyle.chip}>
+                            <Chip onPress={() => this.onTap('dairy free')} style={chipStyle.chip}>
                                 <Text style={styles.chipText}>Dairy-free</Text>
+                            </Chip>
+                            <Chip onPress={this.showModal} style={chipStyle.chip} icon="plus">
+                                <Text style={styles.chipText}>More</Text>
                             </Chip>
 
                         </View>
                     </View>
                 </View>
                 <View style={{flex: 2 / 3, backgroundColor: colors.grey}}>
+                    <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}>
+                        <Subheading style={{color: '#808080'}}>{this.state.searchEmpty ? 'Can I get uhhhh...' : ''}</Subheading>
+                    </View>
+
                     <FoodBlockScroll onPress={(data) => {
-                        this.props.navigation.navigate('Food', {data})
-                    }}
+                        this.props.navigation.navigate('Food', {data})}}
                                      columns={2} blockData={this.state.blockData}/>
                 </View>
+                </Provider>
             </SafeView>
 
         );
@@ -140,7 +168,7 @@ const chipStyle = StyleSheet.create({
         paddingHorizontal: 10,
     },
     chipText: {
-        color: "white",
+        color: 'white',
     }
 });
 
