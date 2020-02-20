@@ -13,7 +13,7 @@ const ACTIONS = {
 
 const initialState = {
     groceries: [],
-    save: [],
+    recipe_save: [],
 }
 
 function reducer(state, action) {
