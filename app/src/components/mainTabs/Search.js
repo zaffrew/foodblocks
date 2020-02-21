@@ -4,11 +4,13 @@ import {Chip, Searchbar, Subheading} from 'react-native-paper';
 import SafeView from '../SafeView'
 import colors from '../../../settings/colors'
 import styles from "../../../settings/styles"
-import {getData, search} from "../../AllRecipe";
+import {getData, search} from "../../scraper/AllRecipe";
 import FoodBlockScroll from "./FoodBlockScroll";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
+
+import {search as delishSearch, getData as dataDelish} from '../../scraper/Delish'
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -32,6 +34,13 @@ class Search extends React.Component {
 
     onTap() {
         console.log('Pressed')
+        delishSearch('Chicken', 1).then(URLs => {
+            return dataDelish(URLs[0])
+        }).then(data => {
+            console.log(data)
+        }).catch(e => {
+            console.log('IAn erro', e)
+        })
     }
 
     async updateSearchResults() {

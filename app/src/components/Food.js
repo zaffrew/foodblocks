@@ -5,9 +5,7 @@ import {Card, Title, Surface, Paragraph, Button, IconButton} from "react-native-
 import styles from "../../settings/styles";
 import {connect} from "react-redux";
 import {ACTIONS} from "../State";
-
-const moment = require('moment');
-
+import moment from "moment";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 

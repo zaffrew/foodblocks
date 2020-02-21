@@ -1,20 +1,24 @@
-const moment = require('moment');
+import {getDOM} from "./getDOM";
+import moment from "moment";
 
-const cheerio = require('react-native-cheerio')
-const URL_PARSE = require('url-parse');
+import URL_PARSE from "url-parse";
 
 const ORIGIN = "https://www.allrecipes.com"
 
 function getPrintURL(URL) {
     URL = new URL_PARSE(URL)
-    if (!URL.pathname.endsWith('print')) {
+    if (!URL.pathname.endsWith('print/')) {
         URL.set('pathname', URL.pathname + 'print/')
     }
     return URL.href
 }
 
+
 function getSearchURL(search) {
-    return 'https://www.allrecipes.com/search/results/?wt=' + encodeURIComponent(search)
+    const URL = new URL_PARSE(ORIGIN);
+    URL.set('pathname', 'search/results/')
+    URL.set('query', {wt: search})
+    return URL.href
 }
 
 /**
@@ -33,12 +37,6 @@ export async function search(search, num) {
     }).catch(err => {
         console.log('Error searching: ' + err)
     })
-}
-
-async function getDOM(URL) {
-    return await fetch(URL)
-        .then(response => response.text())
-        .then(html => cheerio.load(html))
 }
 
 export async function getData(URL) {
