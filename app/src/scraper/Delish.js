@@ -20,14 +20,18 @@ export async function search(search, num) {
     return await getDOM(searchURL).then($ => {
         const res = []
         $('div.simple-item.grid-simple-item').each((i, e) => {
-            if (i >= num) {
+            if (res.length >= num) {
                 return false
             }
 
             const path = $(e).children('a.simple-item-title.item-title').attr('href')
             const URL = new URL_PARSE(ORIGIN)
             URL.set('pathname', path)
-            res.push(URL.href)
+
+            //some links are food news etc
+            if (URL.pathname.startsWith('/cooking')) {
+                res.push(URL.href)
+            }
         })
         return res
     }).catch(err => {
@@ -40,6 +44,7 @@ export async function getData(URL) {
         const json = {URL}
 
         json['timeOfScrape'] = moment().toISOString();
+        json['source'] = new URL_PARSE(URL).host
 
         json['title'] = $('h1.content-hed.recipe-hed').text().trim()
 
@@ -59,27 +64,27 @@ export async function getData(URL) {
 
         json['img'] = $('.recipe-body').find('img').attr('data-src')
 
-        // $('li.prepTime__item').each((i, e) => {
-        //     const timeElement = $(e).children('time')
-        //     if (timeElement.length != 0) {
-        //         json[timeElement.attr('itemprop').trim()] = timeElement.attr('datetime').trim()
-        //     }
-        // })
-        //
-        // json['description'] = $('.recipe-print__description').text().trim()
-        //
-        // $('.recipe-print__container2').children('div').each((i, e) => {
-        //     const children = $(e).children('span')
-        //     if (children.length == 2 && $(children[0]).attr('class') === 'recipe-print__by') {
-        //         json['author'] = $(children[1]).text().trim()
-        //         return false;
-        //     }
-        // });
-        //
-        // json['rating'] = $('.rating-stars').attr('data-ratingstars').trim()
+        json['serving'] = clean($('.yields-amount').text())
+
+        json['prepTime'] = getTime($, '.prep-time-amount')
+        json['totalTime'] = getTime($, '.total-time-amount')
+
+
+        json['description'] = $('.recipe-introduction > p').text().trim()
+        json['author'] = $('span.byline-name').text().trim()
+
+        //TODO: rating is not working since the ratings are not loaded until the page is scrolled
 
         return json
     }).catch(err => {
         console.log('Error loading data: ' + err)
     })
+}
+
+function getTime($, tag) {
+    const prep_amounts = clean($(tag).text()).split(' ')
+    let dur = moment.duration(0)
+    dur.add(parseInt(prep_amounts[0]), 'h')
+    dur.add(parseInt(prep_amounts[2]), 'm')
+    return dur.toISOString()
 }

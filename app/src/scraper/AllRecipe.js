@@ -46,6 +46,7 @@ export async function getData(URL) {
         const json = {URL}
 
         json['timeOfScrape'] = moment().toISOString();
+        json['source'] = new URL_PARSE(URL).host
 
         json['title'] = $('.recipe-print__title').text().trim()
 
@@ -67,7 +68,7 @@ export async function getData(URL) {
 
         $('li.prepTime__item').each((i, e) => {
             const timeElement = $(e).children('time')
-            if (timeElement.length != 0) {
+            if (timeElement.length !== 0) {
                 json[timeElement.attr('itemprop').trim()] = timeElement.attr('datetime').trim()
             }
         })
@@ -76,7 +77,7 @@ export async function getData(URL) {
 
         $('.recipe-print__container2').children('div').each((i, e) => {
             const children = $(e).children('span')
-            if (children.length == 2 && $(children[0]).attr('class') === 'recipe-print__by') {
+            if (children.length === 2 && $(children[0]).attr('class') === 'recipe-print__by') {
                 json['author'] = $(children[1]).text().trim()
                 return false;
             }

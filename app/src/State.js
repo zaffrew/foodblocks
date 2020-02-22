@@ -33,7 +33,7 @@ function reducer(state, action) {
             return data.URL !== action.data.URL
         })
         return {...state, recipe_save: save};
-    } else if (action.type == ACTIONS.SET_GROCERY) {
+    } else if (action.type === ACTIONS.SET_GROCERY) {
         const addition = {name: action.name, number: action.number}
         const copy = state.groceries.slice()
         const index = copy.findIndex(grocery => {
