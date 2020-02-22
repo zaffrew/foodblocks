@@ -4,6 +4,12 @@ import FoodBlock from "../FoodBlock";
 
 const margin = 8;
 
+/**
+ *
+ * @param props
+ * Required props: blockData, onPress, columns
+ * @returns {*}
+ */
 export default (props) => {
     //block data is a list of data about the foods in the all recipe format
     const blocks = props.blockData.map((data, i) => {

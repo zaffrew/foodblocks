@@ -13,7 +13,7 @@ const ACTIONS = {
 
 const initialState = {
     groceries: [],
-    save: [],
+    recipe_save: [],
 }
 
 function reducer(state, action) {
@@ -24,11 +24,11 @@ function reducer(state, action) {
     } else if (action.type === ACTIONS.EMAIL) {
         return {...state, email: action.email};
     } else if (action.type === ACTIONS.SAVE_RECIPE) {
-        const save = state.save.slice()
+        const save = state.recipe_save.slice()
         save.push(action.data);
         return {...state, recipe_save: save};
     } else if (action.type === ACTIONS.UNSAVE_RECIPE) {
-        let save = state.save.slice()
+        let save = state.recipe_save.slice()
         save = save.filter(data => {
             return data.URL !== action.data.URL
         })

@@ -11,7 +11,6 @@ class Home extends React.Component {
 
     openFood = async function (searchTerm) {
         const data = await getData((await search(searchTerm, 1))[0])
-        console.log(data)
         this.props.navigation.navigate('Food', {data});
     }.bind(this);
 
