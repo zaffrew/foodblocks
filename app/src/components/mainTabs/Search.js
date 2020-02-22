@@ -131,9 +131,9 @@ class Search extends React.Component {
                     </View>
                 </View>
                 <View style={{flex: 2 / 3, backgroundColor: colors.grey}}>
-                    <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}>
-                        <Subheading style={{color: '#808080'}}>{this.state.searchEmpty ? 'Can I get uhhhh...' : ''}</Subheading>
-                    </View>
+                { this.state.searchEmpty && <View style={{alignItems: 'center', justifyContent: 'center', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}>
+                        <Subheading style={{color: '#808080'}}>Can I get uhhhh...</Subheading>
+                    </View> }
                     <FoodBlockScroll onPress={(data) => {
                         this.props.navigation.navigate('Food', {data})}}
                                      columns={2} blockData={this.state.blockData}/>
