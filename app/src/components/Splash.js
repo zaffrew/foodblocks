@@ -5,12 +5,13 @@ import {View} from 'react-native'
 import settings from "../../settings/appSettings";
 import {Title, withTheme} from "react-native-paper";
 import {connect} from "react-redux";
+import {STORES} from "../State";
 
 const splashTransitionTime = settings.splashTransitionTime;
 
 export default connect((state) => ({
-    email: state.email,
-    username: state.username
+    email: state[STORES.EMAIL],
+    username: state[STORES.USERNAME],
 }))(withTheme(class SplashScreen extends React.Component {
     constructor(props) {
         super(props);

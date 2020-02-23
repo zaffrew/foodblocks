@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
+import {STORES} from "../../State";
 
 
 const Navigator = createStackNavigator();
@@ -31,7 +32,7 @@ class Meals extends React.Component {
     }
 }
 
-const ConnectedMeals = connect((state) => ({recipes: state.recipe_save}))(Meals)
+const ConnectedMeals = connect((state) => ({recipes: state[STORES.SAVED_RECIPES]}))(Meals)
 
 export default class MealNavigator extends React.Component {
     render() {

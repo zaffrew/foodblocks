@@ -11,28 +11,45 @@ const ACTIONS = {
     SET_GROCERY: "SET_GROCERY"
 }
 
-const initialState = {
-    groceries: [],
-    recipe_save: [],
+const STORES = {
+    SAVED_RECIPES: 'SAVED_RECIPES',
+    USERNAME: 'USERNAME',
+    EMAIL: 'EMAIL',
+    GROCERIES: 'GROCERIES'
 }
+
+const PERSIST_STORES = [STORES.SAVED_RECIPES, STORES.USERNAME, STORES.EMAIL, STORES.GROCERIES]
+
+const initialState = {}
+initialState[STORES.SAVED_RECIPES] = []
+initialState[STORES.GROCERIES] = []
 
 function reducer(state, action) {
     if (action.type === ACTIONS.LOGOUT) {
         return initialState;
     } else if (action.type === ACTIONS.USERNAME) {
-        return {...state, username: action.username};
+        const newState = {...state}
+        newState[STORES.USERNAME] = action.username
+        return newState
     } else if (action.type === ACTIONS.EMAIL) {
-        return {...state, email: action.email};
+        const newState = {...state}
+        newState[STORES.EMAIL] = action.email
+        return newState
     } else if (action.type === ACTIONS.SAVE_RECIPE) {
-        const save = state.recipe_save.slice()
+        const save = state[STORES.SAVED_RECIPES].slice()
         save.push(action.data);
+        const newState = {...state}
+        newState[STORES.SAVED_RECIPES] = save
+        return newState
         return {...state, recipe_save: save};
     } else if (action.type === ACTIONS.UNSAVE_RECIPE) {
         let save = state.recipe_save.slice()
         save = save.filter(data => {
             return data.URL !== action.data.URL
         })
-        return {...state, recipe_save: save};
+        const newState = {...state}
+        newState[STORES.SAVED_RECIPES] = save
+        return newState
     } else if (action.type == ACTIONS.SET_GROCERY) {
         const addition = {name: action.name, number: action.number}
         const copy = state.groceries.slice()
@@ -45,7 +62,9 @@ function reducer(state, action) {
             copy[index] = addition
         }
 
-        return {...state, groceries: copy}
+        const newState = {...state}
+        newState[STORES.GROCERIES] = copy
+        return newState
     }
     return state
 }
@@ -53,7 +72,7 @@ function reducer(state, action) {
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['username', 'email', 'groceries', 'recipe_save']
+    whitelist: PERSIST_STORES
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer);
@@ -62,4 +81,4 @@ const store = createStore(persistedReducer, initialState);
 
 const persistor = persistStore(store);
 
-export {store, persistor, ACTIONS}
+export {store, persistor, ACTIONS, STORES}

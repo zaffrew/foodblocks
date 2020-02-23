@@ -3,7 +3,7 @@ import {View, ScrollView, StyleSheet} from 'react-native'
 import {TextInput, Headline, List, Colors} from 'react-native-paper';
 import colors from '../../../settings/colors'
 import SafeView from '../SafeView'
-import {ACTIONS} from "../../State";
+import {ACTIONS, STORES} from "../../State";
 import {connect} from "react-redux";
 import InputSpinner from "react-native-input-spinner";
 
@@ -64,7 +64,7 @@ class Groceries extends React.Component {
 }
 
 export default connect((state, ownProps) => {
-    return {groceries: state.groceries}
+    return {groceries: state[STORES.GROCERIES]}
 }, {
     setGrocery: (name, number) => ({
         type: ACTIONS.SET_GROCERY,

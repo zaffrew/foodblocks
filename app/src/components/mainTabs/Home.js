@@ -6,6 +6,7 @@ import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
 import {connect} from 'react-redux'
 import {getData, search} from "../../AllRecipe"
+import {STORES} from "../../State";
 
 class Home extends React.Component {
 
@@ -30,4 +31,4 @@ class Home extends React.Component {
     }
 }
 
-export default connect((state) => ({username: state.username}))(Home);
+export default connect((state) => ({username: state[STORES.USERNAME]}))(Home);

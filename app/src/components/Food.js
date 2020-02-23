@@ -4,7 +4,7 @@ import SafeView from '../components/SafeView'
 import {Card, Title, Surface, Paragraph, Button, IconButton} from "react-native-paper";
 import styles from "../../settings/styles";
 import {connect} from "react-redux";
-import {ACTIONS} from "../State";
+import {ACTIONS, STORES} from "../State";
 
 const moment = require('moment');
 
@@ -12,7 +12,7 @@ const moment = require('moment');
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 
 export default connect((state, ownProps) => {
-    const saved = state.recipe_save && state.recipe_save.filter(data => {
+    const saved = state[STORES.SAVED_RECIPES] && state[STORES.SAVED_RECIPES].filter(data => {
         return ownProps.data.URL === data.URL
     }).length === 1
 
