@@ -19,11 +19,16 @@ const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
 
 
-const Search = connect(null, {
-    cacheData: (data) => ({
-        type: ACTIONS.CACHE_RECIPE,
-        data
-    }),
+const Search = connect((state, ownProps) => {
+    const loaded_recipes = Object.keys(state[STORES.RECIPE_CACHE])
+    return {loaded_recipes}
+}, {
+    cacheData: (data) => {
+        return {
+            type: ACTIONS.CACHE_RECIPE,
+            data
+        }
+    },
 })
 (class extends React.Component {
 
@@ -44,10 +49,12 @@ const Search = connect(null, {
         const query = this.state.query;
         const searchResults = await delish_search(this.state.query, searches);
         for (const URL of searchResults) {
-            const data = await delish_data(URL)
-            this.props.cacheData(data)
+            if (!this.props.loaded_recipes.includes(URL)) {
+                const data = await delish_data(URL)
+                this.props.cacheData(data)
+            }
 
-            this.setState({URLs: this.state.URLs.concat(data.URL)});
+            this.setState({URLs: this.state.URLs.concat(URL)});
             if (query !== this.state.query) {
                 return;
             }

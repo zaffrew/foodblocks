@@ -44,13 +44,13 @@ class MainPage extends React.Component {
     render() {
         return (
             <Tab.Navigator barStyle={{backgroundColor: this.props.theme.colors.primary}}
-                           initialRouteName="Home"
+                           initialRouteName="Search"
                            shifting={false}>
-                <Tab.Screen name="Home" component={HomeNavigator} options={{
-                    tabBarIcon: (focused, color) => {
-                        return (getImage("Home", focused, color))
-                    }
-                }}/>
+                {/*<Tab.Screen name="Home" component={HomeNavigator} options={{*/}
+                {/*    tabBarIcon: (focused, color) => {*/}
+                {/*        return (getImage("Home", focused, color))*/}
+                {/*    }*/}
+                {/*}}/>*/}
                 <Tab.Screen name="ForYou" component={ForYou} options={{
                     tabBarIcon: (focused, color) => {
                         return (getImage("ForYou", focused, color))
