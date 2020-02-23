@@ -6,9 +6,9 @@ import {PersistGate} from 'redux-persist/integration/react';
 
 import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-native-paper'
 import AppNavigator from "./src/components/AppNavigator";
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 
-import {store, persistor} from './src/State'
+import {persistor, store} from './src/State'
 
 const fontWeights = {
     Thin: '100',

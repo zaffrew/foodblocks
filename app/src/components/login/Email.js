@@ -5,7 +5,7 @@ import SingleUserSetting from "../SingleUserSetting";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../State";
 
-const validator = require("email-validator");
+import validator from "email-validator";
 
 export default connect(null, {
     updateValue: (email) => ({

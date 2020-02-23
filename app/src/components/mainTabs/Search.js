@@ -4,11 +4,14 @@ import {Chip, Searchbar, Subheading} from 'react-native-paper';
 import SafeView from '../SafeView'
 import colors from '../../../settings/colors'
 import styles from "../../../settings/styles"
-import {getData, search} from "../../AllRecipe";
 import FoodBlockScroll from "./FoodBlockScroll";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
+
+import {getData as delish_data, search as delish_search} from '../../scraper/Delish'
+
+const searches = 20;
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -34,12 +37,15 @@ class Search extends React.Component {
         console.log('Pressed')
     }
 
+    //TODO: sometimes a single search can run without the last search ending
+    //TODO: run search on delish and all recipe at the same time
+
     async updateSearchResults() {
         this.setState({blockData: []})
         const query = this.state.query;
-        const searchResults = await search(this.state.query, 20);
+        const searchResults = await delish_search(this.state.query, searches);
         for (const URL of searchResults) {
-            this.setState({blockData: this.state.blockData.concat(await getData(URL))});
+            this.setState({blockData: this.state.blockData.concat(await delish_data(URL))});
             if (query !== this.state.query) {
                 return;
             }

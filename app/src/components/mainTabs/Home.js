@@ -5,8 +5,8 @@ import SidewaysScroll from "../SidewaysScroll";
 import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
 import {connect} from 'react-redux'
-import {getData, search} from "../../AllRecipe"
 import {STORES} from "../../State";
+import {getData, search} from "../../scraper/AllRecipe"
 
 class Home extends React.Component {
 

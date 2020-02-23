@@ -36,7 +36,7 @@ export default (props) => {
         )
     }
 
-    if (remainder != 0) {
+    if (remainder !== 0) {
         const paddingViews = []
         for (let i = 0; i < columns - remainder; i++) {
             paddingViews.push(<View key={i} style={{margin, flex: 1}}/>)

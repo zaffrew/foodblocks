@@ -1,13 +1,11 @@
 import React from 'react'
-import {View, ScrollView, StyleSheet, Image} from 'react-native'
+import {Image, ScrollView, StyleSheet, View} from 'react-native'
 import SafeView from '../components/SafeView'
-import {Card, Title, Surface, Paragraph, Button, IconButton} from "react-native-paper";
+import {Caption, Card, IconButton, Paragraph, Surface, Title} from "react-native-paper";
 import styles from "../../settings/styles";
 import {connect} from "react-redux";
 import {ACTIONS, STORES} from "../State";
-
-const moment = require('moment');
-
+import moment from "moment";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 
@@ -109,6 +107,11 @@ export default connect((state, ownProps) => {
                                 {directions}
                             </Surface>
                         </View>
+                    </View>
+                    <View>
+                        <Caption>
+                            Source: {data.source}
+                        </Caption>
                     </View>
                 </ScrollView>
             </SafeView>

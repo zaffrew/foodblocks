@@ -43,7 +43,7 @@ function reducer(state, action) {
         return newState
         return {...state, recipe_save: save};
     } else if (action.type === ACTIONS.UNSAVE_RECIPE) {
-        let save = state.recipe_save.slice()
+        let save = state[STORES.SAVED_RECIPES].slice()
         save = save.filter(data => {
             return data.URL !== action.data.URL
         })
@@ -52,7 +52,7 @@ function reducer(state, action) {
         return newState
     } else if (action.type == ACTIONS.SET_GROCERY) {
         const addition = {name: action.name, number: action.number}
-        const copy = state.groceries.slice()
+        const copy = state[STORES.GROCERIES].slice()
         const index = copy.findIndex(grocery => {
             return grocery.name === action.name
         })

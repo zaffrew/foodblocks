@@ -1,20 +1,24 @@
-const moment = require('moment');
+import {getDOM} from "./getDOM";
+import moment from "moment";
 
-const cheerio = require('react-native-cheerio')
-const URL_PARSE = require('url-parse');
+import URL_PARSE from "url-parse";
 
 const ORIGIN = "https://www.allrecipes.com"
 
 function getPrintURL(URL) {
     URL = new URL_PARSE(URL)
-    if (!URL.pathname.endsWith('print')) {
+    if (!URL.pathname.endsWith('print/')) {
         URL.set('pathname', URL.pathname + 'print/')
     }
     return URL.href
 }
 
+
 function getSearchURL(search) {
-    return 'https://www.allrecipes.com/search/results/?wt=' + encodeURIComponent(search)
+    const URL = new URL_PARSE(ORIGIN);
+    URL.set('pathname', 'search/results/')
+    URL.set('query', {wt: search})
+    return URL.href
 }
 
 /**
@@ -35,12 +39,6 @@ export async function search(search, num) {
     })
 }
 
-async function getDOM(URL) {
-    return await fetch(URL)
-        .then(response => response.text())
-        .then(html => cheerio.load(html))
-}
-
 export async function getData(URL) {
     URL = getPrintURL(URL)
 
@@ -48,6 +46,7 @@ export async function getData(URL) {
         const json = {URL}
 
         json['timeOfScrape'] = moment().toISOString();
+        json['source'] = new URL_PARSE(URL).host
 
         json['title'] = $('.recipe-print__title').text().trim()
 
@@ -69,7 +68,7 @@ export async function getData(URL) {
 
         $('li.prepTime__item').each((i, e) => {
             const timeElement = $(e).children('time')
-            if (timeElement.length != 0) {
+            if (timeElement.length !== 0) {
                 json[timeElement.attr('itemprop').trim()] = timeElement.attr('datetime').trim()
             }
         })
@@ -78,7 +77,7 @@ export async function getData(URL) {
 
         $('.recipe-print__container2').children('div').each((i, e) => {
             const children = $(e).children('span')
-            if (children.length == 2 && $(children[0]).attr('class') === 'recipe-print__by') {
+            if (children.length === 2 && $(children[0]).attr('class') === 'recipe-print__by') {
                 json['author'] = $(children[1]).text().trim()
                 return false;
             }
