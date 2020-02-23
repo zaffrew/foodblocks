@@ -8,14 +8,16 @@ const ACTIONS = {
     EMAIL: "EMAIL",
     UNSAVE_RECIPE: 'UNSAVE_RECIPE',
     SAVE_RECIPE: "SAVE_RECIPE",
-    SET_GROCERY: "SET_GROCERY"
+    SET_GROCERY: "SET_GROCERY",
+    CACHE_RECIPE: 'CACHE_RECIPE'
 }
 
 const STORES = {
     SAVED_RECIPES: 'SAVED_RECIPES',
     USERNAME: 'USERNAME',
     EMAIL: 'EMAIL',
-    GROCERIES: 'GROCERIES'
+    GROCERIES: 'GROCERIES',
+    RECIPE_CACHE: 'CACHED_RECIPES'
 }
 
 const PERSIST_STORES = [STORES.SAVED_RECIPES, STORES.USERNAME, STORES.EMAIL, STORES.GROCERIES]
@@ -23,6 +25,7 @@ const PERSIST_STORES = [STORES.SAVED_RECIPES, STORES.USERNAME, STORES.EMAIL, STO
 const initialState = {}
 initialState[STORES.SAVED_RECIPES] = []
 initialState[STORES.GROCERIES] = []
+initialState[STORES.RECIPE_CACHE] = {}
 
 function reducer(state, action) {
     if (action.type === ACTIONS.LOGOUT) {
@@ -37,20 +40,21 @@ function reducer(state, action) {
         return newState
     } else if (action.type === ACTIONS.SAVE_RECIPE) {
         const save = state[STORES.SAVED_RECIPES].slice()
-        save.push(action.data);
+        save.push(action.URL);
         const newState = {...state}
         newState[STORES.SAVED_RECIPES] = save
         return newState
         return {...state, recipe_save: save};
     } else if (action.type === ACTIONS.UNSAVE_RECIPE) {
         let save = state[STORES.SAVED_RECIPES].slice()
-        save = save.filter(data => {
-            return data.URL !== action.data.URL
+        save = save.filter(URL => {
+            return URL !== action.URL
         })
+
         const newState = {...state}
         newState[STORES.SAVED_RECIPES] = save
         return newState
-    } else if (action.type == ACTIONS.SET_GROCERY) {
+    } else if (action.type === ACTIONS.SET_GROCERY) {
         const addition = {name: action.name, number: action.number}
         const copy = state[STORES.GROCERIES].slice()
         const index = copy.findIndex(grocery => {
@@ -64,6 +68,13 @@ function reducer(state, action) {
 
         const newState = {...state}
         newState[STORES.GROCERIES] = copy
+        return newState
+    } else if (action.type === ACTIONS.CACHE_RECIPE) {
+        const RECIPE_CACHE = {...state[STORES.RECIPE_CACHE]}
+        const URL = action.data.URL
+        RECIPE_CACHE[URL] = action.data
+        const newState = {...state}
+        newState[STORES.RECIPE_CACHE] = RECIPE_CACHE
         return newState
     }
     return state

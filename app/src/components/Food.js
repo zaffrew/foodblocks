@@ -10,19 +10,20 @@ import moment from "moment";
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 
 export default connect((state, ownProps) => {
-    const saved = state[STORES.SAVED_RECIPES] && state[STORES.SAVED_RECIPES].filter(data => {
-        return ownProps.data.URL === data.URL
+    const data = state[STORES.RECIPE_CACHE][ownProps.URL]
+    const saved = state[STORES.SAVED_RECIPES] && state[STORES.SAVED_RECIPES].filter(URL => {
+        return ownProps.URL === URL
     }).length === 1
 
-    return {saved}
+    return {data, saved}
 }, {
-    save: (data) => ({
+    save: (URL) => ({
         type: ACTIONS.SAVE_RECIPE,
-        data
+        URL
     }),
-    unsave: (data) => ({
+    unsave: (URL) => ({
         type: ACTIONS.UNSAVE_RECIPE,
-        data
+        URL
     })
 })
 (class Food extends React.Component {
@@ -40,7 +41,7 @@ export default connect((state, ownProps) => {
     onPress() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
-        (pressed ? this.props.save : this.props.unsave)(this.props.data);
+        (pressed ? this.props.save : this.props.unsave)(this.props.data.URL);
     }
 
     render() {

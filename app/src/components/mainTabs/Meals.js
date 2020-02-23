@@ -23,10 +23,10 @@ class Meals extends React.Component {
                         Saved Meals
                     </Headline>
                 </SafeView>
-                <FoodBlockScroll onPress={(data) => {
-                    this.props.navigation.navigate('Food', {data})
+                <FoodBlockScroll onPress={(URL) => {
+                    this.props.navigation.navigate('Food', {URL})
                 }}
-                                 columns={2} blockData={this.props.recipes}/>
+                                 columns={2} URLs={this.props.recipes}/>
             </View>
         );
     }

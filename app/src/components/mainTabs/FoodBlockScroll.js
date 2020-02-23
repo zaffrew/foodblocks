@@ -1,22 +1,33 @@
 import React from 'react'
 import {ScrollView, View} from "react-native";
 import FoodBlock from "../FoodBlock";
+import {connect} from "react-redux";
+import {STORES} from "../../State";
 
 const margin = 8;
 
 /**
  *
  * @param props
- * Required props: blockData, onPress, columns
+ * Required props: URLs, onPress, columns
  * @returns {*}
  */
-export default (props) => {
-    //block data is a list of data about the foods in the all recipe format
-    const blocks = props.blockData.map((data, i) => {
+export default connect((state, ownProps) => {
+    const dataArr = {}
+    ownProps.URLs.map(URL => {
+        const data = state[STORES.RECIPE_CACHE][URL]
+        dataArr[URL] = {image: data.img, title: data.title}
+    })
+
+    return {dataArr}
+})
+((props) => {
+    const blocks = props.URLs.map((URL, i) => {
         return (
-            <FoodBlock margin={margin} key={i} image={data.img} text={data.title} height={160}
+            <FoodBlock margin={margin} key={i} image={props.dataArr[URL].image}
+                       text={props.dataArr[URL].title} height={160}
                        onPress={() => {
-                           props.onPress(data)
+                           props.onPress(URL)
                        }}
             />
         )
@@ -54,4 +65,4 @@ export default (props) => {
             {blockViews}
         </ScrollView>
     );
-}
+})

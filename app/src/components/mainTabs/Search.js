@@ -10,27 +10,26 @@ import withRouteParams from "../withRouteParams";
 import Food from "../Food";
 
 import {getData as delish_data, search as delish_search} from '../../scraper/Delish'
+import {connect} from "react-redux";
+import {ACTIONS, STORES} from "../../State";
 
 const searches = 20;
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
 
-const SearchNavigator = (props) => {
-    return (
-        <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
-                             initialRouteName="Search">
-            <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
-            <Navigator.Screen name="Food" component={FoodWithParams}/>
-        </Navigator.Navigator>
-    )
-}
 
-class Search extends React.Component {
+const Search = connect(null, {
+    cacheData: (data) => ({
+        type: ACTIONS.CACHE_RECIPE,
+        data
+    }),
+})
+(class extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {query: '', blockData: []}
+        this.state = {query: '', URLs: []}
     }
 
     onTap() {
@@ -41,11 +40,14 @@ class Search extends React.Component {
     //TODO: run search on delish and all recipe at the same time
 
     async updateSearchResults() {
-        this.setState({blockData: []})
+        this.setState({URLs: []})
         const query = this.state.query;
         const searchResults = await delish_search(this.state.query, searches);
         for (const URL of searchResults) {
-            this.setState({blockData: this.state.blockData.concat(await delish_data(URL))});
+            const data = await delish_data(URL)
+            this.props.cacheData(data)
+
+            this.setState({URLs: this.state.URLs.concat(data.URL)});
             if (query !== this.state.query) {
                 return;
             }
@@ -99,16 +101,16 @@ class Search extends React.Component {
                     </View>
                 </View>
                 <View style={{flex: 2 / 3, backgroundColor: colors.grey}}>
-                    <FoodBlockScroll onPress={(data) => {
-                        this.props.navigation.navigate('Food', {data})
+                    <FoodBlockScroll onPress={(URL) => {
+                        this.props.navigation.navigate('Food', {URL})
                     }}
-                                     columns={2} blockData={this.state.blockData}/>
+                                     columns={2} URLs={this.state.URLs}/>
                 </View>
             </SafeView>
 
         );
     }
-}
+})
 
 const cardStyle = StyleSheet.create({
     container: {
@@ -149,5 +151,15 @@ const chipStyle = StyleSheet.create({
         color: "white",
     }
 });
+
+const SearchNavigator = (props) => {
+    return (
+        <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
+                             initialRouteName="Search">
+            <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
+            <Navigator.Screen name="Food" component={FoodWithParams}/>
+        </Navigator.Navigator>
+    )
+}
 
 export default SearchNavigator;
