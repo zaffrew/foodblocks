@@ -13,15 +13,21 @@ import {getData as delish_data, search as delish_search} from '../../scraper/Del
 import {connect} from "react-redux";
 import {ACTIONS, STORES} from "../../State";
 
+const search = delish_search
+const getData = delish_data
+
 const searches = 20;
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
 
+//TODO: validate that a search has enough valid results i.e. it wont have info missing
+
 
 const Search = connect((state, ownProps) => {
     const loaded_recipes = Object.keys(state[STORES.RECIPE_CACHE])
-    return {loaded_recipes}
+    const loaded_searches = state[STORES.SEARCH_CACHE]
+    return {loaded_recipes, loaded_searches}
 }, {
     cacheData: (data) => {
         return {
@@ -29,12 +35,20 @@ const Search = connect((state, ownProps) => {
             data
         }
     },
+    cacheSearch: (query, data) => {
+        return {
+            type: ACTIONS.CACHE_SEARCH,
+            data,
+            query
+        }
+    }
 })
 (class extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {query: '', URLs: []}
+        this.updateSearchResults = this.updateSearchResults.bind(this);
     }
 
     onTap() {
@@ -45,16 +59,25 @@ const Search = connect((state, ownProps) => {
     //TODO: run search on delish and all recipe at the same time
 
     async updateSearchResults() {
-        this.setState({URLs: []})
+        //react state is actually kinda async so i have to do await here and
+        // down on setting the new state or there will be weird behavior
+        await this.setState({URLs: []})
         const query = this.state.query;
-        const searchResults = await delish_search(this.state.query, searches);
+        let searchResults
+        if (this.props.loaded_searches[query]) {
+            searchResults = this.props.loaded_searches[query].slice()
+        } else {
+            searchResults = await search(query, searches);
+            this.props.cacheSearch(query, searchResults)
+        }
+
         for (const URL of searchResults) {
             if (!this.props.loaded_recipes.includes(URL)) {
-                const data = await delish_data(URL)
+                const data = await getData(URL)
                 this.props.cacheData(data)
             }
 
-            this.setState({URLs: this.state.URLs.concat(URL)});
+            await this.setState({URLs: this.state.URLs.concat(URL)});
             if (query !== this.state.query) {
                 return;
             }

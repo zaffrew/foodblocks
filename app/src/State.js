@@ -9,7 +9,8 @@ const ACTIONS = {
     UNSAVE_RECIPE: 'UNSAVE_RECIPE',
     SAVE_RECIPE: "SAVE_RECIPE",
     SET_GROCERY: "SET_GROCERY",
-    CACHE_RECIPE: 'CACHE_RECIPE'
+    CACHE_RECIPE: 'CACHE_RECIPE',
+    CACHE_SEARCH: "CACHE_SEARCH"
 }
 
 const STORES = {
@@ -17,7 +18,8 @@ const STORES = {
     USERNAME: 'USERNAME',
     EMAIL: 'EMAIL',
     GROCERIES: 'GROCERIES',
-    RECIPE_CACHE: 'CACHED_RECIPES'
+    RECIPE_CACHE: 'CACHED_RECIPES',
+    SEARCH_CACHE: 'CACHED_SEARCHES'
 }
 
 const PERSIST_STORES = [STORES.SAVED_RECIPES, STORES.USERNAME, STORES.EMAIL, STORES.GROCERIES]
@@ -26,6 +28,7 @@ const initialState = {}
 initialState[STORES.SAVED_RECIPES] = []
 initialState[STORES.GROCERIES] = []
 initialState[STORES.RECIPE_CACHE] = {}
+initialState[STORES.SEARCH_CACHE] = {}
 
 function reducer(state, action) {
     if (action.type === ACTIONS.LOGOUT) {
@@ -75,6 +78,13 @@ function reducer(state, action) {
         RECIPE_CACHE[URL] = action.data
         const newState = {...state}
         newState[STORES.RECIPE_CACHE] = RECIPE_CACHE
+        return newState
+    } else if (action.type === ACTIONS.CACHE_SEARCH) {
+        const SEARCH_CACHE = {...state[STORES.SEARCH_CACHE]}
+        SEARCH_CACHE[action.query] = action.data
+
+        const newState = {...state}
+        newState[STORES.SEARCH_CACHE] = SEARCH_CACHE
         return newState
     }
     return state

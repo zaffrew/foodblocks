@@ -40,11 +40,10 @@ export async function search(search, num) {
 }
 
 export async function getData(URL) {
+    const json = {URL}
     URL = getPrintURL(URL)
 
     return await getDOM(URL).then($ => {
-        const json = {URL}
-
         json['timeOfScrape'] = moment().toISOString();
         json['source'] = new URL_PARSE(URL).host
 
