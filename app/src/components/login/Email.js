@@ -3,7 +3,7 @@ import React from 'react'
 import withProps from "../withProps";
 import SingleUserSetting from "../SingleUserSetting";
 import {connect} from "react-redux";
-import {ACTIONS} from "../../State";
+import {ACTIONS} from "../../state/State";
 
 import validator from "email-validator";
 

@@ -9,12 +9,17 @@ import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
 
-import {getData as delish_data, search as delish_search} from '../../scraper/Delish'
 import {connect} from "react-redux";
-import {ACTIONS, STORES} from "../../State";
+import {ACTIONS, STORES} from "../../state/State";
 
-const search = delish_search
-const getData = delish_data
+import {SOURCES, search as scraper_search, getData} from '../../scraper/Scraper'
+
+const SOURCE = SOURCES.DELISH
+const search = async (query, num) => {
+    return await scraper_search(query, num, SOURCE).catch(e => {
+        console.log('Error searching:', e)
+    })
+}
 
 const searches = 20;
 

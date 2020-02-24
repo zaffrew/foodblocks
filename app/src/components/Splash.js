@@ -5,7 +5,7 @@ import {View} from 'react-native'
 import settings from "../../settings/appSettings";
 import {Title, withTheme} from "react-native-paper";
 import {connect} from "react-redux";
-import {STORES} from "../State";
+import {STORES} from "../state/State";
 
 const splashTransitionTime = settings.splashTransitionTime;
 

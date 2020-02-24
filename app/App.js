@@ -8,7 +8,7 @@ import {configureFonts, DefaultTheme, Provider as PaperProvider} from 'react-nat
 import AppNavigator from "./src/components/AppNavigator";
 import {NavigationContainer} from '@react-navigation/native';
 
-import {persistor, store} from './src/State'
+import {persistor, store} from './src/state/State'
 
 const fontWeights = {
     Thin: '100',

@@ -3,7 +3,7 @@ import {View, ScrollView, StyleSheet} from 'react-native'
 import {TextInput, Headline, List, Colors} from 'react-native-paper';
 import colors from '../../../settings/colors'
 import SafeView from '../SafeView'
-import {ACTIONS, STORES} from "../../State";
+import {ACTIONS, STORES} from "../../state/State";
 import {connect} from "react-redux";
 import InputSpinner from "react-native-input-spinner";
 

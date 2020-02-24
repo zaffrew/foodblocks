@@ -4,10 +4,11 @@ import SafeView from '../components/SafeView'
 import {Caption, Card, IconButton, Paragraph, Surface, Title} from "react-native-paper";
 import styles from "../../settings/styles";
 import {connect} from "react-redux";
-import {ACTIONS, STORES} from "../State";
+import {ACTIONS, STORES} from "../state/State";
 import moment from "moment";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
+//TODO: a permanetly saved recipe needs to reload itself into the cache if it is not there.
 
 export default connect((state, ownProps) => {
     const data = state[STORES.RECIPE_CACHE][ownProps.URL]

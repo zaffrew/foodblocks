@@ -8,7 +8,7 @@ import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
-import {STORES} from "../../State";
+import {STORES} from "../../state/State";
 
 
 const Navigator = createStackNavigator();

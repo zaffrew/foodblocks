@@ -2,7 +2,7 @@ import React from 'react'
 import {ScrollView, View} from "react-native";
 import FoodBlock from "../FoodBlock";
 import {connect} from "react-redux";
-import {STORES} from "../../State";
+import {STORES} from "../../state/State";
 
 const margin = 8;
 
