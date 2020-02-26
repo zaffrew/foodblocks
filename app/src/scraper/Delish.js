@@ -24,18 +24,23 @@ export async function search(search, num) {
                 return false
             }
 
-            const path = $(e).children('a.simple-item-title.item-title').attr('href')
+            const titleElement = $(e).children('a.simple-item-title.item-title')
+            const path = titleElement.attr('href')
             const URL = new URL_PARSE(ORIGIN)
             URL.set('pathname', path)
 
             //some links are food news etc
+            //TODO: some links that start with cooking aren't proper recipes but rather lists.
             if (URL.pathname.startsWith('/cooking')) {
-                res.push(URL.href)
+                const title = titleElement.text().trim()
+
+                const img = $(e).children('a.simple-item-image.item-image').first().children('span').first().attr('data-lqip')
+                const imgURL = new URL_PARSE(img)
+                imgURL.set('query', '')
+                res.push({URL: URL.href, img: imgURL.href, title})
             }
         })
         return res
-    }).catch(err => {
-        console.log('Error searching: ' + err)
     })
 }
 
@@ -76,8 +81,6 @@ export async function getData(URL) {
         //TODO: rating is not working since the ratings are not loaded until the page is scrolled
 
         return json
-    }).catch(err => {
-        console.log('Error loading data: ' + err)
     })
 }
 

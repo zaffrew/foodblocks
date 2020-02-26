@@ -5,7 +5,6 @@ import SidewaysScroll from "../SidewaysScroll";
 import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
 import {connect} from 'react-redux'
-import {STORES} from "../../state/State";
 import {getData, search} from "../../scraper/AllRecipe"
 
 class Home extends React.Component {
@@ -31,4 +30,4 @@ class Home extends React.Component {
     }
 }
 
-export default connect((state) => ({username: state[STORES.USERNAME]}))(Home);
+export default connect((state) => ({username: state.user_info.username}))(Home);

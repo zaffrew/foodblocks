@@ -4,17 +4,19 @@ const ACTIONS = {
 }
 
 function reducer(state = [], action) {
-    state = state.slice()
     switch (action.type) {
         case ACTIONS.UNSAVE_RECIPE:
-            state.filter(URL => {
+            state = state.filter(URL => {
                 return URL !== action.URL
             })
-            break
+            return state
         case ACTIONS.SAVE_RECIPE:
+            state = state.slice()
             state.push(action.URL)
+            return state;
+        default:
+            return state
     }
-    return state
 }
 
 export {reducer, ACTIONS}

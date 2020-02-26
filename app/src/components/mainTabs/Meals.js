@@ -8,11 +8,12 @@ import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
-import {STORES} from "../../state/State";
 
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
+
+//TODO: the meals data doesnt work since the way a food thumbnail is saved was changed
 
 class Meals extends React.Component {
     render() {
@@ -26,13 +27,13 @@ class Meals extends React.Component {
                 <FoodBlockScroll onPress={(URL) => {
                     this.props.navigation.navigate('Food', {URL})
                 }}
-                                 columns={2} URLs={this.props.recipes}/>
+                                 columns={2} data={this.props.recipes}/>
             </View>
         );
     }
 }
 
-const ConnectedMeals = connect((state) => ({recipes: state[STORES.SAVED_RECIPES]}))(Meals)
+const ConnectedMeals = connect((state) => ({recipes: state.saved_recipes}))(Meals)
 
 export default class MealNavigator extends React.Component {
     render() {

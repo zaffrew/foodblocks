@@ -1,22 +1,22 @@
 import React from 'react'
 import {Image, ScrollView, StyleSheet, View} from 'react-native'
 import SafeView from '../components/SafeView'
-import {Caption, Card, IconButton, Paragraph, Surface, Title} from "react-native-paper";
+import {ActivityIndicator, Caption, Card, IconButton, Paragraph, Surface, Title} from "react-native-paper";
 import styles from "../../settings/styles";
 import {connect} from "react-redux";
-import {ACTIONS, STORES} from "../state/State";
+import {ACTIONS} from "../state/State";
 import moment from "moment";
+import {getData} from "../scraper/Scraper";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
-//TODO: a permanetly saved recipe needs to reload itself into the cache if it is not there.
 
 export default connect((state, ownProps) => {
-    const data = state[STORES.RECIPE_CACHE][ownProps.URL]
-    const saved = state[STORES.SAVED_RECIPES] && state[STORES.SAVED_RECIPES].filter(URL => {
+    const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
         return ownProps.URL === URL
-    }).length === 1
+    }).length === 1;
 
-    return {data, saved}
+    console.log('saved prop:', saved)
+    return {saved}
 }, {
     save: (URL) => ({
         type: ACTIONS.SAVE_RECIPE,
@@ -33,6 +33,10 @@ export default connect((state, ownProps) => {
         this.state = {pressed: props.saved}
     }
 
+    async componentDidMount() {
+        this.setState({data: await getData(this.props.URL)})
+    }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.saved !== this.state.pressed) {
             this.setState({pressed: this.props.saved})
@@ -42,11 +46,14 @@ export default connect((state, ownProps) => {
     onPress() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
-        (pressed ? this.props.save : this.props.unsave)(this.props.data.URL);
+        (pressed ? this.props.save : this.props.unsave)(this.state.data.URL);
     }
 
     render() {
-        const data = this.props.data
+        const data = this.state.data
+        if (!data) {
+            return <ActivityIndicator/>
+        }
         const ingredients = data.ingredients.map((text, i) =>
             <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
 

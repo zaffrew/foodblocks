@@ -1,32 +1,23 @@
 import persistConfig from './PersistConfig'
 import {persistReducer} from "redux-persist";
 
-const STORES = {
-    USERNAME: 'USERNAME',
-    EMAIL: 'EMAIL',
-}
-
 const ACTIONS = {
     USERNAME: 'USERNAME',
     EMAIL: "EMAIL",
 }
 
-const PERSIST_STORES = [STORES.USERNAME, STORES.EMAIL]
 
-const initialState = {}
-
-function reducer(state = initialState, action) {
+function reducer(state = {}, action) {
     switch (action.type) {
         case ACTIONS.USERNAME:
-            state[STORES.USERNAME] = action.username
-            break;
+            return {...state, username: action.username}
         case ACTIONS.EMAIL:
-            state[STORES.EMAIL] = action.email
-            break;
+            return {...state, email: action.email}
+        default:
+            return state
     }
-    return state
 }
 
-const persistedReducer = persistReducer(persistConfig, reducer);
-
-export {persistedReducer as reducer, STORES, ACTIONS}
+// const persistedReducer = persistReducer({...persistConfig, whitelist: Object.values(STORES)}, reducer);
+const persistedReducer = reducer
+export {persistedReducer as reducer, ACTIONS}

@@ -9,16 +9,11 @@ import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
 
-import {connect} from "react-redux";
-import {ACTIONS, STORES} from "../../state/State";
-
 import {SOURCES, search as scraper_search, getData} from '../../scraper/Scraper'
 
 const SOURCE = SOURCES.DELISH
 const search = async (query, num) => {
-    return await scraper_search(query, num, SOURCE).catch(e => {
-        console.log('Error searching:', e)
-    })
+    return await scraper_search(query, num, SOURCE)
 }
 
 const searches = 20;
@@ -29,30 +24,11 @@ const FoodWithParams = withRouteParams(Food);
 //TODO: validate that a search has enough valid results i.e. it wont have info missing
 
 
-const Search = connect((state, ownProps) => {
-    const loaded_recipes = Object.keys(state[STORES.RECIPE_CACHE])
-    const loaded_searches = state[STORES.SEARCH_CACHE]
-    return {loaded_recipes, loaded_searches}
-}, {
-    cacheData: (data) => {
-        return {
-            type: ACTIONS.CACHE_RECIPE,
-            data
-        }
-    },
-    cacheSearch: (query, data) => {
-        return {
-            type: ACTIONS.CACHE_SEARCH,
-            data,
-            query
-        }
-    }
-})
-(class extends React.Component {
+class Search extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {query: '', URLs: []}
+        this.state = {query: '', searchData: []}
         this.updateSearchResults = this.updateSearchResults.bind(this);
     }
 
@@ -66,27 +42,10 @@ const Search = connect((state, ownProps) => {
     async updateSearchResults() {
         //react state is actually kinda async so i have to do await here and
         // down on setting the new state or there will be weird behavior
-        await this.setState({URLs: []})
+        await this.setState({searchData: []})
         const query = this.state.query;
-        let searchResults
-        if (this.props.loaded_searches[query]) {
-            searchResults = this.props.loaded_searches[query].slice()
-        } else {
-            searchResults = await search(query, searches);
-            this.props.cacheSearch(query, searchResults)
-        }
-
-        for (const URL of searchResults) {
-            if (!this.props.loaded_recipes.includes(URL)) {
-                const data = await getData(URL)
-                this.props.cacheData(data)
-            }
-
-            await this.setState({URLs: this.state.URLs.concat(URL)});
-            if (query !== this.state.query) {
-                return;
-            }
-        }
+        const searchData = await search(query, searches)
+        await this.setState({searchData})
     }
 
 
@@ -139,13 +98,13 @@ const Search = connect((state, ownProps) => {
                     <FoodBlockScroll onPress={(URL) => {
                         this.props.navigation.navigate('Food', {URL})
                     }}
-                                     columns={2} URLs={this.state.URLs}/>
+                                     columns={2} data={this.state.searchData}/>
                 </View>
             </SafeView>
 
         );
     }
-})
+}
 
 const cardStyle = StyleSheet.create({
     container: {

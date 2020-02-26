@@ -7,23 +7,26 @@ const ACTIONS = {
 }
 
 function reducer(state = [], action) {
-    if (action.type === ACTIONS.SET_GROCERY) {
-        const addition = {name: action.name, number: action.number}
+    switch(action.type) {
+        case ACTIONS.SET_GROCERY:
+            state = state.slice()
+            const addition = {name: action.name, number: action.number}
 
-        const index = state.findIndex(grocery => {
-            return grocery.name === action.name
-        })
+            const index = state.findIndex(grocery => {
+                return grocery.name === action.name
+            })
 
-        if (index === -1) {
-            state.push(addition)
-        } else {
-            state[index] = addition
-        }
+            if (index === -1) {
+                state.push(addition)
+            } else {
+                state[index] = addition
+            }
+            return state;
+        default:
+            return state;
     }
-
-    return state
 }
 
-const persistedReducer = persistReducer(persistConfig, reducer);
-
+// const persistedReducer = persistReducer(persistConfig, reducer);
+const persistedReducer = reducer
 export {persistedReducer as reducer, ACTIONS}

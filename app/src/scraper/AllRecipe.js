@@ -27,15 +27,16 @@ function getSearchURL(search) {
 export async function search(search, num) {
     return await getDOM(getSearchURL(search)).then($ => {
         const res = []
-        $('h3.fixed-recipe-card__h3').each((i, e) => {
+        $('article.fixed-recipe-card').each((i, e) => {
             if (i >= num) {
                 return false
             }
-            res.push($(e).children('a').attr('href'))
+            const img = $(e).find('img.fixed-recipe-card__img').attr('src')
+            const title = $(e).find('fixed-recipe-card__title-link').text().trim()
+            const URL = $(e).children('.fixed-recipe-card__h3 > a').attr('href')
+            res.push({URL, img, title})
         })
         return res
-    }).catch(err => {
-        console.log('Error searching: ' + err)
     })
 }
 
@@ -85,7 +86,5 @@ export async function getData(URL) {
         json['rating'] = $('.rating-stars').attr('data-ratingstars').trim()
 
         return json
-    }).catch(err => {
-        console.log('Error loading data: ' + err)
     })
 }
