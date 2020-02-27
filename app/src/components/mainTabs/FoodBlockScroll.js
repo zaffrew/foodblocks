@@ -15,13 +15,13 @@ function FoodBlockScroll(props) {
                        }}
             />
         )
-    })
+    });
 
     const columns = props.columns;
     const rows = Math.floor(blocks.length / columns);
     const remainder = blocks.length % columns;
-    const blockViews = []
-    let i = 0
+    const blockViews = [];
+    let i = 0;
 
     for (; i < rows; i++) {
         blockViews.push(
@@ -32,7 +32,7 @@ function FoodBlockScroll(props) {
     }
 
     if (remainder !== 0) {
-        const paddingViews = []
+        const paddingViews = [];
         for (let i = 0; i < columns - remainder; i++) {
             paddingViews.push(<View key={i} style={{margin, flex: 1}}/>)
         }
@@ -54,6 +54,6 @@ function FoodBlockScroll(props) {
 export default connect((state, ownProps) => {
     const data = ownProps.URLs.map(URL => {
         return state.cache.recipes[URL].thumbnail
-    })
+    });
     return {data}
 })(FoodBlockScroll)

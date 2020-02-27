@@ -83,7 +83,7 @@ export default class App extends React.Component {
         if (this.state.fontLoaded) {
             return (
                 <Provider store={store}>
-                    {/*<PersistGate loading={null} persistor={persistor}>*/}
+                    <PersistGate loading={null} persistor={persistor}>
                         <NavigationContainer>
                             <SafeAreaProvider>
                                 <PaperProvider theme={theme}>
@@ -91,7 +91,7 @@ export default class App extends React.Component {
                                 </PaperProvider>
                             </SafeAreaProvider>
                         </NavigationContainer>
-                    {/*</PersistGate>*/}
+                    </PersistGate>
                 </Provider>
             );
         }

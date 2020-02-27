@@ -9,12 +9,12 @@ import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
 
-import {SOURCES, search as scraper_search, getData} from '../../scraper/Scraper'
+import {SOURCES, search as scraper_search} from '../../scraper/Scraper'
 
-const SOURCE = SOURCES.DELISH
+const SOURCE = SOURCES.ALL_RECIPE;
 const search = async (query, num) => {
     return await scraper_search(query, num, SOURCE)
-}
+};
 
 const searches = 20;
 
@@ -28,7 +28,7 @@ class Search extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {query: '', searchData: []}
+        this.state = {query: '', searchData: []};
         this.updateSearchResults = this.updateSearchResults.bind(this);
     }
 
@@ -36,15 +36,14 @@ class Search extends React.Component {
         console.log('Pressed')
     }
 
-    //TODO: sometimes a single search can run without the last search ending
     //TODO: run search on delish and all recipe at the same time
 
     async updateSearchResults() {
         //react state is actually kinda async so i have to do await here and
         // down on setting the new state or there will be weird behavior
-        await this.setState({searchData: []})
+        await this.setState({searchData: []});
         const query = this.state.query;
-        const searchData = await search(query, searches)
+        const searchData = await search(query, searches);
         await this.setState({searchData})
     }
 
@@ -154,6 +153,6 @@ const SearchNavigator = (props) => {
             <Navigator.Screen name="Food" component={FoodWithParams}/>
         </Navigator.Navigator>
     )
-}
+};
 
 export default SearchNavigator;

@@ -6,7 +6,7 @@ import {store, ACTIONS} from '../state/State'
 const SOURCES = {
     ALL_RECIPE: 'www.allrecipes.com',
     DELISH: 'www.delish.com'
-}
+};
 
 /**
  * Gets search results from a cache, or scrapes them if not already loaded.
@@ -16,7 +16,7 @@ const SOURCES = {
  * @returns {Promise<*>} A promise that will eventually return an array of URLs.
  */
 async function search(query, num, source) {
-    let searchRes = store.getState().cache.searches[query]
+    let searchRes = store.getState().cache.searches[query];
     if (searchRes) {
         return searchRes
     } else {
@@ -24,7 +24,7 @@ async function search(query, num, source) {
             type: ACTIONS.CACHE_SEARCH,
             query,
             searches: await loadSearch(query, num, source)
-        })
+        });
         return store.getState().cache.searches[query]
     }
 }
@@ -32,7 +32,9 @@ async function search(query, num, source) {
 async function loadSearch(query, num, source) {
     switch (source) {
         case SOURCES.ALL_RECIPE:
-            return await ALL_RECIPE_search(query, num)
+            const res =  await ALL_RECIPE_search(query, num);
+            console.log(res)
+            return res
         case SOURCES.DELISH:
             return await DELISH_search(query, num)
     }
@@ -57,20 +59,20 @@ async function loadSearch(query, num, source) {
  * }
  */
 async function getData(URL) {
-    const data = store.getState().cache.recipes[URL]
+    const data = store.getState().cache.recipes[URL];
     if (data && data.loaded) {
         return data
     } else {
         store.dispatch({
             type: ACTIONS.CACHE_RECIPE,
             data: await loadData(URL)
-        })
+        });
         return store.getState().cache.recipes[URL]
     }
 }
 
 async function loadData(URL) {
-    URL = URL_PARSE(URL)
+    URL = URL_PARSE(URL);
     if (URL.host.startsWith(SOURCES.ALL_RECIPE)) {
         return await ALL_RECIPE_getData(URL.href)
     } else if (URL.host.startsWith(SOURCES.DELISH)) {

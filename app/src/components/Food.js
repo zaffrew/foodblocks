@@ -38,7 +38,7 @@ export default connect((state, ownProps) => {
         this.setState({data: await getData(this.props.URL)})
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate() {
         if (this.props.saved !== this.state.pressed) {
             this.setState({pressed: this.props.saved})
         }
@@ -51,15 +51,15 @@ export default connect((state, ownProps) => {
     }
 
     render() {
-        const data = this.state.data
+        const data = this.state.data;
         if (!data) {
             return <ActivityIndicator/>
         }
         const ingredients = data.ingredients.map((text, i) =>
-            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
+            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>);
 
         const directions = data.directions.map((text, i) =>
-            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
+            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>);
 
         return (
             <SafeView style={{flex: 1}}>

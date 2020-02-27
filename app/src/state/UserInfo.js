@@ -1,23 +1,20 @@
-import persistConfig from './PersistConfig'
-import {persistReducer} from "redux-persist";
-
 const ACTIONS = {
     USERNAME: 'USERNAME',
     EMAIL: "EMAIL",
-}
+};
 
 
 function reducer(state = {}, action) {
     switch (action.type) {
         case ACTIONS.USERNAME:
-            return {...state, username: action.username}
+            return {...state, username: action.username};
         case ACTIONS.EMAIL:
-            return {...state, email: action.email}
+            return {...state, email: action.email};
         default:
             return state
     }
 }
 
 // const persistedReducer = persistReducer({...persistConfig, whitelist: Object.values(STORES)}, reducer);
-const persistedReducer = reducer
+const persistedReducer = reducer;
 export {persistedReducer as reducer, ACTIONS}

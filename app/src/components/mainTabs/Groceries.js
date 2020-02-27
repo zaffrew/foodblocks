@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, ScrollView, StyleSheet} from 'react-native'
+import {View, ScrollView} from 'react-native'
 import {TextInput, Headline, List, Colors} from 'react-native-paper';
 import colors from '../../../settings/colors'
 import SafeView from '../SafeView'
@@ -24,10 +24,8 @@ class Groceries extends React.Component {
         this.setState({text: ''})
     }
 
-    //TODO: push a button and they both increase
-
     render() {
-        const groceries = this.props.groceries.map((grocery, i) => {
+        const groceries = this.props.groceries.map((grocery) => {
             return (
                 <List.Item key={grocery.name}
                            title={grocery.name}
@@ -39,7 +37,7 @@ class Groceries extends React.Component {
                            }
                 />
             )
-        })
+        });
 
         return (
             <View style={{flex: 1}}>
@@ -63,7 +61,7 @@ class Groceries extends React.Component {
     }
 }
 
-export default connect((state, ownProps) => {
+export default connect((state) => {
     return {groceries: state.groceries}
 }, {
     setGrocery: (name, number) => ({

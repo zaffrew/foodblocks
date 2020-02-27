@@ -14,14 +14,14 @@ const ACTIONS = {
     ...cache_actions,
     ...saved_actions,
     RESET: 'RESET'
-}
+};
 
 const app_reducer = combineReducers({
     groceries: groceries_reducer,
     cache: cache_reducer,
     user_info: user_reducer,
     saved_recipes: saved_reducer
-})
+});
 
 function root_reducer(state = {}, action) {
     if (action.type === ACTIONS.RESET) {
@@ -32,13 +32,13 @@ function root_reducer(state = {}, action) {
 
 const persistConfig = {
     ...generalPersistConfig,
-    // whitelist: PERSIST_STORES,
-}
+    blacklist: ['cache']
+};
 
 const persistedReducer = persistReducer(persistConfig, root_reducer);
 
-const store = createStore(root_reducer);
+const store = createStore(persistedReducer);
 
 const persistor = persistStore(store);
 
-export {store, persistor, generalPersistConfig as persistConfig, ACTIONS}
+export {store, persistor, ACTIONS}
