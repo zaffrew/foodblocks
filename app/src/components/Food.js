@@ -9,13 +9,14 @@ import moment from "moment";
 import {getData} from "../scraper/Scraper";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
+//TODO: add nutrition values
+//TODO: change the ordering of the page so the description isn't as big.
 
 export default connect((state, ownProps) => {
     const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
         return ownProps.URL === URL
     }).length === 1;
 
-    console.log('saved prop:', saved)
     return {saved}
 }, {
     save: (URL) => ({

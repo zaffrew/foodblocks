@@ -1,17 +1,12 @@
 import React from 'react'
 import {ScrollView, View} from "react-native";
 import FoodBlock from "../FoodBlock";
+import {connect} from "react-redux";
 
 const margin = 8;
 
-/**
- *
- * @param props
- * Required props: URLs, onPress, columns
- * @returns {*}
- */
-export default (props) => {
-    const blocks = props.data.map(({URL, img, title}, i) => {
+function FoodBlockScroll(props) {
+    const blocks = props.data.map(({img, title, URL}, i) => {
         return (
             <FoodBlock margin={margin} key={i} image={img}
                        text={title} height={160}
@@ -55,3 +50,10 @@ export default (props) => {
         </ScrollView>
     );
 }
+
+export default connect((state, ownProps) => {
+    const data = ownProps.URLs.map(URL => {
+        return state.cache.recipes[URL].thumbnail
+    })
+    return {data}
+})(FoodBlockScroll)

@@ -8,8 +8,15 @@ const SOURCES = {
     DELISH: 'www.delish.com'
 }
 
+/**
+ * Gets search results from a cache, or scrapes them if not already loaded.
+ * @param query
+ * @param num The number of results to return.
+ * @param source
+ * @returns {Promise<*>} A promise that will eventually return an array of URLs.
+ */
 async function search(query, num, source) {
-    const searchRes = store.getState().cache.searches[query]
+    let searchRes = store.getState().cache.searches[query]
     if (searchRes) {
         return searchRes
     } else {
@@ -18,7 +25,7 @@ async function search(query, num, source) {
             query,
             searches: await loadSearch(query, num, source)
         })
-        return search(query, num, source)
+        return store.getState().cache.searches[query]
     }
 }
 
@@ -31,16 +38,34 @@ async function loadSearch(query, num, source) {
     }
 }
 
+/**
+ * Gets data from a cache, or scrapes them if not already loaded.
+ * @param URL The URL of the data.
+ * @returns {Promise<*>} A data object of the following format.
+ * data = {
+ *     URL,
+ *     img,
+ *     title,
+ *     ingredients,
+ *     directions,
+ *     author,
+ *     description,
+ *     prepTime,
+ *     cookTime,
+ *     totalTIme,
+ *     source
+ * }
+ */
 async function getData(URL) {
     const data = store.getState().cache.recipes[URL]
-    if (data) {
+    if (data && data.loaded) {
         return data
     } else {
         store.dispatch({
             type: ACTIONS.CACHE_RECIPE,
             data: await loadData(URL)
         })
-        return getData(URL)
+        return store.getState().cache.recipes[URL]
     }
 }
 
