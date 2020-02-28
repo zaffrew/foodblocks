@@ -33,7 +33,6 @@ async function loadSearch(query, num, source) {
     switch (source) {
         case SOURCES.ALL_RECIPE:
             const res =  await ALL_RECIPE_search(query, num);
-            console.log(res)
             return res
         case SOURCES.DELISH:
             return await DELISH_search(query, num)

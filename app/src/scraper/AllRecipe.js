@@ -40,7 +40,6 @@ export async function search(search, num) {
 
             const title = $(e).find('.fixed-recipe-card__title-link').first().text().trim();
 
-            console.log({URL, img, title});
             res.push({URL, img, title})
         });
         return res

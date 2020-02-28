@@ -1,20 +1,25 @@
 const ACTIONS = {
     SET_GROCERY: "SET_GROCERY",
+    REMOVE_GROCERY: 'REMOVE_GROCERY',
+    OVERWRITE_GROCERIES: 'OVERWRITE_GROCERIES'
+
 };
 
+/**
+ * this reducer is rather stupid in that it simply sets the data given to it in the index it is given.
+ * the actual state management is handled in Groceries.js
+ */
 function reducer(state = [], action) {
-    if (action.type === ACTIONS.SET_GROCERY) {
+    if (action.type == ACTIONS.REMOVE_GROCERY) {
+        state = state.slice()
+        state.splice(action.index, 1)
+        return state
+    } else if (action.type === ACTIONS.SET_GROCERY) {
         state = state.slice();
-        const addition = {name: action.name, number: action.number};
-        const index = state.findIndex(grocery => {
-            return grocery.name === action.name
-        });
-        if (index === -1) {
-            state.push(addition)
-        } else {
-            state[index] = addition
-        }
+        state[action.index] = {name: action.name, number: action.number};
         return state;
+    } else if (action.type === ACTIONS.OVERWRITE_GROCERIES) {
+        return action.data.slice()
     } else {
         return state;
     }
