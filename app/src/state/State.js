@@ -25,7 +25,8 @@ const app_reducer = combineReducers({
 
 function root_reducer(state = {}, action) {
     if (action.type === ACTIONS.RESET) {
-        return {};
+        //this forces app_reducer to restore the initial states
+        state = {}
     }
     return app_reducer(state, action)
 }

@@ -22,7 +22,7 @@ const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
 
 //TODO: validate that a search has enough valid results i.e. it wont have info missing
-
+//TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
 
 class Search extends React.Component {
 
