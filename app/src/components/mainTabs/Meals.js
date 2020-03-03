@@ -2,7 +2,7 @@ import React from 'react'
 import {View} from 'react-native'
 import colors from '../../../settings/colors'
 import SafeView from "../SafeView";
-import {Headline, TextInput} from "react-native-paper";
+import {Headline} from "react-native-paper";
 import FoodBlockScroll from "./FoodBlockScroll";
 import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
@@ -22,16 +22,16 @@ class Meals extends React.Component {
                         Saved Meals
                     </Headline>
                 </SafeView>
-                <FoodBlockScroll onPress={(data) => {
-                    this.props.navigation.navigate('Food', {data})
+                <FoodBlockScroll onPress={(URL) => {
+                    this.props.navigation.navigate('Food', {URL})
                 }}
-                                 columns={2} blockData={this.props.recipes}/>
+                                 columns={2} URLs={this.props.recipes}/>
             </View>
         );
     }
 }
 
-const ConnectedMeals = connect((state) => ({recipes: state.recipe_save}))(Meals)
+const ConnectedMeals = connect((state) => ({recipes: state.saved_recipes}))(Meals);
 
 export default class MealNavigator extends React.Component {
     render() {

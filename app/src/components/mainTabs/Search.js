@@ -4,46 +4,47 @@ import {Chip, Searchbar, Subheading} from 'react-native-paper';
 import SafeView from '../SafeView'
 import colors from '../../../settings/colors'
 import styles from "../../../settings/styles"
-import {getData, search} from "../../AllRecipe";
 import FoodBlockScroll from "./FoodBlockScroll";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../withRouteParams";
 import Food from "../Food";
 
+import {SOURCES, search as scraper_search} from '../../scraper/Scraper'
+
+const SOURCE = SOURCES.ALL_RECIPE;
+const search = async (query, num) => {
+    return await scraper_search(query, num, SOURCE)
+};
+
+const searches = 20;
+
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
 
-const SearchNavigator = (props) => {
-    return (
-        <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
-                             initialRouteName="Search">
-            <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
-            <Navigator.Screen name="Food" component={FoodWithParams}/>
-        </Navigator.Navigator>
-    )
-}
+//TODO: validate that a search has enough valid results i.e. it wont have info missing
+//TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
 
 class Search extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {query: '', blockData: []}
+        this.state = {query: '', searchData: []};
+        this.updateSearchResults = this.updateSearchResults.bind(this);
     }
 
     onTap() {
         console.log('Pressed')
     }
 
+    //TODO: run search on delish and all recipe at the same time
+
     async updateSearchResults() {
-        this.setState({blockData: []})
+        //react state is actually kinda async so i have to do await here and
+        // down on setting the new state or there will be weird behavior
+        await this.setState({searchData: []});
         const query = this.state.query;
-        const searchResults = await search(this.state.query, 20);
-        for (const URL of searchResults) {
-            this.setState({blockData: this.state.blockData.concat(await getData(URL))});
-            if (query !== this.state.query) {
-                return;
-            }
-        }
+        const searchData = await search(query, searches);
+        await this.setState({searchData})
     }
 
 
@@ -93,10 +94,10 @@ class Search extends React.Component {
                     </View>
                 </View>
                 <View style={{flex: 2 / 3, backgroundColor: colors.grey}}>
-                    <FoodBlockScroll onPress={(data) => {
-                        this.props.navigation.navigate('Food', {data})
+                    <FoodBlockScroll onPress={(URL) => {
+                        this.props.navigation.navigate('Food', {URL})
                     }}
-                                     columns={2} blockData={this.state.blockData}/>
+                                     columns={2} URLs={this.state.searchData}/>
                 </View>
             </SafeView>
 
@@ -143,5 +144,15 @@ const chipStyle = StyleSheet.create({
         color: "white",
     }
 });
+
+const SearchNavigator = (props) => {
+    return (
+        <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
+                             initialRouteName="Search">
+            <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
+            <Navigator.Screen name="Food" component={FoodWithParams}/>
+        </Navigator.Navigator>
+    )
+};
 
 export default SearchNavigator;

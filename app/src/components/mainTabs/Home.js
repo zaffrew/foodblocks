@@ -5,12 +5,14 @@ import SidewaysScroll from "../SidewaysScroll";
 import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
 import {connect} from 'react-redux'
-import {getData, search} from "../../AllRecipe"
+import {getData, search} from "../../scraper/AllRecipe"
+
+//TODO: Home is still broken and needs to be overhauled with new search and new foodblock scroll component.
 
 class Home extends React.Component {
 
     openFood = async function (searchTerm) {
-        const data = await getData((await search(searchTerm, 1))[0])
+        const data = await getData((await search(searchTerm, 1))[0]);
         this.props.navigation.navigate('Food', {data});
     }.bind(this);
 
@@ -30,4 +32,4 @@ class Home extends React.Component {
     }
 }
 
-export default connect((state) => ({username: state.username}))(Home);
+export default connect((state) => ({username: state.user_info.username}))(Home);

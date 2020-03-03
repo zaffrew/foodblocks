@@ -1,51 +1,70 @@
 import React from 'react'
-import {View, ScrollView, StyleSheet} from 'react-native'
-import {TextInput, Headline, List, Colors} from 'react-native-paper';
+import {View, TouchableOpacity} from 'react-native'
+import {TextInput, Headline, List, Colors, IconButton, Button} from 'react-native-paper';
 import colors from '../../../settings/colors'
 import SafeView from '../SafeView'
-import {ACTIONS} from "../../State";
+import {ACTIONS} from "../../state/State";
 import {connect} from "react-redux";
 import InputSpinner from "react-native-input-spinner";
+import DraggableFlatList from "react-native-draggable-dynamic-flatlist";
 
 
 class Groceries extends React.Component {
 
     state = {
-        text: ''
+        text: '',
+        editMode: false,
     };
+
+    renderGrocery({item, index, move, moveEnd}) {
+        return (
+            <List.Item title={item.name}
+                       style={{paddingVertical: 0}}
+                       left={() => {
+                           return this.state.editMode ?
+                               (
+                                   <IconButton onPress={() => this.props.removeGrocery(index)} icon="delete"/>
+                               ) :
+                               (
+                                   <TouchableOpacity onPressIn={move} onPressOut={moveEnd}>
+                                       <IconButton icon="drag-horizontal"/>
+                                   </TouchableOpacity>
+                               )
+
+                       }}
+                       right={() =>
+                           <InputSpinner value={item.number}
+                                         onChange={(number) => this.props.setGrocery(item.name, number, index)}/>
+                       }
+            />
+        )
+    }
 
     submit() {
         const matchingGroceries = this.props.groceries.filter((grocery) => {
             return grocery.name === this.state.text
         });
         if (matchingGroceries.length === 0) {
-            this.props.setGrocery(this.state.text, 1);
+            this.props.setGrocery(this.state.text, 1, this.props.groceries.length);
         }
         this.setState({text: ''})
     }
 
-    //TODO: push a button and they both increase
-
     render() {
-        const groceries = this.props.groceries.map((grocery, i) => {
-            return (
-                <List.Item key={grocery.name}
-                           title={grocery.name}
-                           style={{paddingVertical: 0}}
-                           left={() => <List.Icon color={Colors.black} icon="square-outline"/>}
-                           right={() =>
-                               <InputSpinner value={grocery.number}
-                                             onChange={(number) => this.props.setGrocery(grocery.name, number)}/>
-                           }
-                />
-            )
-        })
-
         return (
             <View style={{flex: 1}}>
                 <SafeView style={{backgroundColor: colors.foodblocksRed}}>
-                    <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}> Grocery
-                        List</Headline>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
+                            Grocery List
+                        </Headline>
+                        <Button icon="dots-horizontal" mode="contained"
+                                style={{justifyContent: 'center'}}
+                                onPress={() => this.setState({editMode: !this.state.editMode})}
+                                color={'white'}>
+                            Edit
+                        </Button>
+                    </View>
                     <TextInput
                         style={[{paddingVertical: 5}, {paddingHorizontal: 20}, {paddingBottom: 20}]}
                         mode='outlined'
@@ -55,21 +74,36 @@ class Groceries extends React.Component {
                         onSubmitEditing={() => this.submit()}
                     />
                 </SafeView>
-                <ScrollView>
-                    {groceries}
-                </ScrollView>
+                <View style={{flex: 1}}>
+                    <DraggableFlatList
+                        data={this.props.groceries}
+                        renderItem={(params) => this.renderGrocery(params)}
+                        keyExtractor={(item) => `draggable-item-${item.name}`}
+                        onMoveEnd={({data, from, to}) => {
+                            this.props.overwriteGroceries(data)
+                        }}
+                    />
+                </View>
             </View>
         );
     }
 }
 
-export default connect((state, ownProps) => {
+export default connect((state) => {
     return {groceries: state.groceries}
 }, {
-    setGrocery: (name, number) => ({
+    setGrocery: (name, number, index) => ({
         type: ACTIONS.SET_GROCERY,
         name,
-        number
+        number,
+        index,
     }),
+    removeGrocery: (index) => ({
+        type: ACTIONS.REMOVE_GROCERY,
+        index
+    }), overwriteGroceries: (data) => ({
+        type: ACTIONS.OVERWRITE_GROCERIES,
+        data
+    })
 })(Groceries)
 

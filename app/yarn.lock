@@ -4328,6 +4328,11 @@ react-native-cheerio@^1.0.0-rc.4:
     lodash "^4.15.0"
     react-native-parse-html "^2.2.6"
 
+react-native-draggable-dynamic-flatlist@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-draggable-dynamic-flatlist/-/react-native-draggable-dynamic-flatlist-1.0.2.tgz#fc8f4ee51439fe70e9a32c1f8a69aef572a550e9"
+  integrity sha512-XmvW+hx8DdRByklj/3zw0SOWs145Pm/NpdhER9L0VU36r8GaTRTwsvmdth5T5YET0R8jas2qjvGaoGiA3Gjfnw==
+
 react-native-gesture-handler@~1.5.0:
   version "1.5.6"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.5.6.tgz#5d90145f624e3707db2930f43ab41579683e2375"
