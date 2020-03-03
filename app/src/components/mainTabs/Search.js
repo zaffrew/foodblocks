@@ -145,8 +145,8 @@ class Search extends React.Component {
                         }}>
                             <Subheading style={{color: '#808080'}}>Can I get uhhhh...</Subheading>
                         </View>}
-                        <FoodBlockScroll onPress={(data) => {
-                            this.props.navigation.navigate('Food', {data})
+                        <FoodBlockScroll onPress={(URL) => {
+                            this.props.navigation.navigate('Food', {URL})
                         }}
                                          columns={2} URLs={this.state.searchData}/>
                     </View>
