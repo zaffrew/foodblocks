@@ -1,7 +1,7 @@
 import React from 'react'
 import {Image, ScrollView, StyleSheet, View} from 'react-native'
 import SafeView from '../components/SafeView'
-import {ActivityIndicator, Caption, Card, IconButton, Paragraph, Surface, Title} from "react-native-paper";
+import {ActivityIndicator, Caption, Card, IconButton, Paragraph, Button, Surface, Title, Text} from "react-native-paper";
 import styles from "../../settings/styles";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
@@ -63,11 +63,15 @@ export default connect((state, ownProps) => {
 
         return (
             <SafeView style={{flex: 1}}>
-                <ScrollView>
+                <ScrollView style={{backgroundColor: 'white'}}>
                     <Card style={{height: 300}}>
-                        <Image style={{flex: 1, resizeMode: 'stretch'}} source={{uri: data.img}}/>
+                        <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: data.img}}/>
                     </Card>
-                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>{data.title}</Title>
+                    <Title style={textStyles.title}>{data.title}</Title>
+                    <View style={{flexDirection:'row'}}>
+                        <Text style={[textStyles.sub, {color:'grey'}]}>{data.source_name.toUpperCase()}</Text>
+                        <Button style={textStyles.button} compact={true}>MORE INFO</Button>
+                    </View>
                     <View style={{paddingVertical: 10}}>
                         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Title style={styles.subtitle}>Get started</Title>
@@ -134,3 +138,21 @@ const surfaceStyles = StyleSheet.create({
         elevation: 4,
     },
 });
+
+const textStyles = StyleSheet.create({
+    title: {
+        fontSize: 24,
+        lineHeight: 30,
+        paddingTop: 20,
+        paddingHorizontal: 20
+    },
+    sub: {
+        fontSize: 14,
+        paddingLeft: 20,
+        paddingRight: 10,
+        padding: 9,
+    },
+    button: {
+        fontSize: 14,
+    }
+})

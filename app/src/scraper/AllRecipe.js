@@ -53,6 +53,7 @@ export async function getData(URL) {
     return await getDOM(URL).then($ => {
         json['timeOfScrape'] = moment().toISOString();
         json['source'] = new URL_PARSE(URL).host;
+        json['source_name'] = 'allrecipes';
 
         json['title'] = $('.recipe-print__title').text().trim();
 
