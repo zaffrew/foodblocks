@@ -10,7 +10,7 @@ import {connect} from 'react-redux'
 import Email from "../../login/Email";
 
 import memoizeOne from "memoize-one";
-import {ACTIONS} from "../../../State";
+import {ACTIONS} from "../../../state/State";
 import withProps from "../../withProps";
 
 const Stack = createStackNavigator();
@@ -46,9 +46,11 @@ export default class UserPage extends React.Component {
     }
 }
 
-const UserScreen = connect((state) => ({email: state.email, username: state.username}), {
+const UserScreen = connect((state) => {
+    return {email: state.user_info.email, username: state.user_info.username}
+}, {
     logout: () => ({
-        type: ACTIONS.LOGOUT,
+        type: ACTIONS.RESET,
     }),
 })(class extends React.Component {
     memoizedAvatar = memoizeOne(getAvatar);

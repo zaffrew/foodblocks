@@ -1,14 +1,46 @@
 import React from 'react'
-import {Text, View} from 'react-native'
+import {View} from 'react-native'
+import colors from '../../../settings/colors'
+import SafeView from "../SafeView";
+import {Headline} from "react-native-paper";
+import FoodBlockScroll from "./FoodBlockScroll";
+import {connect} from "react-redux";
+import {createStackNavigator} from "@react-navigation/stack";
+import withRouteParams from "../withRouteParams";
+import Food from "../Food";
 
-import styles from "../../../settings/styles"
 
-export default class Meals extends React.Component {
+const Navigator = createStackNavigator();
+const FoodWithParams = withRouteParams(Food);
+
+class Meals extends React.Component {
     render() {
         return (
-            <View style={styles.centeredContainer}>
-                <Text>Meals</Text>
+            <View style={{flex: 1}}>
+                <SafeView style={{backgroundColor: colors.foodblocksRed}}>
+                    <Headline style={[{color: 'white'}, {paddingVertical: 20}, {paddingHorizontal: 10}]}>
+                        Saved Meals
+                    </Headline>
+                </SafeView>
+                <FoodBlockScroll onPress={(URL) => {
+                    this.props.navigation.navigate('Food', {URL})
+                }}
+                                 columns={2} URLs={this.props.recipes}/>
             </View>
         );
+    }
+}
+
+const ConnectedMeals = connect((state) => ({recipes: state.saved_recipes}))(Meals);
+
+export default class MealNavigator extends React.Component {
+    render() {
+        return (
+            <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
+                                 initialRouteName="Meals">
+                <Navigator.Screen options={{headerShown: false}} name="Meals" component={ConnectedMeals}/>
+                <Navigator.Screen name="Food" component={FoodWithParams}/>
+            </Navigator.Navigator>
+        )
     }
 }

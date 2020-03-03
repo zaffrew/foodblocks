@@ -9,8 +9,8 @@ import {connect} from "react-redux";
 const splashTransitionTime = settings.splashTransitionTime;
 
 export default connect((state) => ({
-    email: state.email,
-    username: state.username
+    email: state.user_info.email,
+    username: state.user_info.username
 }))(withTheme(class SplashScreen extends React.Component {
     constructor(props) {
         super(props);

@@ -1,26 +1,27 @@
 import React from 'react'
 import {ScrollView, View} from "react-native";
 import FoodBlock from "../FoodBlock";
+import {connect} from "react-redux";
 
 const margin = 8;
 
-export default (props) => {
-    //block data is a list of data about the foods in the all recipe format
-    const blocks = props.blockData.map((data, i) => {
+export default function FoodBlockScroll(props) {
+    const blocks = props.URLs.map((URL, i) => {
         return (
-            <FoodBlock margin={margin} key={i} image={data.img} text={data.title} height={160}
-                       onPress={() => {
-                           props.onPress(data)
-                       }}
+            <FoodBlock margin={margin}
+                       URL={URL}
+                       key={i}
+                       height={160}
+                       onPress={props.onPress}
             />
         )
-    })
+    });
 
     const columns = props.columns;
     const rows = Math.floor(blocks.length / columns);
     const remainder = blocks.length % columns;
-    const blockViews = []
-    let i = 0
+    const blockViews = [];
+    let i = 0;
 
     for (; i < rows; i++) {
         blockViews.push(
@@ -30,8 +31,8 @@ export default (props) => {
         )
     }
 
-    if (remainder != 0) {
-        const paddingViews = []
+    if (remainder !== 0) {
+        const paddingViews = [];
         for (let i = 0; i < columns - remainder; i++) {
             paddingViews.push(<View key={i} style={{margin, flex: 1}}/>)
         }

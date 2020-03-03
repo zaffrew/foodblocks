@@ -1,92 +1,109 @@
 import React from 'react'
-import {View, StyleSheet} from 'react-native'
-import {TextInput, Headline, List, Colors} from 'react-native-paper';
+import {View, TouchableOpacity} from 'react-native'
+import {TextInput, Headline, List, Colors, IconButton, Button} from 'react-native-paper';
 import colors from '../../../settings/colors'
 import SafeView from '../SafeView'
+import {ACTIONS} from "../../state/State";
+import {connect} from "react-redux";
+import InputSpinner from "react-native-input-spinner";
+import DraggableFlatList from "react-native-draggable-dynamic-flatlist";
 
 
-export default class Groceries extends React.Component {
+class Groceries extends React.Component {
 
     state = {
-        text: ''
+        text: '',
+        editMode: false,
     };
+
+    renderGrocery({item, index, move, moveEnd}) {
+        return (
+            <List.Item title={item.name}
+                       style={{paddingVertical: 0}}
+                       left={() => {
+                           return this.state.editMode ?
+                               (
+                                   <IconButton onPress={() => this.props.removeGrocery(index)} icon="delete"/>
+                               ) :
+                               (
+                                   <TouchableOpacity onPressIn={move} onPressOut={moveEnd}>
+                                       <IconButton icon="drag-horizontal"/>
+                                   </TouchableOpacity>
+                               )
+
+                       }}
+                       right={() =>
+                           <InputSpinner value={item.number}
+                                         onChange={(number) => this.props.setGrocery(item.name, number, index)}/>
+                       }
+            />
+        )
+    }
+
+    submit() {
+        const matchingGroceries = this.props.groceries.filter((grocery) => {
+            return grocery.name === this.state.text
+        });
+        if (matchingGroceries.length === 0) {
+            this.props.setGrocery(this.state.text, 1, this.props.groceries.length);
+        }
+        this.setState({text: ''})
+    }
 
     render() {
         return (
-            <View>
+            <View style={{flex: 1}}>
                 <SafeView style={{backgroundColor: colors.foodblocksRed}}>
-                    <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}> Grocery
-                        List</Headline>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
+                            Grocery List
+                        </Headline>
+                        <Button icon="dots-horizontal" mode="contained"
+                                style={{justifyContent: 'center'}}
+                                onPress={() => this.setState({editMode: !this.state.editMode})}
+                                color={'white'}>
+                            Edit
+                        </Button>
+                    </View>
                     <TextInput
                         style={[{paddingVertical: 5}, {paddingHorizontal: 20}, {paddingBottom: 20}]}
                         mode='outlined'
                         placeholder='Add item'
                         value={this.state.text}
                         onChangeText={text => this.setState({text})}
+                        onSubmitEditing={() => this.submit()}
                     />
                 </SafeView>
-                <List.Item
-                    title="Milk"
-                    style={{paddingVertical: 0}}
-                    left={props => <List.Icon color={Colors.black} icon="square-outline"/>}
-                    right={props => <List.Icon color={Colors.grey400} icon="menu"/>}
-                />
-                <List.Item
-                    title="Eggs"
-                    style={{paddingVertical: 0}}
-                    left={props => <List.Icon color={Colors.black} icon="square-outline"/>}
-                    right={props => <List.Icon color={Colors.grey400} icon="menu"/>}
-                />
-                <List.Item
-                    title="Bread"
-                    style={{paddingVertical: 0}}
-                    left={props => <List.Icon color={Colors.black} icon="square-outline"/>}
-                    right={props => <List.Icon color={Colors.grey400} icon="menu"/>}
-                />
-                <List.Item
-                    title="Chicken"
-                    style={{paddingVertical: 0}}
-                    left={props => <List.Icon color={Colors.black} icon="square-outline"/>}
-                    right={props => <List.Icon color={Colors.grey400} icon="menu"/>}
-                />
-                <List.Item
-                    title="Carrots"
-                    style={{paddingVertical: 0}}
-                    left={props => <List.Icon color={Colors.black} icon="square-outline"/>}
-                    right={props => <List.Icon color={Colors.grey400} icon="menu"/>}
-                />
-                <List.Item
-                    title="Apples"
-                    style={{paddingVertical: 0}}
-                    left={props => <List.Icon color={Colors.black} icon="square-outline"/>}
-                    right={props => <List.Icon color={Colors.grey400} icon="menu"/>}
-                />
-                <List.Item
-                    title="Butter"
-                    style={{paddingVertical: 0}}
-                    left={props => <List.Icon color={Colors.black} icon="square-outline"/>}
-                    right={props => <List.Icon color={Colors.grey400} icon="menu"/>}
-                />
-                <List.Item
-                    title="Chips"
-                    style={{paddingVertical: 0}}
-                    left={props => <List.Icon color={Colors.black} icon="square-outline"/>}
-                    right={props => <List.Icon color={Colors.grey400} icon="menu"/>}
-                />
+                <View style={{flex: 1}}>
+                    <DraggableFlatList
+                        data={this.props.groceries}
+                        renderItem={(params) => this.renderGrocery(params)}
+                        keyExtractor={(item) => `draggable-item-${item.name}`}
+                        onMoveEnd={({data, from, to}) => {
+                            this.props.overwriteGroceries(data)
+                        }}
+                    />
+                </View>
             </View>
         );
     }
 }
 
-const listStyles = StyleSheet.create({
-    listContainer: {
-        flex: 2 / 4,
-        backgroundColor: 'white',
-        paddingVertical: 0,
-        paddingTop: 0,
-        shadowOffset: {width: 0, height: 5,},
-        shadowColor: 'black',
-        shadowOpacity: 0.2,
-    }
-});
+export default connect((state) => {
+    return {groceries: state.groceries}
+}, {
+    setGrocery: (name, number, index) => ({
+        type: ACTIONS.SET_GROCERY,
+        name,
+        number,
+        index,
+    }),
+    removeGrocery: (index) => ({
+        type: ACTIONS.REMOVE_GROCERY,
+        index
+    }), overwriteGroceries: (data) => ({
+        type: ACTIONS.OVERWRITE_GROCERIES,
+        data
+    })
+})(Groceries)
 

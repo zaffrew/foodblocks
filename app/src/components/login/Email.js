@@ -3,9 +3,9 @@ import React from 'react'
 import withProps from "../withProps";
 import SingleUserSetting from "../SingleUserSetting";
 import {connect} from "react-redux";
-import {ACTIONS} from "../../State";
+import {ACTIONS} from "../../state/State";
 
-const validator = require("email-validator");
+import validator from "email-validator";
 
 export default connect(null, {
     updateValue: (email) => ({

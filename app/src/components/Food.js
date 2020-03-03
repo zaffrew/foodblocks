@@ -1,27 +1,31 @@
 import React from 'react'
-import {View, ScrollView, StyleSheet, Image} from 'react-native'
+import {Image, ScrollView, StyleSheet, View} from 'react-native'
 import SafeView from '../components/SafeView'
-import {Card, Title, Surface, Paragraph, Button, IconButton} from "react-native-paper";
+import {ActivityIndicator, Caption, Card, IconButton, Paragraph, Surface, Title} from "react-native-paper";
 import styles from "../../settings/styles";
 import {connect} from "react-redux";
-import {ACTIONS} from "../State";
+import {ACTIONS} from "../state/State";
+import moment from "moment";
+import {getData} from "../scraper/Scraper";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
+//TODO: add nutrition values
+//TODO: change the ordering of the page so the description isn't as big.
 
 export default connect((state, ownProps) => {
-    const saved = state.recipe_save && state.recipe_save.filter(data => {
-        return ownProps.data.URL === data.URL
-    }).length === 1
+    const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
+        return ownProps.URL === URL
+    }).length === 1;
 
     return {saved}
 }, {
-    save: (data) => ({
+    save: (URL) => ({
         type: ACTIONS.SAVE_RECIPE,
-        data
+        URL
     }),
-    unsave: (data) => ({
+    unsave: (URL) => ({
         type: ACTIONS.UNSAVE_RECIPE,
-        data
+        URL
     })
 })
 (class Food extends React.Component {
@@ -30,7 +34,11 @@ export default connect((state, ownProps) => {
         this.state = {pressed: props.saved}
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    async componentDidMount() {
+        this.setState({data: await getData(this.props.URL)})
+    }
+
+    componentDidUpdate() {
         if (this.props.saved !== this.state.pressed) {
             this.setState({pressed: this.props.saved})
         }
@@ -39,16 +47,19 @@ export default connect((state, ownProps) => {
     onPress() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
-        (pressed ? this.props.save : this.props.unsave)(this.props.data);
+        (pressed ? this.props.save : this.props.unsave)(this.state.data.URL);
     }
 
     render() {
-        const data = this.props.data
+        const data = this.state.data;
+        if (!data) {
+            return <ActivityIndicator/>
+        }
         const ingredients = data.ingredients.map((text, i) =>
-            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
+            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>);
 
         const directions = data.directions.map((text, i) =>
-            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>)
+            <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>);
 
         return (
             <SafeView style={{flex: 1}}>
@@ -92,11 +103,11 @@ export default connect((state, ownProps) => {
                         <Surface style={surfaceStyles.surface}>
                             <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
                             {data.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
-                                Time: {data.prepTime.asMinutes()}M</Paragraph>}
+                                Time: {moment.duration(data.prepTime).asMinutes()}M</Paragraph>}
                             {data.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
-                                Time: {data.cookTime.asMinutes()}M</Paragraph>}
+                                Time: {moment.duration(data.cookTime).asMinutes()}M</Paragraph>}
                             {data.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
-                                Time: {data.totalTime.asMinutes()}M</Paragraph>}
+                                Time: {moment.duration(data.totalTime).asMinutes()}M</Paragraph>}
                         </Surface>
                     </View>}
                     <View>
@@ -106,6 +117,11 @@ export default connect((state, ownProps) => {
                                 {directions}
                             </Surface>
                         </View>
+                    </View>
+                    <View>
+                        <Caption>
+                            Source: {data.source}
+                        </Caption>
                     </View>
                 </ScrollView>
             </SafeView>
