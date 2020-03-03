@@ -5,14 +5,14 @@ import {connect} from "react-redux";
 
 const margin = 8;
 
-function FoodBlockScroll(props) {
-    const blocks = props.data.map(({img, title, URL}, i) => {
+export default function FoodBlockScroll(props) {
+    const blocks = props.URLs.map((URL, i) => {
         return (
-            <FoodBlock margin={margin} key={i} image={img}
-                       text={title} height={160}
-                       onPress={() => {
-                           props.onPress(URL)
-                       }}
+            <FoodBlock margin={margin}
+                       URL={URL}
+                       key={i}
+                       height={160}
+                       onPress={props.onPress}
             />
         )
     });
@@ -50,10 +50,3 @@ function FoodBlockScroll(props) {
         </ScrollView>
     );
 }
-
-export default connect((state, ownProps) => {
-    const data = ownProps.URLs.map(URL => {
-        return state.cache.recipes[URL].thumbnail
-    });
-    return {data}
-})(FoodBlockScroll)

@@ -11,7 +11,7 @@
 
 const ACTIONS = {
     CACHE_RECIPE: 'CACHE_RECIPE',
-    CACHE_SEARCH: 'CACHE_SEARCH'
+    CACHE_SEARCH: 'CACHE_SEARCH',
 };
 
 const initialState = {
@@ -23,7 +23,17 @@ function reducer(state = initialState, action) {
     if (action.type === ACTIONS.CACHE_RECIPE) {
         const URL = action.data.URL
         const recipeState = {...state.recipes}
-        recipeState[URL] = {...recipeState[URL], ...action.data, loaded: true}
+        let recipeData = {...recipeState[URL]}
+        recipeData = {
+            ...recipeData, ...action.data,
+            thumbnail: {
+                URL: action.data.URL,
+                img: action.data.img,
+                title: action.data.title,
+            }, loaded: true
+        }
+
+        recipeState[URL] = recipeData
 
         return {...state, recipes: recipeState}
     } else if (action.type === ACTIONS.CACHE_SEARCH) {

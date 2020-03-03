@@ -32,8 +32,7 @@ async function search(query, num, source) {
 async function loadSearch(query, num, source) {
     switch (source) {
         case SOURCES.ALL_RECIPE:
-            const res =  await ALL_RECIPE_search(query, num);
-            return res
+            return await ALL_RECIPE_search(query, num);
         case SOURCES.DELISH:
             return await DELISH_search(query, num)
     }
@@ -79,4 +78,9 @@ async function loadData(URL) {
     }
 }
 
-export {SOURCES, getData, search}
+async function getThumbnail(URL) {
+    const recipe = store.getState().cache.recipes[URL]
+    return recipe ? recipe.thumbnail : (await getData(URL)).thumbnail;
+}
+
+export {SOURCES, getData, search, getThumbnail}
