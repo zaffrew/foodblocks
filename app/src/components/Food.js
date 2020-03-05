@@ -29,6 +29,7 @@ export default connect((state, ownProps) => {
         URL
     })
 })
+
 (class Food extends React.Component {
     constructor(props) {
         super(props);
@@ -71,6 +72,23 @@ export default connect((state, ownProps) => {
                 <Provider>
                     <Portal>
                         <Modal visible={visible} onDismiss={this._hideModal}>
+                            <View>
+                                <Surface style={surfaceStyles.surface}>
+                                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideModal}></Button>
+                                    <ScrollView>
+                                    <Title style={textStyles.title}>{data.title}</Title>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={[textStyles.sub, {color:'grey'}]}>{data.source_name.toUpperCase()}</Text>
+                                        <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>MORE INFO</Button>
+                                    </View>
+                                    <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this.onPress()}>Add foodblock</Button>
+                                    <View>
+                                        
+                                    </View>
+                                    </ScrollView>
+                                    
+                                </Surface>
+                            </View>
                     {/* <View style={{paddingVertical: 10}}>
                         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Title style={styles.subtitle}>Get started</Title>
@@ -135,7 +153,7 @@ export default connect((state, ownProps) => {
                     <Title style={textStyles.title}>{data.title}</Title>
                     <View style={{flexDirection:'row'}}>
                         <Text style={[textStyles.sub, {color:'grey'}]}>{data.source_name.toUpperCase()}</Text>
-                        <Button style={textStyles.button} compact={true}>MORE INFO</Button>
+                        <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>MORE INFO</Button>
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 60, paddingTop:5}}>
                         <View style={circleStyle.circle}>
@@ -149,13 +167,13 @@ export default connect((state, ownProps) => {
                         </View>
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 60, paddingTop:5}}>
-                        <Text>Minutes</Text>
-                        <Text>Ingredients</Text>
-                        <Text>Calories</Text>
+                        <Text style={[textStyles.circleText, {color:'black'}]}>Minutes</Text>
+                        <Text style={[textStyles.circleText, {color:'black'}]}>Ingredients</Text>
+                        <Text style={[textStyles.circleText, {color:'black'}]}>Calories</Text>
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop:15}}>
                         <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.green} onPress={() => this._showModal()}>Get Started</Button>
-                        <Button mode='contained' contentStyle={{paddingVertical: 10}} onPress={() => this.onPress()}>Add foodblock</Button>
+                        <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this.onPress()}>Add foodblock</Button>
                     </View>
                 </View>
                 </Provider>
@@ -163,10 +181,16 @@ export default connect((state, ownProps) => {
         )
     }
 })
+
 const surfaceStyles = StyleSheet.create({
     surface: {
         padding: 20,
         elevation: 4,
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        height: '100%',
+        width: '100%',
     },
 });
 
@@ -175,20 +199,25 @@ const textStyles = StyleSheet.create({
         fontSize: 24,
         lineHeight: 30,
         paddingTop: 20,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        fontFamily: 'montserrat'
     },
     sub: {
         fontSize: 14,
         paddingLeft: 20,
         paddingRight: 10,
         padding: 9,
+        fontFamily: 'montserrat'
     },
     button: {
         fontSize: 14,
+        color: colors.foodblocksRed,
+        fontFamily: 'montserrat'
     },
     circleText: {
         fontSize: 14,
         color: 'white',
+        fontFamily: 'montserrat'
     }
 })
 
