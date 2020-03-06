@@ -1,12 +1,7 @@
 import React from 'react'
-import {StyleSheet, Text, View} from 'react-native'
+import {StyleSheet, View, Keyboard} from 'react-native'
 import {
-    Searchbar,
-    Subheading,
-    Provider,
-    Portal,
-    Button,
-    Headline, Card, Modal
+    Searchbar, Subheading, Portal, Button, Modal, ActivityIndicator
 } from 'react-native-paper';
 import colors from '../../../../settings/colors'
 import styles from "../../../../settings/styles"
@@ -32,17 +27,13 @@ const FoodWithParams = withRouteParams(Food);
 //TODO: validate that a search has enough valid results i.e. it wont have info missing
 //TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
 
-
-//TODO: the filters button will open up a dialog showing a filters menu
-//TODO: figure out how to store filter data and pass it to the Filters.js
-//the filters displayed will only be the active ones then.
-
-
 const filterNames = ['Vegan', 'Halal', 'Gluten-free', 'Keto', 'Dairy-free']
 
 class Search extends React.Component {
 
     state = {
+        searchedYet: false,
+        searching: false,
         query: '',
         searchData: [],
         filtersVisible: false,
@@ -61,13 +52,13 @@ class Search extends React.Component {
         })
     }
 
-    onPressFilter = (filterName) => {
+    onPressFilter = async (filterName) => {
         const filters = this.state.filters
         const index = filters.findIndex(filter => filter.name === filterName)
 
         filters[index] = {name: filterName, active: !filters[index].active}
 
-        this.setState({filters});
+        await this.setState({filters});
         this.updateSearchResults()
     }
 
@@ -80,10 +71,10 @@ class Search extends React.Component {
 
     //TODO: run search on delish and all recipe at the same time
 
-    async updateSearchResults() {
+    updateSearchResults = async () => {
         //react state is actually kinda async so i have to do await here and
         // down on setting the new state or there will be weird behavior
-        await this.setState({searchData: []});
+        await this.setState({searching: true, searchedYet: true, searchData: []});
         let query = this.state.query;
         if (!query) {
             return;
@@ -94,7 +85,7 @@ class Search extends React.Component {
             }
         })
         const searchData = await search(query, searches);
-        await this.setState({searchData})
+        await this.setState({searching: false, searchData})
     }
 
     render() {
@@ -122,7 +113,10 @@ class Search extends React.Component {
                         }}
                     />
                     <Button color='white'
-                            onPress={() => this.showModal()}
+                            onPress={() => {
+                                Keyboard.dismiss()
+                                this.showModal()
+                            }}
                             style={{
                                 paddingLeft: 10,
                                 paddingTop: 10,
@@ -133,13 +127,14 @@ class Search extends React.Component {
                     </Button>
                 </View>
                 <View style={{flex: 1, backgroundColor: colors.grey}}>
-                    {this.state.query ?
-                        <FoodBlockScroll
-                            onPress={(URL) => {
-                                this.props.navigation.navigate('Food', {URL})
-                            }}
-                            columns={2} URLs={this.state.searchData}/> :
-                        <View style={{
+                    {this.state.searchedYet ?
+                        (this.state.searching ? <ActivityIndicator/> :
+                                <FoodBlockScroll
+                                    onPress={(URL) => {
+                                        this.props.navigation.navigate('Food', {URL})
+                                    }}
+                                    columns={2} URLs={this.state.searchData}/>
+                        ) : <View style={{
                             flex: 1,
                             alignItems: 'center',
                             justifyContent: 'center',
