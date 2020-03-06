@@ -2,11 +2,11 @@ import React from 'react'
 import {View, TouchableOpacity} from 'react-native'
 import {TextInput, Headline, List, Colors, IconButton, Button} from 'react-native-paper';
 import colors from '../../../settings/colors'
-import SafeView from '../SafeView'
 import {ACTIONS} from "../../state/State";
 import {connect} from "react-redux";
 import InputSpinner from "react-native-input-spinner";
 import DraggableFlatList from "react-native-draggable-dynamic-flatlist";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 
 class Groceries extends React.Component {
@@ -53,7 +53,7 @@ class Groceries extends React.Component {
     render() {
         return (
             <View style={{flex: 1}}>
-                <SafeView style={{backgroundColor: colors.foodblocksRed}}>
+                <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
                             Grocery List
@@ -73,7 +73,7 @@ class Groceries extends React.Component {
                         onChangeText={text => this.setState({text})}
                         onSubmitEditing={() => this.submit()}
                     />
-                </SafeView>
+                </SafeAreaView>
                 <View style={{flex: 1}}>
                     <DraggableFlatList
                         data={this.props.groceries}

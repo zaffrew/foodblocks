@@ -1,6 +1,5 @@
 import React from 'react'
 import {Avatar, IconButton, List, Subheading, Surface, Title} from 'react-native-paper';
-import SafeView from "../../SafeView";
 import {createStackNavigator} from "@react-navigation/stack";
 import Payment from "./Payment";
 import Help from "./Help";
@@ -12,6 +11,7 @@ import Email from "../../login/Email";
 import memoizeOne from "memoize-one";
 import {ACTIONS} from "../../../state/State";
 import withProps from "../../withProps";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const Stack = createStackNavigator();
 
@@ -61,7 +61,8 @@ const UserScreen = connect((state) => {
 
     render() {
         return (
-            <SafeView style={{flex: 1, flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start'}}>
+            <SafeAreaView
+                style={{flex: 1, flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start'}}>
                 <Surface
                     style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
                     {this.memoizedAvatar(this.props.username)}
@@ -95,7 +96,7 @@ const UserScreen = connect((state) => {
                         />
                     </List.Section>
                 </Surface>
-            </SafeView>
+            </SafeAreaView>
         )
     }
 });
