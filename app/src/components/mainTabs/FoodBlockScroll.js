@@ -11,7 +11,7 @@ export default function FoodBlockScroll(props) {
         return (
             <FoodBlock margin={margin}
                        URL={URL}
-                       key={i}
+                       key={URL}
                        height={160}
                        onPress={props.onPress}
             />
