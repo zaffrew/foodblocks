@@ -83,7 +83,22 @@ export default connect((state, ownProps) => {
                                     </View>
                                     <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this.onPress()}>Add foodblock</Button>
                                     <View>
-                                        
+                                        <Text>Recipe by {data.author}</Text>
+                                        <Text style={{textAlign: 'center', fontStyle: 'italic'}}>{data.description}</Text>
+                                        <Title>Ingredients Required</Title>
+                                        <Text>{data.ingredients}</Text>
+                                        {(data.prepTime || data.cookTime || data.totalTime) &&
+                                        <View style={{paddingVertical: 10}}>
+                                            <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
+                                            {data.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
+                                            Time: {moment.duration(data.prepTime).asMinutes()}M</Paragraph>}
+                                            {data.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
+                                            Time: {moment.duration(data.cookTime).asMinutes()}M</Paragraph>}
+                                            {data.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
+                                            Time: {moment.duration(data.totalTime).asMinutes()}M</Paragraph>}
+                                        </View>}
+                                        <Title>Directions</Title>
+                                        <Text>{data.directions}</Text>
                                     </View>
                                     </ScrollView>
                                     
@@ -185,6 +200,8 @@ export default connect((state, ownProps) => {
 const surfaceStyles = StyleSheet.create({
     surface: {
         padding: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
         elevation: 4,
         alignItems: 'center',
         justifyContent: 'center',
