@@ -5,6 +5,7 @@ import {View} from "react-native";
 
 import {Button, Dialog, Paragraph, Portal, TextInput, Title, withTheme} from 'react-native-paper'
 import withProps from "../utils/withProps";
+import invertTheme from "../utils/invertTheme";
 
 //TODO: remove all uses
 
@@ -34,16 +35,7 @@ export default withProps(withTheme(class extends React.Component {
     }
 
     render() {
-        const oldColors = this.props.theme.colors;
-
-        const theme = {
-            colors: {
-                primary: oldColors.background,
-                background: oldColors.primary,
-                text: oldColors.background,
-                placeholder: oldColors.background,
-            }
-        };
+        const theme = invertTheme(this.props.theme)
 
         return (
             <View style={[styles.centeredContainer, {backgroundColor: theme.colors.background}]}>
