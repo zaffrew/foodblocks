@@ -75,7 +75,7 @@ export default connect((state, ownProps) => {
                             <View>
                                 <Surface style={surfaceStyles.surface}>
                                     <Button color={colors.foodblocksRed} icon='close' onPress={this._hideModal}></Button>
-                                    <ScrollView>
+                                    <ScrollView showsHorizontalScrollIndicator={false}>
                                     <Title style={textStyles.title}>{data.title}</Title>
                                     <View style={{flexDirection:'row'}}>
                                         <Text style={[textStyles.sub, {color:'grey'}]}>{data.source_name.toUpperCase()}</Text>
@@ -83,22 +83,22 @@ export default connect((state, ownProps) => {
                                     </View>
                                     <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this.onPress()}>Add foodblock</Button>
                                     <View>
-                                        <Text>Recipe by {data.author}</Text>
-                                        <Text style={{textAlign: 'center', fontStyle: 'italic'}}>{data.description}</Text>
-                                        <Title>Ingredients Required</Title>
-                                        <Text>{data.ingredients}</Text>
+                                        <Text style={[textStyles.sub, {textAlign:'center'}]}>Recipe by {data.author}</Text>
+                                        <Text style={[textStyles.sub, {textAlign:'center', fontStyle: 'italic'}]}>{data.description}</Text>
+                                        <Title style={textStyles.heading}>Ingredients Required</Title>
+                                        <Text style={textStyles.body}>{data.ingredients}</Text>
                                         {(data.prepTime || data.cookTime || data.totalTime) &&
                                         <View style={{paddingVertical: 10}}>
-                                            <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
-                                            {data.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
+                                            <Title style={textStyles.heading}>Time needed</Title>
+                                            {data.prepTime && <Paragraph style={textStyles.body}>Prep
                                             Time: {moment.duration(data.prepTime).asMinutes()}M</Paragraph>}
-                                            {data.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
+                                            {data.cookTime && <Paragraph style={textStyles.body}>Cook
                                             Time: {moment.duration(data.cookTime).asMinutes()}M</Paragraph>}
-                                            {data.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
+                                            {data.totalTime && <Paragraph style={textStyles.body}>Total
                                             Time: {moment.duration(data.totalTime).asMinutes()}M</Paragraph>}
                                         </View>}
-                                        <Title>Directions</Title>
-                                        <Text>{data.directions}</Text>
+                                        <Title style={textStyles.heading}>Directions</Title>
+                                        <Text style={textStyles.body}>{data.directions}</Text>
                                     </View>
                                     </ScrollView>
                                     
@@ -212,6 +212,10 @@ const surfaceStyles = StyleSheet.create({
 });
 
 const textStyles = StyleSheet.create({
+    heading: {
+        fontSize: 18,
+        fontFamily: 'montserrat',
+    },
     title: {
         fontSize: 24,
         lineHeight: 30,
@@ -235,7 +239,12 @@ const textStyles = StyleSheet.create({
         fontSize: 14,
         color: 'white',
         fontFamily: 'montserrat'
-    }
+    },
+    body: {
+        fontSize: 14,
+        fontFamily: 'montserrat',
+        color: colors.darkGrey,
+    },
 })
 
 const circleStyle = StyleSheet.create({
