@@ -72,13 +72,13 @@ class Search extends React.Component {
     //TODO: run search on delish and all recipe at the same time
 
     updateSearchResults = async () => {
-        //react state is actually kinda async so i have to do await here and
-        // down on setting the new state or there will be weird behavior
-        await this.setState({searching: true, searchedYet: true, searchData: []});
         let query = this.state.query;
         if (!query) {
             return;
         }
+        //react state is actually kinda async so i have to do await here and
+        // down on setting the new state or there will be weird behavior
+        await this.setState({searching: true, searchedYet: true, searchData: []});
         this.state.filters.forEach(({name, active}) => {
             if (active) {
                 query += ' ' + name
