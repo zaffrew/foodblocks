@@ -2,7 +2,7 @@ import React from 'react'
 import {createStackNavigator} from "@react-navigation/stack";
 import Username from "./Username";
 
-import withProps from '../withProps'
+import withProps from '../../utils/withProps'
 import Email from "./Email";
 
 const Stack = createStackNavigator();

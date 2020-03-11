@@ -4,7 +4,9 @@ import styles from '../../settings/styles'
 import {View} from "react-native";
 
 import {Button, Dialog, Paragraph, Portal, TextInput, Title, withTheme} from 'react-native-paper'
-import withProps from "./withProps";
+import withProps from "../utils/withProps";
+
+//TODO: remove all uses
 
 export default withProps(withTheme(class extends React.Component {
 

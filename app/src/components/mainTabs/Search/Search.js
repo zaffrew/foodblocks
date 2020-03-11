@@ -5,9 +5,9 @@ import {
 } from 'react-native-paper';
 import colors from '../../../../settings/colors'
 import styles from "../../../../settings/styles"
-import FoodBlockScroll from "../FoodBlockScroll";
+import FoodBlockScroll from "../../FoodBlockScroll";
 import {createStackNavigator} from "@react-navigation/stack";
-import withRouteParams from "../../withRouteParams";
+import withRouteParams from "../../../utils/withRouteParams";
 import Food from "../../Food";
 
 import {SOURCES, search as scraper_search} from '../../../scraper/Scraper'

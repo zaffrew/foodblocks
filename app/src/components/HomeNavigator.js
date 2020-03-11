@@ -3,7 +3,7 @@ import Food from "./Food";
 
 import {createStackNavigator} from '@react-navigation/stack';
 import React from "react";
-import withRouteParams from "./withRouteParams";
+import withRouteParams from "../utils/withRouteParams";
 
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food)
