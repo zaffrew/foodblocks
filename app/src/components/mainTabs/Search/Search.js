@@ -16,8 +16,8 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {connect} from "react-redux";
 
 const SOURCE = SOURCES.ALL_RECIPE;
-const search = async (query, num) => {
-    return await scraper_search(query, num, SOURCE)
+const search = async (query, filters, num) => {
+    return await scraper_search(query, filters, num, SOURCE)
 };
 
 const searches = 20;
@@ -28,9 +28,7 @@ const FoodWithParams = withRouteParams(Food);
 //TODO: validate that a search has enough valid results i.e. it wont have info missing
 //TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
 
-const Search = connect(state => ({
-    filters: state.user_info.filters
-}))(class extends React.Component {
+const Search = connect(state => ({filters: state.user_info.filters}))(class extends React.Component {
 
     state = {
         searchedYet: false,
@@ -54,12 +52,10 @@ const Search = connect(state => ({
         //react state is actually kinda async so i have to do await here and
         // down on setting the new state or there will be weird behavior
         await this.setState({searching: true, searchedYet: true, searchData: []});
-        this.props.filters.forEach(({name, active}) => {
-            if (active) {
-                query += ' ' + name
-            }
-        })
-        const searchData = await search(query, searches);
+
+        const activeFilters = this.props.filters.filter(({active}) => active)
+
+        const searchData = await search(query, activeFilters, searches);
         await this.setState({searching: false, searchData})
     }
 

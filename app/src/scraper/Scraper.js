@@ -2,6 +2,7 @@ import URL_PARSE from "url-parse";
 import {getData as ALL_RECIPE_getData, search as ALL_RECIPE_search} from './AllRecipe'
 import {getData as DELISH_getData, search as DELISH_search} from './Delish'
 import {store, ACTIONS} from '../state/State'
+import moment from "moment";
 
 const SOURCES = {
     ALL_RECIPE: 'www.allrecipes.com',
@@ -15,7 +16,14 @@ const SOURCES = {
  * @param source
  * @returns {Promise<*>} A promise that will eventually return an array of URLs.
  */
-async function search(query, num, source) {
+async function search(query, filters = [], num = 20, source = SOURCES.ALL_RECIPE) {
+    store.dispatch({
+        type: ACTIONS.ADD_SEARCH_HISTORY,
+        query,
+        filters,
+        time: moment().toISOString()
+    })
+
     let searchRes = store.getState().cache.searches[query];
     if (searchRes) {
         return searchRes
