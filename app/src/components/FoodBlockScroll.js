@@ -1,7 +1,6 @@
 import React from 'react'
-import {ScrollView, View} from "react-native";
+import {ScrollView} from "react-native";
 import FoodBlock from "./FoodBlock";
-import {connect} from "react-redux";
 import getRowView from "../utils/getRowView";
 
 const margin = 8;
@@ -18,7 +17,7 @@ export default function FoodBlockScroll(props) {
         )
     });
 
-    return getRowView(blocks, props.columns, ScrollView, {
+    return getRowView(blocks, props.crossAxisSize, ScrollView, {
         horizontal: props.horizontal,
         showsVerticalScrollIndicator: false
     })

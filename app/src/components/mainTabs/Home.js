@@ -1,35 +1,67 @@
 import React from "react";
-import {ScrollView} from "react-native";
-import styles from "../../../settings/styles";
-import {Title} from "react-native-paper";
 import {connect} from 'react-redux'
 import {getData, search} from "../../scraper/AllRecipe"
+import {createStackNavigator} from "@react-navigation/stack";
+import withRouteParams from "../../utils/withRouteParams";
+import Food from "../Food";
+import FoodBlockScroll from "../FoodBlockScroll";
 import {SafeAreaView} from "react-native-safe-area-context";
+import {Headline, Title} from "react-native-paper";
+import {ScrollView} from "react-native";
 
 //TODO: Home is still broken and needs to be overhauled with new search and new foodblock scroll component.
 
-class Home extends React.Component {
+const testRecipes = ['https://www.allrecipes.com/recipe/8652/garlic-chicken/',
+    'https://www.allrecipes.com/recipe/217962/jans-pretzel-dogs/',
+    'https://www.delish.com/cooking/recipe-ideas/a28143935/taco-bloody-marys-recipe/',
+    'https://www.allrecipes.com/recipe/14169/mexican-bean-salad',
+]
 
-    openFood = async function (searchTerm) {
-        const data = await getData((await search(searchTerm, 1))[0]);
-        this.props.navigation.navigate('Food', {data});
-    }.bind(this);
+const HomeStack = createStackNavigator();
+const FoodWithProps = withRouteParams(Food)
+
+const Home = connect((state) => ({username: state.user_info.username}))(class extends React.Component {
+    openFood = (URL) => {
+        this.props.navigation.navigate('Food', {URL})
+    }
 
     render() {
-        return null
-        // return (
-        //     <SafeAreaView style={styles.container}>
-        //         <Title style={{padding: 5, fontSize: 30}}>Hello {this.props.username}!</Title>
-        //         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        //             <SidewaysScroll title={"Taste Breakers"} onTap={this.openFood} height={200} width={200}/>
-        //             <SidewaysScroll title={"Popular Near You"} onTap={this.openFood} height={200} width={200}/>
-        //             <SidewaysScroll title={"Top Ten This Week"} onTap={this.openFood} height={200} width={200}/>
-        //             <SidewaysScroll title={"Recent Meals"} onTap={this.openFood} height={200} width={200}/>
-        //             <SidewaysScroll title={"Pantry to Plate"} onTap={this.openFood} height={200} width={200}/>
-        //         </ScrollView>
-        //     </SafeAreaView>
-        // );
+        return (
+            <SafeAreaView style={{flex: 1}}>
+                <ScrollView>
+                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
+                        Hello {this.props.username}!
+                    </Title>
+                    <Headline>
+                        Recommended For You
+                    </Headline>
+                    <FoodBlockScroll onPress={this.openFood} horizontal URLs={testRecipes}/>
+                    <Headline>
+                        Recently Viewed
+                    </Headline>
+                    <FoodBlockScroll onPress={this.openFood} horizontal URLs={testRecipes}/>
+                    <Headline>
+                        Next up
+                    </Headline>
+                    <FoodBlockScroll onPress={this.openFood} horizontal URLs={testRecipes}/>
+                    <Headline>
+                        Popular in your area
+                    </Headline>
+                    <FoodBlockScroll onPress={this.openFood} horizontal URLs={testRecipes}/>
+                </ScrollView>
+            </SafeAreaView>
+        )
+    }
+})
+
+export default class HomeNavigator extends React.Component {
+    render() {
+        return (
+            <HomeStack.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
+                                 initialRouteName="Home">
+                <HomeStack.Screen options={{headerShown: false}} name="Home" component={Home}/>
+                <HomeStack.Screen name="Food" component={FoodWithProps}/>
+            </HomeStack.Navigator>
+        )
     }
 }
-
-export default connect((state) => ({username: state.user_info.username}))(Home);

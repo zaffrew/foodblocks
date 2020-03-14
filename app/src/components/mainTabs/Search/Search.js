@@ -104,7 +104,7 @@ const Search = connect(state => ({filters: state.user_info.filters}))(class exte
                                     onPress={(URL) => {
                                         this.props.navigation.navigate('Food', {URL})
                                     }}
-                                    columns={2} URLs={this.state.searchData}/>
+                                    crossAxisSize={2} URLs={this.state.searchData}/>
                         ) : <View style={{
                             flex: 1,
                             alignItems: 'center',
