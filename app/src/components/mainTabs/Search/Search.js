@@ -13,6 +13,7 @@ import Food from "../../Food";
 import {SOURCES, search as scraper_search} from '../../../scraper/Scraper'
 import Filters from "./Filters";
 import {SafeAreaView} from "react-native-safe-area-context";
+import {connect} from "react-redux";
 
 const SOURCE = SOURCES.ALL_RECIPE;
 const search = async (query, num) => {
@@ -27,9 +28,9 @@ const FoodWithParams = withRouteParams(Food);
 //TODO: validate that a search has enough valid results i.e. it wont have info missing
 //TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
 
-const filterNames = ['Vegan', 'Halal', 'Gluten-free', 'Keto', 'Dairy-free']
-
-class Search extends React.Component {
+const Search = connect(state => ({
+    filters: state.user_info.filters
+}))(class extends React.Component {
 
     state = {
         searchedYet: false,
@@ -37,33 +38,7 @@ class Search extends React.Component {
         query: '',
         searchData: [],
         filtersVisible: false,
-        filters: filterNames.map(e => ({name: e, active: false})),
         addFilterText: '',
-    }
-
-    constructor(props) {
-        super(props);
-        this.updateSearchResults = this.updateSearchResults.bind(this);
-    }
-
-    onChangeText(filter) {
-        this.setState({
-            addFilterText: filter
-        })
-    }
-
-    onPressFilter = async (filterName) => {
-        const filters = this.state.filters
-        const index = filters.findIndex(filter => filter.name === filterName)
-
-        filters[index] = {name: filterName, active: !filters[index].active}
-
-        await this.setState({filters});
-        this.updateSearchResults()
-    }
-
-    toggleModal() {
-        this.setState({filtersVisible: !this.state.filtersVisible})
     }
 
     showModal = () => this.setState({filtersVisible: true});
@@ -79,7 +54,7 @@ class Search extends React.Component {
         //react state is actually kinda async so i have to do await here and
         // down on setting the new state or there will be weird behavior
         await this.setState({searching: true, searchedYet: true, searchData: []});
-        this.state.filters.forEach(({name, active}) => {
+        this.props.filters.forEach(({name, active}) => {
             if (active) {
                 query += ' ' + name
             }
@@ -98,7 +73,7 @@ class Search extends React.Component {
                         {/*TODO: Make a better filter design.*/}
                         <Modal visible={this.state.filtersVisible} onDismiss={this.hideModal}>
                             <View style={{alignItems: 'center'}}>
-                                <Filters filters={this.state.filters} filterPressed={this.onPressFilter}/>
+                                <Filters/>
                             </View>
                         </Modal>
                     </Portal>
@@ -146,7 +121,7 @@ class Search extends React.Component {
             </SafeAreaView>
         )
     }
-}
+})
 
 const cardStyle = StyleSheet.create({
     container: {
