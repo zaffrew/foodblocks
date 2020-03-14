@@ -25,7 +25,8 @@ class Meals extends React.Component {
                 <FoodBlockScroll onPress={(URL) => {
                     this.props.navigation.navigate('Food', {URL})
                 }}
-                                 crossAxisSize={2} URLs={this.props.recipes}/>
+                                 blockLength={160}
+                                 blocksPerCrossAxis={2} URLs={this.props.recipes}/>
             </View>
         );
     }

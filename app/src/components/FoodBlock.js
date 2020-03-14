@@ -2,8 +2,7 @@ import React from 'react'
 import {Image} from "react-native";
 import {ActivityIndicator, Card, Text} from "react-native-paper";
 import {getThumbnail} from "../scraper/Scraper";
-import {View} from "react-native";
-
+import styles from '../../settings/styles'
 
 export default class FoodBlock extends React.Component {
     state = {}
@@ -17,14 +16,23 @@ export default class FoodBlock extends React.Component {
 
         if (!data) {
             return (
-                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <Card style={{
+                    margin: this.props.margin,
+                    height: this.props.height,
+                    width: this.props.width,
+                    alignItems: 'center',
+                    flex: 1,
+                    justifyContent: 'center',
+                    flexDirection: 'row'
+                    // im not sure why but this flex direction row is needed
+                }}>
                     <ActivityIndicator/>
-                </View>
+                </Card>
             )
         }
 
         return (
-            <Card style={{margin: this.props.margin, flex: 1, height: this.props.height}}
+            <Card style={{margin: this.props.margin, flex: 1, height: this.props.height, width: this.props.width}}
                   onPress={() => {
                       this.props.onPress(data.URL)
                   }}>

@@ -9,12 +9,11 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {Headline, Title} from "react-native-paper";
 import {ScrollView} from "react-native";
 
-//TODO: Home is still broken and needs to be overhauled with new search and new foodblock scroll component.
-
-const testRecipes = ['https://www.allrecipes.com/recipe/8652/garlic-chicken/',
+const testRecipes = [
+    'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
     'https://www.allrecipes.com/recipe/217962/jans-pretzel-dogs/',
     'https://www.delish.com/cooking/recipe-ideas/a28143935/taco-bloody-marys-recipe/',
-    'https://www.allrecipes.com/recipe/14169/mexican-bean-salad',
+    'https://www.allrecipes.com/recipe/14169/mexican-bean-salad/',
 ]
 
 const HomeStack = createStackNavigator();
@@ -26,6 +25,14 @@ const Home = connect((state) => ({username: state.user_info.username}))(class ex
     }
 
     render() {
+        const scrollProps = {
+            scrollLength: 200,
+            blockLength: 160,
+            onPress: this.openFood,
+            horizontal: true,
+            URLs: testRecipes,
+        }
+
         return (
             <SafeAreaView style={{flex: 1}}>
                 <ScrollView>
@@ -35,19 +42,19 @@ const Home = connect((state) => ({username: state.user_info.username}))(class ex
                     <Headline>
                         Recommended For You
                     </Headline>
-                    <FoodBlockScroll onPress={this.openFood} horizontal URLs={testRecipes}/>
+                    <FoodBlockScroll {...scrollProps}/>
                     <Headline>
                         Recently Viewed
                     </Headline>
-                    <FoodBlockScroll onPress={this.openFood} horizontal URLs={testRecipes}/>
+                    <FoodBlockScroll {...scrollProps}/>
                     <Headline>
                         Next up
                     </Headline>
-                    <FoodBlockScroll onPress={this.openFood} horizontal URLs={testRecipes}/>
+                    <FoodBlockScroll {...scrollProps}/>
                     <Headline>
                         Popular in your area
                     </Headline>
-                    <FoodBlockScroll onPress={this.openFood} horizontal URLs={testRecipes}/>
+                    <FoodBlockScroll {...scrollProps}/>
                 </ScrollView>
             </SafeAreaView>
         )

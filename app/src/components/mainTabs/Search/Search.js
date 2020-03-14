@@ -99,12 +99,14 @@ const Search = connect(state => ({filters: state.user_info.filters}))(class exte
                 </View>
                 <View style={{flex: 1, backgroundColor: colors.grey}}>
                     {this.state.searchedYet ?
-                        (this.state.searching ? <ActivityIndicator/> :
+                        (this.state.searching ?
+                                <ActivityIndicator/> :
                                 <FoodBlockScroll
                                     onPress={(URL) => {
                                         this.props.navigation.navigate('Food', {URL})
                                     }}
-                                    crossAxisSize={2} URLs={this.state.searchData}/>
+                                    blocksPerCrossAxis={2} URLs={this.state.searchData}
+                                    blockLength={160}/>
                         ) : <View style={{
                             flex: 1,
                             alignItems: 'center',
