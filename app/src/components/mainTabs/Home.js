@@ -6,8 +6,9 @@ import withRouteParams from "../../utils/withRouteParams";
 import Food from "../Food";
 import FoodBlockScroll from "../FoodBlockScroll";
 import {SafeAreaView} from "react-native-safe-area-context";
-import {Headline, Title} from "react-native-paper";
-import {ScrollView} from "react-native";
+import {Headline, Text, Title} from "react-native-paper";
+import {ScrollView, View} from "react-native";
+import filterUnique from "../../utils/filterUnique";
 
 const testRecipes = [
     'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
@@ -19,14 +20,23 @@ const testRecipes = [
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food)
 
-const Home = connect((state) => ({username: state.user_info.username}))(class extends React.Component {
+//TODO: the home page updates before the food navigated to
+
+//TODO: i cant navigate while things are loading
+
+const Home = connect((state) => ({
+    username: state.user_info.username,
+    food_history: filterUnique(state.user_info.food_history.map(({URL}) => URL))
+}))
+(class extends React.Component {
     openFood = (URL) => {
         this.props.navigation.navigate('Food', {URL})
     }
 
     render() {
+        const scrollLength = 200;
         const scrollProps = {
-            scrollLength: 200,
+            scrollLength,
             blockLength: 160,
             onPress: this.openFood,
             horizontal: true,
@@ -46,7 +56,15 @@ const Home = connect((state) => ({username: state.user_info.username}))(class ex
                     <Headline>
                         Recently Viewed
                     </Headline>
-                    <FoodBlockScroll {...scrollProps}/>
+                    {this.props.food_history.length > 0 ?
+                        <FoodBlockScroll {...scrollProps} URLs={this.props.food_history}/>
+                        :
+                        <View style={{alignItems: 'center', justifyContent: 'center'}} height={scrollLength}>
+                            <Text>
+                                View some foods to see them appear!
+                            </Text>
+                        </View>
+                    }
                     <Headline>
                         Next up
                     </Headline>

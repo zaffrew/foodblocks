@@ -1,15 +1,15 @@
 import settings from '../../settings/appSettings'
-import {interpolate} from "react-native-reanimated";
 
 const ACTIONS = {
     USERNAME: 'USERNAME',
     EMAIL: "EMAIL",
     SET_FILTER: 'SET_FILTER',
-    ADD_SEARCH_HISTORY: 'ADD_SEARCH_HISTORY'
+    ADD_SEARCH_HISTORY: 'ADD_SEARCH_HISTORY',
+    ADD_FOOD_HISTORY: 'ADD_FOOD_HISTORY',
 };
 
 const initalFilters = settings.defaultFilters.map(name => ({name, active: false}))
-const initialState = {filters: initalFilters, search_history: []}
+const initialState = {filters: initalFilters, search_history: [], food_history: []}
 
 //i dont know why but for some reason we cant set state={filters: initialFilters}. maybe since it will be changed every time?
 
@@ -25,7 +25,22 @@ function reducer(state = initialState, action) {
             })
             return {...state, filters}
         case ACTIONS.ADD_SEARCH_HISTORY:
-            return {...state, filters: [...state.filters, {query: action.query, filters: action.filters, time: action.time}]}
+            return {
+                ...state,
+                search_history: [...state.search_history, {
+                    query: action.query,
+                    filters: action.filters,
+                    time: action.time
+                }]
+            }
+        case ACTIONS.ADD_FOOD_HISTORY:
+            return {
+                ...state,
+                food_history: [{
+                    URL: action.URL,
+                    time: action.time,
+                }, ...state.food_history]
+            }
         default:
             return state
     }

@@ -26,6 +26,11 @@ export default connect((state, ownProps) => {
     unsave: (URL) => ({
         type: ACTIONS.UNSAVE_RECIPE,
         URL
+    }),
+    add_to_history: URL => ({
+        type: ACTIONS.ADD_FOOD_HISTORY,
+        URL,
+        time: moment().toISOString(),
     })
 })
 (class Food extends React.Component {
@@ -35,6 +40,8 @@ export default connect((state, ownProps) => {
     }
 
     async componentDidMount() {
+        //TODO: this call lags out the opening of the food
+        this.props.add_to_history(this.props.URL)
         this.setState({data: await getData(this.props.URL)})
     }
 
