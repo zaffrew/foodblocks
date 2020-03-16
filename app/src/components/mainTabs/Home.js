@@ -2,10 +2,10 @@ import React from "react";
 import {ScrollView} from "react-native";
 import styles from "../../../settings/styles";
 import SidewaysScroll from "../SidewaysScroll";
-import SafeView from '../SafeView'
 import {Title} from "react-native-paper";
 import {connect} from 'react-redux'
 import {getData, search} from "../../scraper/AllRecipe"
+import {SafeAreaView} from "react-native-safe-area-context";
 
 //TODO: Home is still broken and needs to be overhauled with new search and new foodblock scroll component.
 
@@ -18,7 +18,7 @@ class Home extends React.Component {
 
     render() {
         return (
-            <SafeView style={styles.container}>
+            <SafeAreaView style={styles.container}>
                 <Title style={{padding: 5, fontSize: 30}}>Hello {this.props.username}!</Title>
                 <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
                     <SidewaysScroll title={"Taste Breakers"} onTap={this.openFood} height={200} width={200}/>
@@ -27,7 +27,7 @@ class Home extends React.Component {
                     <SidewaysScroll title={"Recent Meals"} onTap={this.openFood} height={200} width={200}/>
                     <SidewaysScroll title={"Pantry to Plate"} onTap={this.openFood} height={200} width={200}/>
                 </ScrollView>
-            </SafeView>
+            </SafeAreaView>
         );
     }
 }

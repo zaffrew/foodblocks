@@ -10,7 +10,7 @@ import groceries from "../../assets/grocceries.png";
 import meals from "../../assets/plate.png";
 
 import ForYou from "./mainTabs/ForYou";
-import Search from "./mainTabs/Search";
+import Search from "./mainTabs/Search/Search";
 import Groceries from "./mainTabs/Groceries";
 import Meals from "./mainTabs/Meals";
 import UserPage from "./mainTabs/userPage/UserPage";
