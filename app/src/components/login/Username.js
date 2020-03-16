@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {connect} from 'react-redux'
-import withProps from "../withProps";
+import withProps from "../../utils/withProps";
 import SingleUserSetting from "../SingleUserSetting";
 import {ACTIONS} from "../../state/State";
 

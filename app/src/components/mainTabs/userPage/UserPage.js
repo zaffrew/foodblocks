@@ -10,7 +10,7 @@ import Email from "../../login/Email";
 
 import memoizeOne from "memoize-one";
 import {ACTIONS} from "../../../state/State";
-import withProps from "../../withProps";
+import withProps from "../../../utils/withProps";
 import {SafeAreaView} from "react-native-safe-area-context";
 
 const Stack = createStackNavigator();

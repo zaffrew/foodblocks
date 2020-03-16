@@ -15,7 +15,7 @@ import Groceries from "./mainTabs/Groceries";
 import Meals from "./mainTabs/Meals";
 import UserPage from "./mainTabs/userPage/UserPage";
 import {withTheme} from "react-native-paper";
-import HomeNavigator from "./HomeNavigator";
+import Home from "./mainTabs/Home";
 
 const iconMap = {
     Home: homeButton,
@@ -43,13 +43,13 @@ class MainPage extends React.Component {
     render() {
         return (
             <Tab.Navigator barStyle={{backgroundColor: this.props.theme.colors.primary}}
-                           initialRouteName="Search"
+                           initialRouteName="Home"
                            shifting={false}>
-                {/*<Tab.Screen name="Home" component={HomeNavigator} options={{*/}
-                {/*    tabBarIcon: (focused, color) => {*/}
-                {/*        return (getImage("Home", focused, color))*/}
-                {/*    }*/}
-                {/*}}/>*/}
+                <Tab.Screen name="Home" component={Home} options={{
+                    tabBarIcon: (focused, color) => {
+                        return (getImage("Home", focused, color))
+                    }
+                }}/>
                 <Tab.Screen name="ForYou" component={ForYou} options={{
                     tabBarIcon: (focused, color) => {
                         return (getImage("ForYou", focused, color))
