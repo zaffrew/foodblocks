@@ -1,7 +1,7 @@
 import URL_PARSE from "url-parse";
-import {getDOM} from "./getDOM";
+import {getDOM} from "./scraperUtils";
 import moment from "moment";
-import clean from "./clean";
+import removeRepeatedWhitespace from "./StringUtils";
 
 const ORIGIN = 'https://www.delish.com/';
 
@@ -61,15 +61,15 @@ export async function getData(URL) {
 
         const ingredients = [];
         $('.ingredient-item').each((i, e) => {
-            const amount = clean($(e).children('.ingredient-amount').text());
-            const description = clean($(e).children('.ingredient-description').text());
+            const amount = removeRepeatedWhitespace($(e).children('.ingredient-amount').text());
+            const description = removeRepeatedWhitespace($(e).children('.ingredient-description').text());
             ingredients.push((amount ? amount + ' ' : '') + description)
         });
         json['ingredients'] = ingredients;
 
         json['img'] = $('.recipe-body').find('img').attr('data-src');
 
-        json['serving'] = clean($('.yields-amount').text());
+        json['serving'] = removeRepeatedWhitespace($('.yields-amount').text());
 
         json['prepTime'] = getTime($, '.prep-time-amount');
         json['totalTime'] = getTime($, '.total-time-amount');
@@ -85,7 +85,7 @@ export async function getData(URL) {
 }
 
 function getTime($, tag) {
-    const prep_amounts = clean($(tag).text()).split(' ');
+    const prep_amounts = removeRepeatedWhitespace($(tag).text()).split(' ');
     let dur = moment.duration(0);
     dur.add(parseInt(prep_amounts[0]), 'h');
     dur.add(parseInt(prep_amounts[2]), 'm');
