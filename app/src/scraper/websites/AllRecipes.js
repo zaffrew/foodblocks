@@ -44,14 +44,14 @@ async function scrape(recipe) {
     if ((recipe.name = text($('.intro')))) {
         old_scrape(recipe, $)
     } else if ((recipe.name = text($('#recipe-main-content')))) {
-        // new_scrape(recipe, $)
+        new_scrape(recipe, $)
     } else {
         throw new Error('The page is not recognized as an allrecipe recipe page')
     }
     recipe.loaded.page = moment().toISOString();
 }
 
-//nutrition can be found at #nutrition
+//TODO: nutrition can be found at #nutrition
 
 function old_scrape(recipe, $) {
     const locations = {
@@ -86,10 +86,33 @@ function old_scrape(recipe, $) {
     })
 }
 
+function new_scrape(recipe, $) {
+    const locations = {
+        ingredients: '[itemprop=recipeIngredient]',
+        directions: '.recipe-directions__list--item',
+        author: '.submitter__name[itemprop=author]',
+        description: '[itemprop=description]',
+        servings: '[ng-bind=adjustedServings]'
+    }
+    genericScrape(recipe, $, locations)
+
+    recipe.time.total = text($('.ready-in-time'))
+    recipe.image = getHighResURL($('.rec-photo').attr('src'))
+}
+
 function getSearchURL(query) {
     const URL = new URL_PARSE('https://www.allrecipes.com/');
     URL.set('pathname', 'search/results/');
     URL.set('query', {wt: query});
+    return URL.href
+}
+
+function getHighResURL(URL) {
+    URL = new URL_PARSE(URL);
+    //format is /userphotos/widthxheight/photonumber.jpg
+    const split = URL.pathname.split('/')
+    const path = split[1] + '/' + split[3];
+    URL.set('pathname', path);
     return URL.href
 }
 

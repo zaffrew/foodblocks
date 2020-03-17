@@ -68,13 +68,33 @@ export default connect((state, ownProps) => {
         const directions = recipe.directions.map((text, i) =>
             <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>);
 
+        const timing = [];
+        if (recipe.time.prep) {
+            timing.push(
+                <Paragraph key={'prep'} style={{padding: 5, fontSize: 12}}>
+                    Prep Time: {recipe.time.prep}
+                </Paragraph>)
+        }
+        if (recipe.time.cook) {
+            timing.push(
+                <Paragraph key={'cook'} style={{padding: 5, fontSize: 12}}>
+                    Prep Time: {recipe.time.cook}
+                </Paragraph>)
+        }
+        if (recipe.time.total) {
+            timing.push(
+                <Paragraph key={'total'} style={{padding: 5, fontSize: 12}}>
+                    Prep Time: {recipe.time.total}
+                </Paragraph>)
+        }
+
         return (
             <SafeAreaView style={{flex: 1}}>
                 <ScrollView>
                     <Card style={{height: 300}}>
                         <Image style={{flex: 1, resizeMode: 'stretch'}} source={{uri: recipe.image}}/>
                     </Card>
-                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>{recipe.title}</Title>
+                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>{recipe.name}</Title>
                     <View style={{paddingVertical: 10}}>
                         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Title style={styles.subtitle}>Get started</Title>
@@ -101,12 +121,7 @@ export default connect((state, ownProps) => {
                     <View style={{paddingVertical: 10}}>
                         <Surface style={surfaceStyles.surface}>
                             <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
-                            {recipe.time.prep && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
-                                Time: {recipe.time.prep}</Paragraph>}
-                            {recipe.time.cook && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
-                                Time: {recipe.time.cook}</Paragraph>}
-                            {recipe.time.total && <Paragraph style={{padding: 5, fontSize: 12}}>Total
-                                Time: {recipe.time.total}</Paragraph>}
+                            {timing}
                         </Surface>
                     </View>}
                     <View>
