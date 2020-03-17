@@ -1,12 +1,12 @@
 import React from 'react'
 import {Image, ScrollView, StyleSheet, View} from 'react-native'
-import SafeView from '../components/SafeView'
 import {ActivityIndicator, Caption, Card, IconButton, Paragraph, Surface, Title} from "react-native-paper";
 import styles from "../../settings/styles";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
 import moment from "moment";
 import {getData} from "../scraper/Scraper";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 //TODO: add nutrition values
@@ -26,6 +26,11 @@ export default connect((state, ownProps) => {
     unsave: (URL) => ({
         type: ACTIONS.UNSAVE_RECIPE,
         URL
+    }),
+    add_to_history: URL => ({
+        type: ACTIONS.ADD_FOOD_HISTORY,
+        URL,
+        time: moment().toISOString(),
     })
 })
 (class Food extends React.Component {
@@ -35,6 +40,8 @@ export default connect((state, ownProps) => {
     }
 
     async componentDidMount() {
+        //TODO: this call lags out the opening of the food
+        this.props.add_to_history(this.props.URL)
         this.setState({data: await getData(this.props.URL)})
     }
 
@@ -62,7 +69,7 @@ export default connect((state, ownProps) => {
             <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>);
 
         return (
-            <SafeView style={{flex: 1}}>
+            <SafeAreaView style={{flex: 1}}>
                 <ScrollView>
                     <Card style={{height: 300}}>
                         <Image style={{flex: 1, resizeMode: 'stretch'}} source={{uri: data.img}}/>
@@ -124,7 +131,7 @@ export default connect((state, ownProps) => {
                         </Caption>
                     </View>
                 </ScrollView>
-            </SafeView>
+            </SafeAreaView>
         )
     }
 })

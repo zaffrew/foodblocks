@@ -4,6 +4,7 @@ import {getData as DELISH_getData, search as DELISH_search} from './Delish'
 import {store, ACTIONS} from '../state/State'
 import AllRecipes from "./websites/AllRecipes";
 import Recipe from "./Recipe";
+
 import moment from "moment";
 
 const SOURCES = {
@@ -22,7 +23,14 @@ const SCRAPERS = [
  * @param source
  * @returns {Promise<*>} A promise that will eventually return an array of URLs.
  */
-async function search(query, num, source) {
+async function search(query, filters = [], num = 20, source = SOURCES.ALL_RECIPE) {
+    store.dispatch({
+        type: ACTIONS.ADD_SEARCH_HISTORY,
+        query,
+        filters,
+        time: moment().toISOString()
+    })
+
     let searchRes = store.getState().cache.searches[query];
     if (searchRes) {
         return searchRes
