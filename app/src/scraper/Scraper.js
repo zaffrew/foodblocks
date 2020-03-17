@@ -1,15 +1,18 @@
 import {store, ACTIONS} from '../state/State'
 import AllRecipes from "./websites/AllRecipes";
 import Recipe from "./Recipe";
+import Delish from './websites/Delish'
 
 import SearchResult from "./SearchResult";
 
 const SOURCES = {
     ALL_RECIPES: 'ALL_RECIPES',
+    DELISH: 'DELISH',
 };
 
 const SCRAPERS = {
     [SOURCES.ALL_RECIPES]: AllRecipes,
+    [SOURCES.DELISH]: Delish,
 };
 
 /**

@@ -1,7 +1,7 @@
 import URL_PARSE from "url-parse";
 import {getDOM} from "./scraperUtils";
 import moment from "moment";
-import removeRepeatedWhitespace from "./StringUtils";
+import {removeRepeatedWhitespace} from "./StringUtils";
 
 const ORIGIN = 'https://www.delish.com/';
 

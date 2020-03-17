@@ -12,7 +12,7 @@ import filterUnique from "../../utils/filterUnique";
 const testRecipes = [
     'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
     'https://www.allrecipes.com/recipe/217962/jans-pretzel-dogs/',
-    // 'https://www.delish.com/cooking/recipe-ideas/a28143935/taco-bloody-marys-recipe/',
+    'https://www.delish.com/cooking/recipe-ideas/a28143935/taco-bloody-marys-recipe/',
     'https://www.allrecipes.com/recipe/14169/mexican-bean-salad/',
 ];
 

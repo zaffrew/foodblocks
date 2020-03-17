@@ -22,16 +22,18 @@ function text(e) {
 function genericScrape(dest, $, locations) {
     Object.keys(locations).forEach(key => {
         const location = locations[key];
-
-        const e = $(location);
-        if (Array.isArray(dest[key])) {
-            e.each((i, e) => {
-                dest[key].push(text($(e)))
-            })
+        if (typeof location === 'object') {
+            genericScrape(dest[key], $, location)
         } else {
-            dest[key] = text(e)
+            const e = $(location);
+            if (Array.isArray(dest[key])) {
+                e.each((i, e) => {
+                    dest[key].push(text($(e)))
+                })
+            } else {
+                dest[key] = text(e)
+            }
         }
-
     })
 }
 
