@@ -2,6 +2,7 @@ export default function Recipe(URL) {
     this.URL = URL;
     this.name = "";
     this.ingredients = [];
+    this.cleanIngredients = [];
     this.author = "";
     this.description = "";
     this.directions = [];
@@ -14,7 +15,6 @@ export default function Recipe(URL) {
         ready: "",
         total: ""
     };
-    this.timeOfScrape = "";
     this.servings = "";
 
     this.loaded = {

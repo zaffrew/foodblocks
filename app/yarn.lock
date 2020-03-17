@@ -2852,6 +2852,11 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
+ingredients-parser@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/ingredients-parser/-/ingredients-parser-1.4.0.tgz#ed773fd9adf98fadc61f586c08c5688150d02a7d"
+  integrity sha1-7Xc/2a35j63GH1hsCMVogVDQKn0=
+
 inherits@2, inherits@2.0.4, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.3:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.4.tgz#0fa2c64f932917c3433a0ded55363aae37416b7c"

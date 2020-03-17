@@ -20,7 +20,7 @@ function reducer(state = initialState, action) {
         }
         searches = [...searches, action.searchRes];
 
-        return {...state, searches}
+        return {...state, searches: {...state.searches, [action.searchRes.query]: searches}}
     } else {
         return state;
     }

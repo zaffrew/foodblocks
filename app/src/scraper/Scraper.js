@@ -2,6 +2,7 @@ import {store, ACTIONS} from '../state/State'
 import AllRecipes from "./websites/AllRecipes";
 import Recipe from "./Recipe";
 import Delish from './websites/Delish'
+import INGREDIENT_PARSER from 'ingredients-parser'
 
 import SearchResult from "./SearchResult";
 
@@ -98,6 +99,8 @@ async function loadRecipe(recipe) {
     }
 
     await scraper.scrape(recipe);
+    recipe.cleanIngredients = recipe.ingredients.map(ingredient => INGREDIENT_PARSER.parse(ingredient))
+
     return recipe;
 }
 
