@@ -8,8 +8,8 @@ const ACTIONS = {
     ADD_FOOD_HISTORY: 'ADD_FOOD_HISTORY',
 };
 
-const initalFilters = settings.defaultFilters.map(name => ({name, active: false}))
-const initialState = {filters: initalFilters, search_history: [], food_history: []}
+const initalFilters = settings.defaultFilters.map(name => ({name, active: false}));
+const initialState = {filters: initalFilters, search_history: [], food_history: []};
 
 //i dont know why but for some reason we cant set state={filters: initialFilters}. maybe since it will be changed every time?
 
@@ -22,8 +22,8 @@ function reducer(state = initialState, action) {
         case ACTIONS.SET_FILTER:
             const filters = state.filters.map(filter => {
                 return filter.name === action.name ? {name: action.name, active: action.active} : filter
-            })
-            return {...state, filters}
+            });
+            return {...state, filters};
         case ACTIONS.ADD_SEARCH_HISTORY:
             return {
                 ...state,
@@ -32,7 +32,7 @@ function reducer(state = initialState, action) {
                     filters: action.filters,
                     time: action.time
                 }]
-            }
+            };
         case ACTIONS.ADD_FOOD_HISTORY:
             return {
                 ...state,
@@ -40,7 +40,7 @@ function reducer(state = initialState, action) {
                     URL: action.URL,
                     time: action.time,
                 }, ...state.food_history]
-            }
+            };
         default:
             return state
     }

@@ -1,5 +1,5 @@
 export default function invertTheme(theme) {
-    const oldColors = theme.colors
+    const oldColors = theme.colors;
     return {
         ...theme, colors: {
             ...theme.colors,

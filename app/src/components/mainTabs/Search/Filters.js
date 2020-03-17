@@ -1,7 +1,6 @@
 import React from 'react'
-import {View, ScrollView, Text} from "react-native";
+import {Text} from "react-native";
 import {Chip} from "react-native-paper";
-import colors from "../../../../settings/colors";
 import getRowView from "../../../utils/getRowView";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
@@ -26,7 +25,7 @@ class Filters extends React.Component {
                     <Text style={{color: 'white'}}>{name}</Text>
                 </Chip>
             )
-        })
+        });
 
         return getRowView(filters, 3)
     }

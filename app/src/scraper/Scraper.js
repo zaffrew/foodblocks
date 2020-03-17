@@ -1,20 +1,16 @@
-import URL_PARSE from "url-parse";
-import {scrape as ALL_RECIPE_getData, search as ALL_RECIPE_search} from './websites/AllRecipes'
-import {getData as DELISH_getData, search as DELISH_search} from './Delish'
 import {store, ACTIONS} from '../state/State'
 import AllRecipes from "./websites/AllRecipes";
 import Recipe from "./Recipe";
 
-import moment from "moment";
+import SearchResult from "./SearchResult";
 
 const SOURCES = {
-    ALL_RECIPE: 'www.allrecipes.com',
-    DELISH: 'www.delish.com'
+    ALL_RECIPES: 'ALL_RECIPES',
 };
 
-const SCRAPERS = [
-    AllRecipes,
-]
+const SCRAPERS = {
+    [SOURCES.ALL_RECIPES]: AllRecipes,
+};
 
 /**
  * Gets search results from a cache, or scrapes them if not already loaded.
@@ -23,60 +19,84 @@ const SCRAPERS = [
  * @param source
  * @returns {Promise<*>} A promise that will eventually return an array of URLs.
  */
-async function search(query, filters = [], num = 20, source = SOURCES.ALL_RECIPE) {
-    store.dispatch({
-        type: ACTIONS.ADD_SEARCH_HISTORY,
-        query,
-        filters,
-        time: moment().toISOString()
-    })
+async function search(query, num = 20, source = SOURCES.ALL_RECIPES) {
+    //TODO: move this to somewhere better to cache search history
+    // store.dispatch({
+    //     type: ACTIONS.ADD_SEARCH_HISTORY,
+    //     query,
+    //     filters,
+    //     time: moment().toISOString()
+    // });
 
-    let searchRes = store.getState().cache.searches[query];
+    const searches = store.getState().cache.searches[query];
+    let searchRes = searches ? searches.find(searchRes => searchRes.source === source && searchRes.results.length >= num) : null;
+
     if (searchRes) {
-        return searchRes
-    } else {
-        store.dispatch({
-            type: ACTIONS.CACHE_SEARCH,
-            query,
-            searches: await loadSearch(query, num, source)
-        });
-        return store.getState().cache.searches[query]
+        return searchRes;
     }
+
+    searchRes = new SearchResult(query, source, num);
+    //load the search
+    await loadSearch(searchRes);
+
+    //store it in redux
+    store.dispatch({
+        type: ACTIONS.CACHE_SEARCH,
+        searchRes
+    });
+
+    return searchRes;
 }
 
-async function loadSearch(query, num, source) {
-    switch (source) {
-        case SOURCES.ALL_RECIPE:
-            return await ALL_RECIPE_search(query, num);
-        case SOURCES.DELISH:
-            return await DELISH_search(query, num)
-    }
-}
+async function loadSearch(searchRes) {
+    //do the scraping
+    const recipes = await SCRAPERS[searchRes.source].search(searchRes);
 
-async function getData(URL) {
-    const recipe = store.getState().cache.recipes[URL];
-    if (recipe && recipe.loaded.page) {
-        return recipe
-    } else {
+    //store the recipes
+    recipes.forEach(recipe => {
         store.dispatch({
             type: ACTIONS.CACHE_RECIPE,
-            recipe: await loadRecipe(URL)
+            recipe
         });
-        return store.getState().cache.recipes[URL]
-    }
+    });
 }
 
-async function loadRecipe(URL) {
-    const recipe = new Recipe(URL);
-    recipe.timeOfScrape = moment().toISOString();
-    await SCRAPERS.find(({identifier}) => URL.contains(identifier)).scrape(recipe);
-    recipe.loaded.page = true;
-    return recipe
+//this returns a recipe and loads it if it has not already been loaded yet.
+async function getRecipe(URL, thumbnail = false) {
+    let recipe = store.getState().cache.recipes[URL];
+    if (!recipe) {
+        recipe = new Recipe(URL)
+    }
+
+    if (recipe.loaded.page || (thumbnail && recipe.loaded.thumbnail)) {
+        return recipe
+    }
+
+
+    //load the recipe
+    recipe = await loadRecipe(recipe);
+    //store it in redux
+    store.dispatch({
+        type: ACTIONS.CACHE_RECIPE,
+        recipe
+    });
+
+    return recipe;
 }
 
 async function getThumbnail(URL) {
-    const recipe = store.getState().cache.recipes[URL]
-    return recipe ? recipe.thumbnail : (await getData(URL)).thumbnail;
+    return getRecipe(URL, true)
 }
 
-export {SOURCES, getData, search, getThumbnail}
+async function loadRecipe(recipe) {
+    const scraper = Object.values(SCRAPERS).find(({identifier}) => recipe.URL.includes(identifier));
+    if (!scraper) {
+        throw new Error('Scraping from ' + recipe.URL + ' is not supported.')
+    }
+
+    await scraper.scrape(recipe);
+    return recipe;
+}
+
+
+export {SOURCES, getRecipe, getThumbnail, search}

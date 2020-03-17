@@ -19,13 +19,11 @@ function text(e) {
     }
 }
 
-function genericScrape(recipe, $, locations) {
+function genericScrape(dest, $, locations) {
     Object.keys(locations).forEach(key => {
-        console.log('key', key)
-        const location = locations[key]
-        console.log('location', location)
+        const location = locations[key];
 
-        const e = $(location)
+        const e = $(location);
         if (Array.isArray(dest[key])) {
             e.each((i, e) => {
                 dest[key].push(text($(e)))

@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, TouchableOpacity} from 'react-native'
-import {TextInput, Headline, List, Colors, IconButton, Button} from 'react-native-paper';
+import {TextInput, Headline, List, IconButton, Button} from 'react-native-paper';
 import colors from '../../../settings/colors'
 import {ACTIONS} from "../../state/State";
 import {connect} from "react-redux";

@@ -2,19 +2,18 @@ import React from 'react'
 import {Image} from "react-native";
 import {ActivityIndicator, Card, Text} from "react-native-paper";
 import {getThumbnail} from "../scraper/Scraper";
-import styles from '../../settings/styles'
 
 export default class FoodBlock extends React.Component {
-    state = {}
+    state = {};
 
     async componentDidMount() {
-        this.setState({data: await getThumbnail(this.props.URL)})
+        this.setState({recipe: await getThumbnail(this.props.URL)})
     }
 
     render() {
-        const data = this.state.data
+        const recipe = this.state.recipe;
 
-        if (!data) {
+        if (!recipe) {
             return (
                 <Card style={{
                     margin: this.props.margin,
@@ -34,13 +33,13 @@ export default class FoodBlock extends React.Component {
         return (
             <Card style={{margin: this.props.margin, flex: 1, height: this.props.height, width: this.props.width}}
                   onPress={() => {
-                      this.props.onPress(data.URL)
+                      this.props.onPress(recipe.URL)
                   }}>
                 <Card.Content style={{flex: 1}}>
-                    <Text>{data.title}</Text>
+                    <Text>{recipe.name}</Text>
                 </Card.Content>
                 <Image style={{flex: 2, resizeMode: 'cover'}}
-                       source={{uri: data.img}}/>
+                       source={{uri: recipe.image}}/>
             </Card>
         )
     }

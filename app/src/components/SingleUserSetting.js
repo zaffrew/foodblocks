@@ -35,7 +35,7 @@ export default withProps(withTheme(class extends React.Component {
     }
 
     render() {
-        const theme = invertTheme(this.props.theme)
+        const theme = invertTheme(this.props.theme);
 
         return (
             <View style={[styles.centeredContainer, {backgroundColor: theme.colors.background}]}>

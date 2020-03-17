@@ -21,38 +21,17 @@ const initialState = {
 
 function reducer(state = initialState, action) {
     if (action.type === ACTIONS.CACHE_RECIPE) {
-        const URL = action.data.URL
-        const recipeState = {...state.recipes}
-        let recipeData = {...recipeState[URL]}
-        recipeData = {
-            ...recipeData, ...action.data,
-            thumbnail: {
-                URL: action.data.URL,
-                img: action.data.img,
-                title: action.data.title,
-            }, loaded: true
-        }
-
-        recipeState[URL] = recipeData
-
-        return {...state, recipes: recipeState}
+        //this simply overwrites the old recipe that was there before
+        return {...state, recipes: {...state.recipes, [action.recipe.URL]: action.recipe}}
     } else if (action.type === ACTIONS.CACHE_SEARCH) {
-        const recipeState = {...state.recipes};
-        const searchResults = [];
+        //store the search results at the end of the array
+        let searches = state.searches[action.searchRes.query];
+        if (!searches) {
+            searches = []
+        }
+        searches = [...searches, action.searchRes];
 
-        action.searches.forEach(search => {
-            recipeState[search.URL] = {
-                ...recipeState[search.URL],
-                thumbnail: {URL: search.URL, img: search.img, title: search.title}
-            };
-
-            searchResults.push(search.URL)
-        });
-
-
-        const searchState = {...state.searches};
-        searchState[action.query] = searchResults;
-        return {recipes: recipeState, searches: searchState}
+        return {...state, searches}
     } else {
         return state;
     }

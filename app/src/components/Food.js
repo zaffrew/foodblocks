@@ -5,7 +5,7 @@ import styles from "../../settings/styles";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
 import moment from "moment";
-import {getData} from "../scraper/Scraper";
+import {getRecipe} from "../scraper/Scraper";
 import {SafeAreaView} from "react-native-safe-area-context";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
@@ -41,8 +41,8 @@ export default connect((state, ownProps) => {
 
     async componentDidMount() {
         //TODO: this call lags out the opening of the food
-        this.props.add_to_history(this.props.URL)
-        this.setState({data: await getData(this.props.URL)})
+        this.props.add_to_history(this.props.URL);
+        this.setState({recipe: await getRecipe(this.props.URL)})
     }
 
     componentDidUpdate() {
@@ -54,27 +54,27 @@ export default connect((state, ownProps) => {
     onPress() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
-        (pressed ? this.props.save : this.props.unsave)(this.state.data.URL);
+        (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
     }
 
     render() {
-        const data = this.state.data;
-        if (!data) {
+        const recipe = this.state.recipe;
+        if (!recipe) {
             return <ActivityIndicator/>
         }
-        const ingredients = data.ingredients.map((text, i) =>
+        const ingredients = recipe.ingredients.map((text, i) =>
             <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>);
 
-        const directions = data.directions.map((text, i) =>
+        const directions = recipe.directions.map((text, i) =>
             <Paragraph key={i} style={{padding: 5, fontSize: 12}}>{text}</Paragraph>);
 
         return (
             <SafeAreaView style={{flex: 1}}>
                 <ScrollView>
                     <Card style={{height: 300}}>
-                        <Image style={{flex: 1, resizeMode: 'stretch'}} source={{uri: data.img}}/>
+                        <Image style={{flex: 1, resizeMode: 'stretch'}} source={{uri: recipe.image}}/>
                     </Card>
-                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>{data.title}</Title>
+                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>{recipe.title}</Title>
                     <View style={{paddingVertical: 10}}>
                         <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Title style={styles.subtitle}>Get started</Title>
@@ -86,8 +86,8 @@ export default connect((state, ownProps) => {
                             />
                         </View>
                         <Surface style={surfaceStyles.surface}>
-                            <Title style={{padding: 5, fontSize: 18}}>Author: {data.author}</Title>
-                            <Paragraph>{data.description}</Paragraph>
+                            <Title style={{padding: 5, fontSize: 18}}>Author: {recipe.author}</Title>
+                            <Paragraph>{recipe.description}</Paragraph>
                         </Surface>
                     </View>
                     <View style={{paddingVertical: 10}}>
@@ -97,24 +97,16 @@ export default connect((state, ownProps) => {
                             {ingredients}
                         </Surface>
                     </View>
-                    {/*<View style={{paddingVertical: 10}}>*/}
-                    {/*    <Surface style={surfaceStyles.surface}>*/}
-                    {/*        <Title style={{padding: 5, fontSize: 18}}>Tools needed</Title>*/}
-                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Tool 1</Paragraph>*/}
-                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Tool 2</Paragraph>*/}
-                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Makan</Paragraph>*/}
-                    {/*    </Surface>*/}
-                    {/*</View>*/}
-                    {(data.prepTime || data.cookTime || data.totalTime) &&
+                    {(recipe.time.prep || recipe.time.cook || recipe.time.total) &&
                     <View style={{paddingVertical: 10}}>
                         <Surface style={surfaceStyles.surface}>
                             <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
-                            {data.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
-                                Time: {moment.duration(data.prepTime).asMinutes()}M</Paragraph>}
-                            {data.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
-                                Time: {moment.duration(data.cookTime).asMinutes()}M</Paragraph>}
-                            {data.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
-                                Time: {moment.duration(data.totalTime).asMinutes()}M</Paragraph>}
+                            {recipe.time.prep && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
+                                Time: {recipe.time.prep}</Paragraph>}
+                            {recipe.time.cook && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
+                                Time: {recipe.time.cook}</Paragraph>}
+                            {recipe.time.total && <Paragraph style={{padding: 5, fontSize: 12}}>Total
+                                Time: {recipe.time.total}</Paragraph>}
                         </Surface>
                     </View>}
                     <View>
@@ -127,7 +119,7 @@ export default connect((state, ownProps) => {
                     </View>
                     <View>
                         <Caption>
-                            Source: {data.source}
+                            Source: {recipe.source}
                         </Caption>
                     </View>
                 </ScrollView>
