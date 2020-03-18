@@ -56,8 +56,8 @@ async function scrape(recipe) {
             prep: '.prep-time-amount',
             total: '.total-time-amount',
         }
-    }
-    genericScrape(recipe, $, instructions)
+    };
+    genericScrape(recipe, $, instructions);
 
     recipe.image = $('.recipe-body img').attr('data-src');
 

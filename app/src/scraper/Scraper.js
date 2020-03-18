@@ -99,7 +99,7 @@ async function loadRecipe(recipe) {
     }
 
     await scraper.scrape(recipe);
-    recipe.cleanIngredients = recipe.ingredients.map(ingredient => INGREDIENT_PARSER.parse(ingredient))
+    recipe.cleanIngredients = recipe.ingredients.map(ingredient => INGREDIENT_PARSER.parse(ingredient));
 
     return recipe;
 }

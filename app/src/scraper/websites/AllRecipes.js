@@ -1,4 +1,4 @@
-import {getDOM, text, genericScrape} from "../scraperUtils";
+import {getDOM, text, genericScrape, getHTML} from "../scraperUtils";
 import {removeRepeatedWhitespace} from "../StringUtils";
 import URL_PARSE from "url-parse";
 import Recipe from "../Recipe";
@@ -83,7 +83,10 @@ function old_scrape(recipe, $) {
         } else if (key === 'prep' || key === 'cook' || key === 'total') {
             recipe.time[key] = value;
         }
-    })
+    });
+
+    getNutrition(text($('.recipe-nutrition-section')), recipe)
+    // scrapeNutrition($, recipe)
 }
 
 function new_scrape(recipe, $) {
@@ -92,11 +95,14 @@ function new_scrape(recipe, $) {
         directions: '.recipe-directions__list--item',
         author: '.submitter__name[itemprop=author]',
         description: '[itemprop=description]',
-        servings: '[ng-bind=adjustedServings]'
-    }
-    genericScrape(recipe, $, locations)
+        servings: '[ng-bind=adjustedServings]',
+    };
+    genericScrape(recipe, $, locations);
 
-    recipe.time.total = text($('.ready-in-time'))
+    getNutrition(text($('.nutrition-summary-facts')), recipe);
+    // scrapeNutrition($, recipe)
+
+    recipe.time.total = text($('.ready-in-time'));
     recipe.image = getHighResURL($('.rec-photo').attr('src'))
 }
 
@@ -110,10 +116,37 @@ function getSearchURL(query) {
 function getHighResURL(URL) {
     URL = new URL_PARSE(URL);
     //format is /userphotos/widthxheight/photonumber.jpg
-    const split = URL.pathname.split('/')
+    const split = URL.pathname.split('/');
     const path = split[1] + '/' + split[3];
     URL.set('pathname', path);
     return URL.href
+}
+
+//Nutrition is all per serving
+function getNutrition(str, recipe) {
+    str = str.replace('Per Serving:', '');
+    str = str.replace('Full Nutrition', '');
+    str = str.replace('Full nutrition', '');
+    str = removeRepeatedWhitespace(str);
+    const categories = str.split(';');
+    categories.forEach(fact => {
+        if (fact) {
+            const key = fact.split(' ').pop();
+            fact = removeRepeatedWhitespace(fact.replace(key, ''));
+            recipe.nutrition[key.toLowerCase()] = fact;
+        }
+    })
+}
+
+//this doesnt work since the full nutrition modal is not a part of the scrapped html
+function scrapeNutrition($, recipe) {
+    recipe.calories = text($('.nutrition-top.light-underline')).split('Calories:').pop().trim();
+    $('.nutrition-name').each((i, e) => {
+        const textSplit = text($(e)).split(':');
+        const key = textSplit[0].trim();
+        const value = textSplit[1].trim();
+        recipe.nutrition[key.toLowerCase().replace(' ', '-')] = value
+    })
 }
 
 export default {identifier: 'allrecipes.com', search, scrape}

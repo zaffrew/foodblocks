@@ -50,7 +50,7 @@ const Search = connect(state => ({filters: state.user_info.filters}))(class exte
 
         activeFilters.forEach(filter => {
             query += ' ' + filter
-        })
+        });
 
         const searchRes = await search(query);
         await this.setState({searching: false, searchURLs: searchRes.results})

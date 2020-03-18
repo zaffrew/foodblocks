@@ -3,6 +3,15 @@ export default function Recipe(URL) {
     this.name = "";
     this.ingredients = [];
     this.cleanIngredients = [];
+    this.nutrition = {
+        calories: '',
+        totalFat: '',
+        saturatedFat: '',
+        carbohydrates: '',
+        protein: '',
+        cholesterol: '',
+        sodium: '',
+    };
     this.author = "";
     this.description = "";
     this.directions = [];

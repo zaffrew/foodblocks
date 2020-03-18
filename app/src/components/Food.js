@@ -117,13 +117,12 @@ export default connect((state, ownProps) => {
                             {ingredients}
                         </Surface>
                     </View>
-                    {(recipe.time.prep || recipe.time.cook || recipe.time.total) &&
                     <View style={{paddingVertical: 10}}>
                         <Surface style={surfaceStyles.surface}>
                             <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
                             {timing}
                         </Surface>
-                    </View>}
+                    </View>
                     <View>
                         <Title style={[styles.subtitle, {paddingVertical: 10}]}>Steps</Title>
                         <View style={{paddingVertical: 10}}>
