@@ -50,7 +50,6 @@ export async function getData(URL) {
 
         json['timeOfScrape'] = moment().toISOString();
         json['source'] = new URL_PARSE(URL).host;
-        json['source_name'] = 'delish';
 
         json['title'] = $('h1.content-hed.recipe-hed').text().trim();
 
