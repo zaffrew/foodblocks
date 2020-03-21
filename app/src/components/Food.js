@@ -33,7 +33,7 @@ export default connect((state, ownProps) => {
 (class Food extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {pressed: props.saved, visible: false,}
+        this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false}
     }
 
     async componentDidMount() {
@@ -46,18 +46,29 @@ export default connect((state, ownProps) => {
         }
     }
 
-    onPress() {
+    openSelector() {
+        console.log('opening selector');
+        this._showSelector;
+    }
+
+    addFoodblock() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
         (pressed ? this.props.save : this.props.unsave)(this.state.data.URL);
+        
     }
 
-    _showModal = () => this.setState({ visible: true });
-    _hideModal = () => this.setState({ visible: false });
+    _showRecipe = () => this.setState({ recipeVisible: true });
+    _hideRecipe = () => this.setState({ recipeVisible: false });
+
+    _showSelector = () => this.setState({ selectorVisible: true });
+    _hideSelector = () => this.setState({ selectorVisible: false });
 
     render() {
         const data = this.state.data;
-        const {visible} = this.state;
+        const {recipeVisible} = this.state;
+        const {selectorVisible} = this.state;
+
         if (!data) {
             return <ActivityIndicator/>
         }
@@ -71,17 +82,17 @@ export default connect((state, ownProps) => {
             <SafeView style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
                 <Provider>
                     <Portal>
-                        <Modal visible={visible} onDismiss={this._hideModal}>
+                        <Modal visible={recipeVisible} onDismiss={this._hideRecipe}>
                             <View>
                                 <Surface style={surfaceStyles.surface}>
-                                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideModal}></Button>
+                                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideRecipe}></Button>
                                     <ScrollView showsHorizontalScrollIndicator={false}>
                                     <Title style={textStyles.title}>{data.title}</Title>
                                     <View style={{flexDirection:'row'}}>
                                         <Text style={[textStyles.sub, {color:'grey'}]}>{data.source_name.toUpperCase()}</Text>
                                         <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>MORE INFO</Button>
                                     </View>
-                                    <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this.onPress()}>Add foodblock</Button>
+                                    <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this._showSelector()}>Add foodblock</Button>
                                     <View>
                                         <Text style={[textStyles.sub, {textAlign:'center'}]}>Recipe by {data.author}</Text>
                                         <Text style={[textStyles.sub, {textAlign:'center', fontStyle: 'italic'}]}>{data.description}</Text>
@@ -101,64 +112,20 @@ export default connect((state, ownProps) => {
                                         <Text style={textStyles.body}>{data.directions}</Text>
                                     </View>
                                     </ScrollView>
-                                    
                                 </Surface>
                             </View>
-                    {/* <View style={{paddingVertical: 10}}>
-                        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                            <Title style={styles.subtitle}>Get started</Title>
-                            <IconButton
-                                color={this.state.pressed ? 'red' : 'black'}
-                                icon={'star'}
-                                onPress={() => this.onPress()}
-                                size={30}
-                            />
-                        </View>
-                        <Surface style={surfaceStyles.surface}>
-                            <Title style={{padding: 5, fontSize: 18}}>Author: {data.author}</Title>
-                            <Paragraph>{data.description}</Paragraph>
-                        </Surface>
-                    </View>
-                    <View style={{paddingVertical: 10}}>
-                        <Title style={styles.subtitle}>Get started</Title>
-                        <Surface style={surfaceStyles.surface}>
-                            <Title style={{padding: 5, fontSize: 18}}>Ingredients needed</Title>
-                            {ingredients}
-                        </Surface>
-                    </View> */}
-                    {/*<View style={{paddingVertical: 10}}>*/}
-                    {/*    <Surface style={surfaceStyles.surface}>*/}
-                    {/*        <Title style={{padding: 5, fontSize: 18}}>Tools needed</Title>*/}
-                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Tool 1</Paragraph>*/}
-                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Tool 2</Paragraph>*/}
-                    {/*        <Paragraph style={{padding: 5, fontSize: 12}}>Makan</Paragraph>*/}
-                    {/*    </Surface>*/}
-                    {/*</View>*/}
-                    {/* {(data.prepTime || data.cookTime || data.totalTime) &&
-                    <View style={{paddingVertical: 10}}>
-                        <Surface style={surfaceStyles.surface}>
-                            <Title style={{padding: 5, fontSize: 18}}>Time needed</Title>
-                            {data.prepTime && <Paragraph style={{padding: 5, fontSize: 12}}>Prep
-                                Time: {moment.duration(data.prepTime).asMinutes()}M</Paragraph>}
-                            {data.cookTime && <Paragraph style={{padding: 5, fontSize: 12}}>Cook
-                                Time: {moment.duration(data.cookTime).asMinutes()}M</Paragraph>}
-                            {data.totalTime && <Paragraph style={{padding: 5, fontSize: 12}}>Total
-                                Time: {moment.duration(data.totalTime).asMinutes()}M</Paragraph>}
-                        </Surface>
-                    </View>}
-                    <View>
-                        <Title style={[styles.subtitle, {paddingVertical: 10}]}>Steps</Title>
-                        <View style={{paddingVertical: 10}}>
-                            <Surface style={surfaceStyles.surface}>
-                                {directions}
-                            </Surface>
-                        </View>
-                    </View>
-                    <View>
-                        <Caption>
-                            Source: {data.source}
-                        </Caption>
-                    </View> */}
+                        </Modal>
+                        <Modal visible={selectorVisible} onDismiss={this._hideSelector}>
+                            <View>
+                                <Surface style={surfaceStyles.selector}>
+                                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
+                                    <Text style={textStyles.heading}>Plan your meal</Text>
+                                    <View>
+                                        <Text style={{paddingVertical: 20}}>*Insert selector*</Text>
+                                        <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this.addFoodblock()}>Save</Button>
+                                    </View>
+                                </Surface>
+                            </View>
                         </Modal>
                     </Portal>
                 <View style={{backgroundColor: 'white', flex: 1}}>
@@ -172,7 +139,7 @@ export default connect((state, ownProps) => {
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 60, paddingTop:5}}>
                         <View style={circleStyle.circle}>
-                            <Text style={textStyles.circleText}>{data.totalTime}</Text>
+                            <Text style={textStyles.circleText}>{moment.duration(data.totalTime).asMinutes()}</Text>
                         </View>
                         <View style={circleStyle.circle}>
                             
@@ -187,8 +154,8 @@ export default connect((state, ownProps) => {
                         <Text style={[textStyles.circleText, {color:'black'}]}>Calories</Text>
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20, paddingTop:15}}>
-                        <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.green} onPress={() => this._showModal()}>Get Started</Button>
-                        <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this.onPress()}>Add foodblock</Button>
+                        <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.green} onPress={() => this._showRecipe()}>Get Started</Button>
+                        <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed} onPress={() => this._showSelector()}>Add foodblock</Button>
                     </View>
                 </View>
                 </Provider>
@@ -208,6 +175,16 @@ const surfaceStyles = StyleSheet.create({
         alignSelf: 'center',
         height: '100%',
         width: '100%',
+    },
+    selector: {
+        padding: 20,
+        borderRadius: 20,
+        elevation: 5,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        height: '70%',
+        width: '70%',
     },
 });
 
