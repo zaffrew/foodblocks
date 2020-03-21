@@ -40,7 +40,7 @@ export async function search(search, num) {
 
             const title = $(e).find('.fixed-recipe-card__title-link').first().text().trim();
 
-            res.push({URL, img: getHighResURL(img), title})
+            res.push({URL, img, title})
         });
         return res
     })
@@ -53,6 +53,7 @@ export async function getData(URL) {
     return await getDOM(URL).then($ => {
         json['timeOfScrape'] = moment().toISOString();
         json['source'] = new URL_PARSE(URL).host;
+        json['source_name'] = 'allrecipes';
 
         json['title'] = $('.recipe-print__title').text().trim();
 
@@ -70,8 +71,7 @@ export async function getData(URL) {
         });
         json['ingredients'] = ingredients;
 
-        const img = $('img.recipe-print__recipe-img').attr('src');
-        json['img'] = getHighResURL(img);
+        json['img'] = $('img.recipe-print__recipe-img').attr('src');
 
         $('li.prepTime__item').each((i, e) => {
             const timeElement = $(e).children('time');
@@ -94,14 +94,4 @@ export async function getData(URL) {
 
         return json
     })
-}
-
-
-function getHighResURL(URL) {
-    URL = new URL_PARSE(URL);
-    //format is /userphotos/widthxheight/photonumber.jpg
-    const split = URL.pathname.split('/')
-    const path = split[1] + '/' + split[3];
-    URL.set('pathname', path);
-    return URL.href
 }
