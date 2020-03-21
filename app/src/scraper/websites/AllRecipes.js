@@ -51,8 +51,6 @@ async function scrape(recipe) {
     recipe.loaded.page = moment().toISOString();
 }
 
-//TODO: nutrition can be found at #nutrition
-
 function old_scrape(recipe, $) {
     const locations = {
         ingredients: '.ingredients-section > .ingredients-item',

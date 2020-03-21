@@ -5,6 +5,7 @@ import Delish from './websites/Delish'
 import INGREDIENT_PARSER from 'ingredients-parser'
 
 import SearchResult from "./SearchResult";
+import {executeNonBlocking} from "../utils/executeNonBlocking";
 
 const SOURCES = {
     ALL_RECIPES: 'ALL_RECIPES',
@@ -24,14 +25,6 @@ const SCRAPERS = {
  * @returns {Promise<*>} A promise that will eventually return an array of URLs.
  */
 async function search(query, num = 20, source = SOURCES.ALL_RECIPES) {
-    //TODO: move this to somewhere better to cache search history
-    // store.dispatch({
-    //     type: ACTIONS.ADD_SEARCH_HISTORY,
-    //     query,
-    //     filters,
-    //     time: moment().toISOString()
-    // });
-
     const searches = store.getState().cache.searches[query];
     let searchRes = searches ? searches.find(searchRes => searchRes.source === source && searchRes.results.length >= num) : null;
 
@@ -65,6 +58,8 @@ async function loadSearch(searchRes) {
     });
 }
 
+const currentlyLoadingRecipes = {}
+
 //this returns a recipe and loads it if it has not already been loaded yet.
 async function getRecipe(URL, thumbnail = false) {
     let recipe = store.getState().cache.recipes[URL];
@@ -76,9 +71,17 @@ async function getRecipe(URL, thumbnail = false) {
         return recipe
     }
 
+    // this makes sure we're not loading more than one recipe at a time
+    // i dont know if this actually works
+    if (!currentlyLoadingRecipes[URL]) {
+        currentlyLoadingRecipes[URL] = new Promise(resolve => {
+            resolve(loadRecipe(recipe))
+        })
+    }
+    recipe = await currentlyLoadingRecipes[URL]
+    delete currentlyLoadingRecipes[URL]
 
-    //load the recipe
-    recipe = await loadRecipe(recipe);
+
     //store it in redux
     store.dispatch({
         type: ACTIONS.CACHE_RECIPE,
@@ -98,7 +101,12 @@ async function loadRecipe(recipe) {
         throw new Error('Scraping from ' + recipe.URL + ' is not supported.')
     }
 
-    await scraper.scrape(recipe);
+    //this should execute and not block rendering/navigation
+    //using the js queue stops them from all running at the same time which makes it slower
+    //TODO: it doesnt fully block but its still slow
+    await executeNonBlocking(() => scraper.scrape(recipe))
+    // await scraper.scrape(recipe)
+
     recipe.cleanIngredients = recipe.ingredients.map(ingredient => INGREDIENT_PARSER.parse(ingredient));
 
     return recipe;

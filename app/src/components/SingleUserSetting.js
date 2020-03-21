@@ -7,8 +7,6 @@ import {Button, Dialog, Paragraph, Portal, TextInput, Title, withTheme} from 're
 import withProps from "../utils/withProps";
 import invertTheme from "../utils/invertTheme";
 
-//TODO: remove all uses
-
 export default withProps(withTheme(class extends React.Component {
 
     constructor(props) {
