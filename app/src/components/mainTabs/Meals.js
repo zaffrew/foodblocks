@@ -37,9 +37,8 @@ const ConnectedMeals = connect((state) => ({recipes: state.saved_recipes}))(Meal
 export default class MealNavigator extends React.Component {
     render() {
         return (
-            <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
-                                 initialRouteName="Meals">
-                <Navigator.Screen options={{headerShown: false}} name="Meals" component={ConnectedMeals}/>
+            <Navigator.Navigator headerMode={'none'} initialRouteName="Meals">
+                <Navigator.Screen name="Meals" component={ConnectedMeals}/>
                 <Navigator.Screen name="Food" component={FoodWithParams}/>
             </Navigator.Navigator>
         )
