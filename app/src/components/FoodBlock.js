@@ -6,8 +6,10 @@ import {getThumbnail} from "../scraper/Scraper";
 export default class FoodBlock extends React.Component {
     state = {};
 
-    async componentDidMount() {
-        this.setState({recipe: await getThumbnail(this.props.URL)})
+    componentDidMount() {
+        getThumbnail(this.props.URL).then(recipe => {
+            this.setState({recipe})
+        })
     }
 
     render() {

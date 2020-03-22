@@ -39,10 +39,10 @@ export default connect((state, ownProps) => {
         this.state = {pressed: props.saved}
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         //TODO: this call lags out the opening of the food
         this.props.add_to_history(this.props.URL);
-        this.setState({recipe: await getRecipe(this.props.URL)})
+        getRecipe(this.props.URL).then(recipe => this.setState({recipe}))
     }
 
     componentDidUpdate() {

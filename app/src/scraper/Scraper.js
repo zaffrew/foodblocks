@@ -60,6 +60,8 @@ async function loadSearch(searchRes) {
 
 const currentlyLoadingRecipes = {}
 
+//TODO: the idea is to break up any long running actions up into as many smaller parts so the UI can render whenever
+
 //this returns a recipe and loads it if it has not already been loaded yet.
 async function getRecipe(URL, thumbnail = false) {
     let recipe = store.getState().cache.recipes[URL];
@@ -72,11 +74,8 @@ async function getRecipe(URL, thumbnail = false) {
     }
 
     // this makes sure we're not loading more than one recipe at a time
-    // i dont know if this actually works
     if (!currentlyLoadingRecipes[URL]) {
-        currentlyLoadingRecipes[URL] = new Promise(resolve => {
-            resolve(loadRecipe(recipe))
-        })
+        currentlyLoadingRecipes[URL] = loadRecipe(recipe)
     }
     recipe = await currentlyLoadingRecipes[URL]
     delete currentlyLoadingRecipes[URL]
@@ -103,9 +102,9 @@ async function loadRecipe(recipe) {
 
     //this should execute and not block rendering/navigation
     //using the js queue stops them from all running at the same time which makes it slower
-    //TODO: it doesnt fully block but its still slow
+    //TODO: it blocks far less than just doing "await scraper.scrape(recipe)" but its still slow
+    //the actual scraping takes ~100-200ms
     await executeNonBlocking(() => scraper.scrape(recipe))
-    // await scraper.scrape(recipe)
 
     recipe.cleanIngredients = recipe.ingredients.map(ingredient => INGREDIENT_PARSER.parse(ingredient));
 
