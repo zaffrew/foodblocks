@@ -1,5 +1,5 @@
 import URL_PARSE from "url-parse";
-import {genericScrape, getDOM} from "../scraperUtils";
+import {genericScrape, getDOM, getTime} from "../scraperUtils";
 import Recipe from "../Recipe";
 import moment from "moment";
 
@@ -59,9 +59,14 @@ async function scrape(recipe) {
     };
     genericScrape(recipe, $, instructions);
 
+    //clean up the time
+    recipe.time.total = getTime(recipe.time.total, 'hours', 'mins')
+    recipe.time.prep = getTime(recipe.time.prep, 'hours', 'mins')
+
     recipe.image = $('.recipe-body img').attr('data-src');
 
     recipe.loaded.page = moment().toISOString();
+    recipe.source = 'Delish'
 }
 
 function getSearchURL(search) {

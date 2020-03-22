@@ -1,5 +1,6 @@
 export default function Recipe(URL) {
     this.URL = URL;
+    this.source = ''
     this.name = "";
     this.ingredients = [];
     this.cleanIngredients = [];

@@ -27,6 +27,11 @@ export default connect((state, ownProps) => {
     unsave: (URL) => ({
         type: ACTIONS.UNSAVE_RECIPE,
         URL
+    }),
+    add_to_history: URL => ({
+        type: ACTIONS.ADD_FOOD_HISTORY,
+        URL,
+        time: moment().toISOString(),
     })
 })
 
@@ -61,38 +66,19 @@ export default connect((state, ownProps) => {
     _hideSelector = () => this.setState({selectorVisible: false});
 
     render() {
-        const data = this.state.data;
-        const {recipeVisible} = this.state;
-        const {selectorVisible} = this.state;
+        const recipe = this.state.recipe;
 
-        if (!data) {
+        if (!recipe) {
             return <ActivityIndicator/>
         }
 
-        const ingredients = data.ingredients.map((text, i) =>
-            <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
-        const directions = data.directions.map((text, i) =>
-            <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
+        const {recipeVisible} = this.state;
+        const {selectorVisible} = this.state;
 
-        const timing = [];
-        if (recipe.time.prep) {
-            timing.push(
-                <Paragraph key={'prep'} style={{padding: 5, fontSize: 12}}>
-                    Prep Time: {recipe.time.prep}
-                </Paragraph>)
-        }
-        if (recipe.time.cook) {
-            timing.push(
-                <Paragraph key={'cook'} style={{padding: 5, fontSize: 12}}>
-                    Prep Time: {recipe.time.cook}
-                </Paragraph>)
-        }
-        if (recipe.time.total) {
-            timing.push(
-                <Paragraph key={'total'} style={{padding: 5, fontSize: 12}}>
-                    Prep Time: {recipe.time.total}
-                </Paragraph>)
-        }
+        const ingredients = recipe.ingredients.map((text, i) =>
+            <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
+        const directions = recipe.directions.map((text, i) =>
+            <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
 
         return (
             <View style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
@@ -102,10 +88,10 @@ export default connect((state, ownProps) => {
                             <Surface style={surfaceStyles.surface}>
                                 <Button color={colors.foodblocksRed} icon='close' onPress={this._hideRecipe}></Button>
                                 <ScrollView showsVerticalScrollIndicator={false}>
-                                    <Title style={textStyles.title}>{data.title}</Title>
+                                    <Title style={textStyles.title}>{recipe.title}</Title>
                                     <View style={{flexDirection: 'row'}}>
                                         <Text
-                                            style={[textStyles.sub, {color: 'grey'}]}>{data.source_name.toUpperCase()}</Text>
+                                            style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
                                         <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}}
                                                 compact={true}>MORE INFO</Button>
                                     </View>
@@ -114,22 +100,22 @@ export default connect((state, ownProps) => {
                                         foodblock</Button>
                                     <View>
                                         <Text style={[textStyles.sub, {textAlign: 'center'}]}>Recipe
-                                            by {data.author}</Text>
+                                            by {recipe.author}</Text>
                                         <Text style={[textStyles.sub, {
                                             textAlign: 'center',
                                             fontStyle: 'italic'
-                                        }]}>{data.description}</Text>
+                                        }]}>{recipe.description}</Text>
                                         <Title style={textStyles.heading}>Ingredients Required</Title>
                                         {ingredients}
-                                        {(data.prepTime || data.cookTime || data.totalTime) &&
+                                        {(recipe.prepTime || recipe.cookTime || recipe.totalTime) &&
                                         <View style={{paddingVertical: 10}}>
                                             <Title style={textStyles.heading}>Time needed</Title>
-                                            {data.prepTime && <Paragraph style={textStyles.body}>Prep
-                                                Time: {moment.duration(data.prepTime).asMinutes()}M</Paragraph>}
-                                            {data.cookTime && <Paragraph style={textStyles.body}>Cook
-                                                Time: {moment.duration(data.cookTime).asMinutes()}M</Paragraph>}
-                                            {data.totalTime && <Paragraph style={textStyles.body}>Total
-                                                Time: {moment.duration(data.totalTime).asMinutes()}M</Paragraph>}
+                                            {recipe.prepTime && <Paragraph style={textStyles.body}>Prep
+                                                Time: {moment.duration(recipe.prepTime).asMinutes()}M</Paragraph>}
+                                            {recipe.cookTime && <Paragraph style={textStyles.body}>Cook
+                                                Time: {moment.duration(recipe.cookTime).asMinutes()}M</Paragraph>}
+                                            {recipe.totalTime && <Paragraph style={textStyles.body}>Total
+                                                Time: {moment.duration(recipe.totalTime).asMinutes()}M</Paragraph>}
                                         </View>}
                                         <Title style={textStyles.heading}>Directions</Title>
                                         {directions}
@@ -154,11 +140,11 @@ export default connect((state, ownProps) => {
                     </Modal>
                 </Portal>
                 <View style={{backgroundColor: 'white', flex: 1}}>
-                    <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: data.img}}/>
+                    <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
                     <View style={{paddingBottom: 5}}>
-                        <Title style={textStyles.title}>{data.title}</Title>
+                        <Title style={textStyles.title}>{recipe.title}</Title>
                         <View style={{flexDirection: 'row'}}>
-                            <Text style={[textStyles.sub, {color: 'grey'}]}>{data.source_name.toUpperCase()}</Text>
+                            <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
                             <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>MORE
                                 INFO</Button>
                         </View>
@@ -169,7 +155,8 @@ export default connect((state, ownProps) => {
                             paddingTop: 5
                         }}>
                             <View style={circleStyle.circle}>
-                                <Text style={textStyles.circleText}>{moment.duration(data.totalTime).asMinutes()}</Text>
+                                <Text
+                                    style={textStyles.circleText}>{moment.duration(recipe.time.total).asMinutes()}</Text>
                             </View>
                             <View style={circleStyle.circle}>
 

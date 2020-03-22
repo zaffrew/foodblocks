@@ -1,4 +1,4 @@
-import {getDOM, text, genericScrape, getHTML} from "../scraperUtils";
+import {getDOM, text, genericScrape, getHTML, getTime} from "../scraperUtils";
 import {removeRepeatedWhitespace} from "../StringUtils";
 import URL_PARSE from "url-parse";
 import Recipe from "../Recipe";
@@ -49,6 +49,7 @@ async function scrape(recipe) {
         throw new Error('The page is not recognized as an allrecipe recipe page')
     }
     recipe.loaded.page = moment().toISOString();
+    recipe.source = "All Recipes"
 }
 
 function old_scrape(recipe, $) {
@@ -79,7 +80,7 @@ function old_scrape(recipe, $) {
         } else if (key === 'additional') {
             recipe.time.other = value;
         } else if (key === 'prep' || key === 'cook' || key === 'total') {
-            recipe.time[key] = value;
+            recipe.time[key] = getTime(value, 'hr', 'min');
         }
     });
 
@@ -100,7 +101,7 @@ function new_scrape(recipe, $) {
     getNutrition(text($('.nutrition-summary-facts')), recipe);
     // scrapeNutrition($, recipe)
 
-    recipe.time.total = text($('.ready-in-time'));
+    recipe.time.total = getTime(text($('.ready-in-time')), 'h', 'm')
     recipe.image = getHighResURL($('.rec-photo').attr('src'))
 }
 

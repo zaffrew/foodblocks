@@ -1,5 +1,6 @@
 import cheerio from "react-native-cheerio";
 import {removeRepeatedWhitespace} from "./StringUtils";
+import moment from "moment";
 
 async function getHTML(URL) {
     return await fetch(URL)
@@ -37,4 +38,13 @@ function genericScrape(dest, $, locations) {
     })
 }
 
-export {getHTML, getDOM, text, genericScrape}
+function getTime(timeStr, h, m) {
+    const splits = timeStr.replace(h, m).split(m);
+    const timeMoment = moment.duration({
+        hours: timeStr.includes(h) ? splits[0].trim() : 0,
+        minutes: splits[timeStr.includes(h) ? 1 : 0].trim()
+    })
+    return moment.duration(timeMoment).toISOString()
+}
+
+export {getHTML, getDOM, text, genericScrape, getTime}
