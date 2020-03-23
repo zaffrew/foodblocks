@@ -157,7 +157,7 @@ export default connect((state, ownProps) => {
             <View style={{backgroundColor: 'white', flex: 1}}>
                 <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
                 <View style={{paddingBottom: 5}}>
-                    <Title style={textStyles.title}>{recipe.title}</Title>
+                    <Title style={textStyles.title}>{recipe.name}</Title>
                     <View style={{flexDirection: 'row'}}>
                         <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
                         <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>
