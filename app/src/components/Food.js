@@ -1,6 +1,6 @@
 import React from 'react'
 import {Image, StyleSheet, View, ScrollView} from 'react-native'
-import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar} from "react-native-paper";
+import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph} from "react-native-paper";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
 import moment from "moment";
@@ -10,6 +10,10 @@ import colors from '../../settings/colors';
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 //TODO: add nutrition values
 //TODO: change the ordering of the page so the description isn't as big.
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 export default connect((state, ownProps) => {
     const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
@@ -77,7 +81,18 @@ export default connect((state, ownProps) => {
         const directions = recipe.directions.map((text, i) =>
             <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
 
-        const timing = (
+        const timing = []
+        Object.keys(recipe.time).forEach((key, i) => {
+            const value = recipe.time[key]
+            if (value) {
+                timing.push(
+                    <Paragraph key={i} style={textStyles.body}>
+                        {capitalizeFirstLetter(key)} Time: {moment.duration(value).asMinutes()}M
+                    </Paragraph>)
+            }
+        })
+
+        const bubble_info = (
             <View>
                 <View style={{
                     flexDirection: 'row',
@@ -127,9 +142,13 @@ export default connect((state, ownProps) => {
                                 textAlign: 'center',
                                 fontStyle: 'italic'
                             }]}>{recipe.description}</Text>
-                            {timing}
+                            {bubble_info}
                             <Title style={textStyles.heading}>Ingredients Required</Title>
                             {ingredients}
+                            <View style={{paddingVertical: 10}}>
+                                <Title style={textStyles.heading}>Time needed</Title>
+                                {timing}
+                            </View>
                             <Title style={textStyles.heading}>Directions</Title>
                             {directions}
                         </View>
@@ -164,7 +183,7 @@ export default connect((state, ownProps) => {
                             MORE INFO
                         </Button>
                     </View>
-                    {timing}
+                    {bubble_info}
                     <View style={{
                         flexDirection: 'row',
                         justifyContent: 'space-between',
