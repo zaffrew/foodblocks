@@ -12,10 +12,10 @@ import Food from "../../Food";
 
 import {search} from '../../../scraper/Scraper'
 import Filters from "./Filters";
-import {SafeAreaView} from "react-native-safe-area-context";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
 import moment from "moment";
+import SafeView from "../../SafeView";
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -70,7 +70,7 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
 
     render() {
         return (
-            <SafeAreaView style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
+            <SafeView bottom={false} style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
                 <View style={{
                     backgroundColor: colors.foodblocksRed,
                 }}>
@@ -125,7 +125,7 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
                         </View>
                     }
                 </View>
-            </SafeAreaView>
+            </SafeView>
         )
     }
 });
@@ -172,9 +172,8 @@ const chipStyle = StyleSheet.create({
 
 const SearchNavigator = (props) => {
     return (
-        <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
-                             initialRouteName="Search">
-            <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
+        <Navigator.Navigator headerMode={"none"} initialRouteName="Search">
+            <Navigator.Screen name="Search" component={Search}/>
             <Navigator.Screen name="Food" component={FoodWithParams}/>
         </Navigator.Navigator>
     )

@@ -6,7 +6,7 @@ import {ACTIONS} from "../../state/State";
 import {connect} from "react-redux";
 import InputSpinner from "react-native-input-spinner";
 import DraggableFlatList from "react-native-draggable-dynamic-flatlist";
-import {SafeAreaView} from "react-native-safe-area-context";
+import SafeView from "../SafeView";
 
 
 class Groceries extends React.Component {
@@ -53,7 +53,7 @@ class Groceries extends React.Component {
     render() {
         return (
             <View style={{flex: 1}}>
-                <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
+                <SafeView bottom={false} style={{backgroundColor: colors.foodblocksRed}}>
                     <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                         <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
                             Grocery List
@@ -73,7 +73,7 @@ class Groceries extends React.Component {
                         onChangeText={text => this.setState({text})}
                         onSubmitEditing={() => this.submit()}
                     />
-                </SafeAreaView>
+                </SafeView>
                 <View style={{flex: 1}}>
                     <DraggableFlatList
                         data={this.props.groceries}
