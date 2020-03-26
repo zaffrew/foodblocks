@@ -1,4 +1,7 @@
-import createSubReducer from "./createSubReducer";
+const ACTIONS = {
+    UNSAVE_RECIPE: 'UNSAVE_RECIPE',
+    SAVE_RECIPE: "SAVE_RECIPE",
+};
 
 function reducer(state = [], action) {
     switch (action.type) {
@@ -16,11 +19,4 @@ function reducer(state = [], action) {
     }
 }
 
-const subReducer = createSubReducer(reducer, 'saved_recipes', {
-    UNSAVE_RECIPE: 'UNSAVE',
-    SAVE_RECIPE: "SAVE",
-})
-
-const ACTIONS = subReducer.actions
-
-export default subReducer
+export {reducer, ACTIONS}

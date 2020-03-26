@@ -1,5 +1,12 @@
 import settings from '../../settings/appSettings'
-import createSubReducer from "./createSubReducer";
+
+const ACTIONS = {
+    USERNAME: 'USERNAME',
+    EMAIL: "EMAIL",
+    SET_FILTER: 'SET_FILTER',
+    ADD_SEARCH_HISTORY: 'ADD_SEARCH_HISTORY',
+    ADD_FOOD_HISTORY: 'ADD_FOOD_HISTORY',
+};
 
 const initalFilters = settings.defaultFilters.map(name => ({name, active: false}));
 const initialState = {filters: initalFilters, search_history: [], food_history: []};
@@ -39,14 +46,6 @@ function reducer(state = initialState, action) {
     }
 }
 
-const subReducer = createSubReducer(reducer, 'user_info', {
-    USERNAME: 'USERNAME',
-    EMAIL: "EMAIL",
-    SET_FILTER: 'SET_FILTER',
-    ADD_SEARCH_HISTORY: 'ADD_SEARCH_HISTORY',
-    ADD_FOOD_HISTORY: 'ADD_FOOD_HISTORY',
-})
-
-const ACTIONS = subReducer.actions
-
-export default subReducer
+// const persistedReducer = persistReducer({...persistConfig, whitelist: Object.values(STORES)}, reducer);
+const persistedReducer = reducer;
+export {persistedReducer as reducer, ACTIONS}

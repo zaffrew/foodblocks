@@ -1,4 +1,9 @@
-import createSubReducer from "./createSubReducer";
+const ACTIONS = {
+    SET_GROCERY: "SET_GROCERY",
+    REMOVE_GROCERY: 'REMOVE_GROCERY',
+    OVERWRITE_GROCERIES: 'OVERWRITE_GROCERIES'
+
+};
 
 /**
  * this reducer is rather stupid in that it simply sets the data given to it in the index it is given.
@@ -20,12 +25,6 @@ function reducer(state = [], action) {
     }
 }
 
-const subReducer = createSubReducer(reducer, 'groceries', {
-    SET_GROCERY: "SET",
-    REMOVE_GROCERY: 'REMOVE',
-    OVERWRITE_GROCERIES: 'OVERWRITE'
-})
-
-const ACTIONS = subReducer.actions
-
-export default subReducer
+// const persistedReducer = persistReducer(persistConfig, reducer);
+const persistedReducer = reducer;
+export {persistedReducer as reducer, ACTIONS}
