@@ -38,15 +38,26 @@ export default connect((state, ownProps) => {
 })
 
 (class Food extends React.Component {
+    //this fixes the error of updating a non-mounted component
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false}
     }
 
     componentDidMount() {
-        //TODO: this call lags out the opening of the food
+        this._isMounted = true;
         this.props.add_to_history(this.props.URL);
-        getRecipe(this.props.URL).then(recipe => this.setState({recipe}))
+        getRecipe(this.props.URL).then(recipe => {
+            if (this._isMounted) {
+                this.setState({recipe})
+            }
+        })
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentDidUpdate() {

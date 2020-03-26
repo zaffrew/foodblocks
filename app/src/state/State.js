@@ -1,42 +1,64 @@
-import {persistReducer, persistStore} from "redux-persist";
+import {createTransform, persistReducer, persistStore} from "redux-persist";
 import {combineReducers, createStore} from "redux";
 
-import {reducer as user_reducer, ACTIONS as user_actions} from './UserInfo'
-import {reducer as groceries_reducer, ACTIONS as groceries_actions} from './Groceries'
-import {reducer as cache_reducer, ACTIONS as cache_actions} from './Cache'
-import {reducer as saved_reducer, ACTIONS as saved_actions} from './SavedRecipes'
+import UserInfo from './UserInfo'
+import Groceries from './Groceries'
+import Cache from './Cache'
+import SavedRecipes from './SavedRecipes'
 
-import generalPersistConfig from './PersistConfig'
+import PersistStorage from './PersistStorage'
+
+
+const sub_reducers = [Groceries, Cache, SavedRecipes, UserInfo]
 
 const ACTIONS = {
-    ...user_actions,
-    ...groceries_actions,
-    ...cache_actions,
-    ...saved_actions,
     RESET: 'RESET'
 };
+sub_reducers.forEach(reducer => {
+    for (const [key, value] of Object.entries(reducer.actions)) {
+        ACTIONS[key] = value
+    }
+})
 
-const app_reducer = combineReducers({
-    groceries: groceries_reducer,
-    cache: cache_reducer,
-    user_info: user_reducer,
-    saved_recipes: saved_reducer
-});
-
-function root_reducer(state = {}, action) {
+function reducer(state = {}, action) {
     if (action.type === ACTIONS.RESET) {
-        //this forces app_reducer to restore the initial states
+        //this forces the sub reducers to restore the initial states
         state = {}
     }
-    return app_reducer(state, action)
+
+    const new_state = {}
+    sub_reducers.forEach(reducer => {
+        new_state[reducer.sub_store_name] = reducer.reducer(state[reducer.sub_store_name], action)
+    })
+
+    return {...state, ...new_state}
 }
 
+// const persistTransform = createTransform(
+//     // transform state on its way to being serialized and persisted.
+//     (inboundState, key) => {
+//         console.log(key, inboundState)
+//         return inboundState;
+//
+//         const inboundCache = inboundState.cache;
+//         const recipes = Object.keys(inboundCache.searches).filter(key =>
+//             inboundCache.persist_recipes.contains(key)
+//         ).reduce((obj, key) =>
+//             ({...obj, [key]: inboundCache.searches[key]})
+//         )
+//
+//         return {...inboundState, cache: {...inboundCache, recipes}}
+//     }
+// );
+
 const persistConfig = {
-    ...generalPersistConfig,
+    key: 'root',
+    storage: PersistStorage,
+    // transforms: [persistTransform],
     blacklist: ['cache']
 };
 
-const persistedReducer = persistReducer(persistConfig, root_reducer);
+const persistedReducer = persistReducer(persistConfig, reducer);
 
 const store = createStore(persistedReducer);
 

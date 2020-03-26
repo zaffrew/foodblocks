@@ -1,11 +1,9 @@
-const ACTIONS = {
-    CACHE_RECIPE: 'CACHE_RECIPE',
-    CACHE_SEARCH: 'CACHE_SEARCH',
-};
+import createSubReducer from "./createSubReducer";
 
 const initialState = {
     recipes: {},
     searches: {},
+    persist_recipes: {}
 };
 
 function reducer(state = initialState, action) {
@@ -29,5 +27,11 @@ function reducer(state = initialState, action) {
     }
 }
 
+const subReducer = createSubReducer(reducer, 'cache', {
+    CACHE_RECIPE: 'RECIPE',
+    CACHE_SEARCH: 'SEARCH',
+})
 
-export {reducer, ACTIONS}
+const ACTIONS = subReducer.actions;
+
+export default subReducer
