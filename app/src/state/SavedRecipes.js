@@ -1,9 +1,6 @@
-const ACTIONS = {
-    UNSAVE_RECIPE: 'UNSAVE_RECIPE',
-    SAVE_RECIPE: "SAVE_RECIPE",
-};
+import ACTIONS from "./ACTIONS";
 
-function reducer(state = [], action) {
+export default function reducer(state = [], action) {
     switch (action.type) {
         case ACTIONS.UNSAVE_RECIPE:
             state = state.filter(URL => {
@@ -18,5 +15,3 @@ function reducer(state = [], action) {
             return state
     }
 }
-
-export {reducer, ACTIONS}
