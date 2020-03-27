@@ -21,7 +21,7 @@ export default connect((state) => ({
     }
 
     render() {
-        const theme = invertTheme(this.props.theme)
+        const theme = invertTheme(this.props.theme);
 
         return (
             <View style={[styles.centeredContainer, {backgroundColor: this.props.theme.colors.primary}]}>

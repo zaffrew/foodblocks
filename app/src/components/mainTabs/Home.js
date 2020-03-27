@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from 'react-redux'
-import {getData, search} from "../../scraper/AllRecipe"
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../utils/withRouteParams";
 import Food from "../Food";
@@ -15,10 +14,10 @@ const testRecipes = [
     'https://www.allrecipes.com/recipe/217962/jans-pretzel-dogs/',
     'https://www.delish.com/cooking/recipe-ideas/a28143935/taco-bloody-marys-recipe/',
     'https://www.allrecipes.com/recipe/14169/mexican-bean-salad/',
-]
+];
 
 const HomeStack = createStackNavigator();
-const FoodWithProps = withRouteParams(Food)
+const FoodWithProps = withRouteParams(Food);
 
 //TODO: the home page updates before the food navigated to
 
@@ -31,7 +30,7 @@ const Home = connect((state) => ({
 (class extends React.Component {
     openFood = (URL) => {
         this.props.navigation.navigate('Food', {URL})
-    }
+    };
 
     render() {
         const scrollLength = 200;
@@ -41,7 +40,7 @@ const Home = connect((state) => ({
             onPress: this.openFood,
             horizontal: true,
             URLs: testRecipes,
-        }
+        };
 
         return (
             <SafeAreaView style={{flex: 1}}>
@@ -77,7 +76,7 @@ const Home = connect((state) => ({
             </SafeAreaView>
         )
     }
-})
+});
 
 export default class HomeNavigator extends React.Component {
     render() {

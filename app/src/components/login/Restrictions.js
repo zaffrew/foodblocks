@@ -6,11 +6,11 @@ import Filters from "../mainTabs/Search/Filters";
 import React from 'react'
 
 
-const filterNames = ['Vegan', 'Halal', 'Gluten-free', 'Keto', 'Dairy-free']
+const filterNames = ['Vegan', 'Halal', 'Gluten-free', 'Keto', 'Dairy-free'];
 
 class Restrictions extends React.Component {
     render() {
-        const theme = invertTheme(this.props.theme)
+        const theme = invertTheme(this.props.theme);
 
         return (
             <View style={[styles.centeredContainer, {backgroundColor: this.props.theme.colors.primary}]}>

@@ -1,16 +1,19 @@
 import React from 'react'
-import {Image, ScrollView, StyleSheet, View} from 'react-native'
-import {ActivityIndicator, Card, Paragraph, Button, Surface, Modal, Portal, Title, Text} from "react-native-paper";
+import {Image, StyleSheet, View, ScrollView} from 'react-native'
+import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph} from "react-native-paper";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
 import moment from "moment";
-import {getData} from "../scraper/Scraper";
+import {getRecipe} from "../scraper/Scraper";
 import colors from '../../settings/colors';
-import {SafeAreaView} from "react-native-safe-area-context";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 //TODO: add nutrition values
 //TODO: change the ordering of the page so the description isn't as big.
+
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 export default connect((state, ownProps) => {
     const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
@@ -26,6 +29,11 @@ export default connect((state, ownProps) => {
     unsave: (URL) => ({
         type: ACTIONS.UNSAVE_RECIPE,
         URL
+    }),
+    add_to_history: URL => ({
+        type: ACTIONS.ADD_FOOD_HISTORY,
+        URL,
+        time: moment().toISOString(),
     })
 })
 
@@ -35,8 +43,10 @@ export default connect((state, ownProps) => {
         this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false}
     }
 
-    async componentDidMount() {
-        this.setState({data: await getData(this.props.URL)})
+    componentDidMount() {
+        //TODO: this call lags out the opening of the food
+        this.props.add_to_history(this.props.URL);
+        getRecipe(this.props.URL).then(recipe => this.setState({recipe}))
     }
 
     componentDidUpdate() {
@@ -48,8 +58,7 @@ export default connect((state, ownProps) => {
     addFoodblock() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
-        (pressed ? this.props.save : this.props.unsave)(this.state.data.URL);
-
+        (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
     }
 
     _showRecipe = () => this.setState({recipeVisible: true});
@@ -59,126 +68,147 @@ export default connect((state, ownProps) => {
     _hideSelector = () => this.setState({selectorVisible: false});
 
     render() {
-        const data = this.state.data;
-        const {recipeVisible} = this.state;
-        const {selectorVisible} = this.state;
+        const recipe = this.state.recipe;
 
-        if (!data) {
+        if (!recipe) {
             return <ActivityIndicator/>
         }
 
-        const ingredients = data.ingredients.map((text, i) =>
+        const {recipeVisible, selectorVisible} = this.state;
+
+        const ingredients = recipe.ingredients.map((text, i) =>
             <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
-        const directions = data.directions.map((text, i) =>
+        const directions = recipe.directions.map((text, i) =>
             <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
+
+        const timing = []
+        Object.keys(recipe.time).forEach((key, i) => {
+            const value = recipe.time[key]
+            if (value) {
+                timing.push(
+                    <Paragraph key={i} style={textStyles.body}>
+                        {capitalizeFirstLetter(key)} Time: {moment.duration(value).asMinutes()}M
+                    </Paragraph>)
+            }
+        })
+
+        const bubble_info = (
+            <View>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 60,
+                    paddingTop: 5
+                }}>
+                    <Avatar.Text label={moment.duration(recipe.time.total).asMinutes()}/>
+                    <Avatar.Text/>
+                    <Avatar.Text/>
+                </View>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 60,
+                    paddingTop: 5
+                }}>
+                    <Text style={[textStyles.circleText, {color: 'black'}]}>Minutes</Text>
+                    <Text style={[textStyles.circleText, {color: 'black'}]}>Ingredients</Text>
+                    <Text style={[textStyles.circleText, {color: 'black'}]}>Calories</Text>
+                </View>
+            </View>
+        )
+
+        const add_foodblock_button = (
+            <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
+                    onPress={() => this._showSelector()}>Add foodblock</Button>
+        )
+
+        const recipe_info = (
+            <View>
+                <Surface style={surfaceStyles.surface}>
+                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideRecipe}></Button>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                        <Title style={textStyles.title}>{recipe.title}</Title>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text
+                                style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
+                            <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}}
+                                    compact={true}>MORE INFO</Button>
+                        </View>
+                        {add_foodblock_button}
+                        <View>
+                            <Text style={[textStyles.sub, {textAlign: 'center'}]}>Recipe
+                                by {recipe.author}</Text>
+                            <Text style={[textStyles.sub, {
+                                textAlign: 'center',
+                                fontStyle: 'italic'
+                            }]}>{recipe.description}</Text>
+                            {bubble_info}
+                            <Title style={textStyles.heading}>Ingredients Required</Title>
+                            {ingredients}
+                            <View style={{paddingVertical: 10}}>
+                                <Title style={textStyles.heading}>Time needed</Title>
+                                {timing}
+                            </View>
+                            <Title style={textStyles.heading}>Directions</Title>
+                            {directions}
+                        </View>
+                    </ScrollView>
+                </Surface>
+            </View>
+        )
+
+        const add_foodblock_view = (
+            <View>
+                <Surface style={surfaceStyles.selector}>
+                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
+                    <Text style={textStyles.heading}>Plan your meal</Text>
+                    <View>
+                        <Text style={{paddingVertical: 20}}>*Insert selector*</Text>
+                        <Button mode='contained' contentStyle={{paddingVertical: 10}}
+                                color={colors.foodblocksRed}
+                                onPress={() => this.addFoodblock()}>Save</Button>
+                    </View>
+                </Surface>
+            </View>
+        )
+
+        const main_view = (
+            <View style={{backgroundColor: 'white', flex: 1}}>
+                <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
+                <View style={{paddingBottom: 5}}>
+                    <Title style={textStyles.title}>{recipe.name}</Title>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
+                        <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>
+                            MORE INFO
+                        </Button>
+                    </View>
+                    {bubble_info}
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        paddingHorizontal: 20,
+                        paddingTop: 15
+                    }}>
+                        <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.green}
+                                onPress={() => this._showRecipe()}>Get Started</Button>
+                        {add_foodblock_button}
+                    </View>
+                </View>
+            </View>
+        )
 
         return (
             <View style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
                 <Portal>
                     <Modal visible={recipeVisible} onDismiss={this._hideRecipe}>
-                        <View>
-                            <Surface style={surfaceStyles.surface}>
-                                <Button color={colors.foodblocksRed} icon='close' onPress={this._hideRecipe}></Button>
-                                <ScrollView showsVerticalScrollIndicator={false}>
-                                    <Title style={textStyles.title}>{data.title}</Title>
-                                    <View style={{flexDirection: 'row'}}>
-                                        <Text
-                                            style={[textStyles.sub, {color: 'grey'}]}>{data.source_name.toUpperCase()}</Text>
-                                        <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}}
-                                                compact={true}>MORE INFO</Button>
-                                    </View>
-                                    <Button mode='contained' contentStyle={{paddingVertical: 10}}
-                                            color={colors.foodblocksRed} onPress={() => this._showSelector()}>Add
-                                        foodblock</Button>
-                                    <View>
-                                        <Text style={[textStyles.sub, {textAlign: 'center'}]}>Recipe
-                                            by {data.author}</Text>
-                                        <Text style={[textStyles.sub, {
-                                            textAlign: 'center',
-                                            fontStyle: 'italic'
-                                        }]}>{data.description}</Text>
-                                        <Title style={textStyles.heading}>Ingredients Required</Title>
-                                        {ingredients}
-                                        {(data.prepTime || data.cookTime || data.totalTime) &&
-                                        <View style={{paddingVertical: 10}}>
-                                            <Title style={textStyles.heading}>Time needed</Title>
-                                            {data.prepTime && <Paragraph style={textStyles.body}>Prep
-                                                Time: {moment.duration(data.prepTime).asMinutes()}M</Paragraph>}
-                                            {data.cookTime && <Paragraph style={textStyles.body}>Cook
-                                                Time: {moment.duration(data.cookTime).asMinutes()}M</Paragraph>}
-                                            {data.totalTime && <Paragraph style={textStyles.body}>Total
-                                                Time: {moment.duration(data.totalTime).asMinutes()}M</Paragraph>}
-                                        </View>}
-                                        <Title style={textStyles.heading}>Directions</Title>
-                                        {directions}
-                                    </View>
-                                </ScrollView>
-                            </Surface>
-                        </View>
+                        {recipe_info}
                     </Modal>
                     <Modal visible={selectorVisible} onDismiss={this._hideSelector}>
-                        <View>
-                            <Surface style={surfaceStyles.selector}>
-                                <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
-                                <Text style={textStyles.heading}>Plan your meal</Text>
-                                <View>
-                                    <Text style={{paddingVertical: 20}}>*Insert selector*</Text>
-                                    <Button mode='contained' contentStyle={{paddingVertical: 10}}
-                                            color={colors.foodblocksRed}
-                                            onPress={() => this.addFoodblock()}>Save</Button>
-                                </View>
-                            </Surface>
-                        </View>
+                        {add_foodblock_view}
                     </Modal>
                 </Portal>
-                <View style={{backgroundColor: 'white', flex: 1}}>
-                    <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: data.img}}/>
-                    <View style={{paddingBottom: 5}}>
-                        <Title style={textStyles.title}>{data.title}</Title>
-                        <View style={{flexDirection: 'row'}}>
-                            <Text style={[textStyles.sub, {color: 'grey'}]}>{data.source_name.toUpperCase()}</Text>
-                            <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>MORE
-                                INFO</Button>
-                        </View>
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            paddingHorizontal: 60,
-                            paddingTop: 5
-                        }}>
-                            <View style={circleStyle.circle}>
-                                <Text style={textStyles.circleText}>{moment.duration(data.totalTime).asMinutes()}</Text>
-                            </View>
-                            <View style={circleStyle.circle}>
-
-                            </View>
-                            <View style={circleStyle.circle}>
-
-                            </View>
-                        </View>
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            paddingHorizontal: 60,
-                            paddingTop: 5
-                        }}>
-                            <Text style={[textStyles.circleText, {color: 'black'}]}>Minutes</Text>
-                            <Text style={[textStyles.circleText, {color: 'black'}]}>Ingredients</Text>
-                            <Text style={[textStyles.circleText, {color: 'black'}]}>Calories</Text>
-                        </View>
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            paddingHorizontal: 20,
-                            paddingTop: 15
-                        }}>
-                            <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.green}
-                                    onPress={() => this._showRecipe()}>Get Started</Button>
-                            <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
-                                    onPress={() => this._showSelector()}>Add foodblock</Button>
-                        </View>
-                    </View>
-                </View>
+                {main_view}
             </View>
         )
     }

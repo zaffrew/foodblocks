@@ -1,12 +1,20 @@
-import URL_PARSE from "url-parse";
-import {getData as ALL_RECIPE_getData, search as ALL_RECIPE_search} from './AllRecipe'
-import {getData as DELISH_getData, search as DELISH_search} from './Delish'
 import {store, ACTIONS} from '../state/State'
-import moment from "moment";
+import AllRecipes from "./websites/AllRecipes";
+import Recipe from "./Recipe";
+import Delish from './websites/Delish'
+import INGREDIENT_PARSER from 'ingredients-parser'
+
+import SearchResult from "./SearchResult";
+import {executeNonBlocking} from "../utils/executeNonBlocking";
 
 const SOURCES = {
-    ALL_RECIPE: 'www.allrecipes.com',
-    DELISH: 'www.delish.com'
+    ALL_RECIPES: 'ALL_RECIPES',
+    DELISH: 'DELISH',
+};
+
+const SCRAPERS = {
+    [SOURCES.ALL_RECIPES]: AllRecipes,
+    [SOURCES.DELISH]: Delish,
 };
 
 /**
@@ -16,79 +24,92 @@ const SOURCES = {
  * @param source
  * @returns {Promise<*>} A promise that will eventually return an array of URLs.
  */
-async function search(query, filters = [], num = 20, source = SOURCES.ALL_RECIPE) {
-    store.dispatch({
-        type: ACTIONS.ADD_SEARCH_HISTORY,
-        query,
-        filters,
-        time: moment().toISOString()
-    })
+async function search(query, num = 20, source = SOURCES.ALL_RECIPES) {
+    const searches = store.getState().cache.searches[query];
+    let searchRes = searches ? searches.find(searchRes => searchRes.source === source && searchRes.results.length >= num) : null;
 
-    let searchRes = store.getState().cache.searches[query];
     if (searchRes) {
-        return searchRes
-    } else {
-        store.dispatch({
-            type: ACTIONS.CACHE_SEARCH,
-            query,
-            searches: await loadSearch(query, num, source)
-        });
-        return store.getState().cache.searches[query]
+        return searchRes;
     }
+
+    searchRes = new SearchResult(query, source, num);
+    //load the search
+    await loadSearch(searchRes);
+
+    //store it in redux
+    store.dispatch({
+        type: ACTIONS.CACHE_SEARCH,
+        searchRes
+    });
+
+    return searchRes;
 }
 
-async function loadSearch(query, num, source) {
-    switch (source) {
-        case SOURCES.ALL_RECIPE:
-            return await ALL_RECIPE_search(query, num);
-        case SOURCES.DELISH:
-            return await DELISH_search(query, num)
-    }
-}
+async function loadSearch(searchRes) {
+    //do the scraping
+    const recipes = await SCRAPERS[searchRes.source].search(searchRes);
 
-/**
- * Gets data from a cache, or scrapes them if not already loaded.
- * @param URL The URL of the data.
- * @returns {Promise<*>} A data object of the following format.
- * data = {
- *     URL,
- *     img,
- *     title,
- *     ingredients,
- *     directions,
- *     author,
- *     description,
- *     prepTime,
- *     cookTime,
- *     totalTIme,
- *     source
- * }
- */
-async function getData(URL) {
-    const data = store.getState().cache.recipes[URL];
-    if (data && data.loaded) {
-        return data
-    } else {
+    //store the recipes
+    recipes.forEach(recipe => {
         store.dispatch({
             type: ACTIONS.CACHE_RECIPE,
-            data: await loadData(URL)
+            recipe
         });
-        return store.getState().cache.recipes[URL]
-    }
+    });
 }
 
-async function loadData(URL) {
-    URL = URL_PARSE(URL);
-    if (URL.host.startsWith(SOURCES.ALL_RECIPE)) {
-        return await ALL_RECIPE_getData(URL.href)
-    } else if (URL.host.startsWith(SOURCES.DELISH)) {
-        return await DELISH_getData(URL.href)
+const currentlyLoadingRecipes = {}
+
+//TODO: the idea is to break up any long running actions up into as many smaller parts so the UI can render whenever
+
+//this returns a recipe and loads it if it has not already been loaded yet.
+async function getRecipe(URL, thumbnail = false) {
+    let recipe = store.getState().cache.recipes[URL];
+    if (!recipe) {
+        recipe = new Recipe(URL)
     }
+
+    if (recipe.loaded.page || (thumbnail && recipe.loaded.thumbnail)) {
+        return recipe
+    }
+
+    // this makes sure we're not loading more than one recipe at a time
+    if (!currentlyLoadingRecipes[URL]) {
+        currentlyLoadingRecipes[URL] = loadRecipe(recipe)
+    }
+    recipe = await currentlyLoadingRecipes[URL]
+    delete currentlyLoadingRecipes[URL]
+
+
+    //store it in redux
+    store.dispatch({
+        type: ACTIONS.CACHE_RECIPE,
+        recipe
+    });
+
+    return recipe;
 }
 
 async function getThumbnail(URL) {
-    const recipe = store.getState().cache.recipes[URL]
-    return recipe ? recipe.thumbnail : (await getData(URL)).thumbnail;
+    return getRecipe(URL, true)
 }
 
-export {SOURCES, getData, search, getThumbnail}
+async function loadRecipe(recipe) {
+    const scraper = Object.values(SCRAPERS).find(({identifier}) => recipe.URL.includes(identifier));
+    if (!scraper) {
+        throw new Error('Scraping from ' + recipe.URL + ' is not supported.')
+    }
+
+    //this should execute and not block rendering/navigation
+    //using the js queue stops them from all running at the same time which makes it slower
+    //TODO: it blocks far less than just doing "await scraper.scrape(recipe)" but its still slow
+    //the actual scraping takes ~100-200ms
+    await executeNonBlocking(() => scraper.scrape(recipe))
+
+    recipe.cleanIngredients = recipe.ingredients.map(ingredient => INGREDIENT_PARSER.parse(ingredient));
+
+    return recipe;
+}
+
+
+export {SOURCES, getRecipe, getThumbnail, search}

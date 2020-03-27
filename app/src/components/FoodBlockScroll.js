@@ -16,13 +16,13 @@ const axis = 160;
 export default function FoodBlockScroll(props) {
     //want each foodblock to take up a certain amount of the main axis
     //want the scroll to take up a certain amount of the cross axis
-    const blockSizing = {}
-    const scrollSizing = {}
+    const blockSizing = {};
+    const scrollSizing = {};
     if (props.horizontal) {
-        blockSizing.width = props.blockLength
+        blockSizing.width = props.blockLength;
         scrollSizing.height = props.scrollLength
     } else {
-        blockSizing.height = props.blockLength
+        blockSizing.height = props.blockLength;
         scrollSizing.width = props.scrollLength
     }
 

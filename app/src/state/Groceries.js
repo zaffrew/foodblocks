@@ -10,9 +10,9 @@ const ACTIONS = {
  * the actual state management is handled in Groceries.js
  */
 function reducer(state = [], action) {
-    if (action.type == ACTIONS.REMOVE_GROCERY) {
-        state = state.slice()
-        state.splice(action.index, 1)
+    if (action.type === ACTIONS.REMOVE_GROCERY) {
+        state = state.slice();
+        state.splice(action.index, 1);
         return state
     } else if (action.type === ACTIONS.SET_GROCERY) {
         state = state.slice();

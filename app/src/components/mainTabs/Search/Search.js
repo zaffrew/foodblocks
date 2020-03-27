@@ -10,17 +10,12 @@ import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
 import Food from "../../Food";
 
-import {SOURCES, search as scraper_search} from '../../../scraper/Scraper'
+import {search} from '../../../scraper/Scraper'
 import Filters from "./Filters";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {connect} from "react-redux";
-
-const SOURCE = SOURCES.ALL_RECIPE;
-const search = async (query, filters, num) => {
-    return await scraper_search(query, filters, num, SOURCE)
-};
-
-const searches = 20;
+import {ACTIONS} from "../../../state/State";
+import moment from "moment";
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -28,16 +23,23 @@ const FoodWithParams = withRouteParams(Food);
 //TODO: validate that a search has enough valid results i.e. it wont have info missing
 //TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
 
-const Search = connect(state => ({filters: state.user_info.filters}))(class extends React.Component {
+const Search = connect(state => ({filters: state.user_info.filters}), {
+    add_search: (query, filters) => ({
+        type: ACTIONS.ADD_SEARCH_HISTORY,
+        query,
+        filters,
+        time: moment().toISOString()
+    })
+})(class extends React.Component {
 
     state = {
         searchedYet: false,
         searching: false,
         query: '',
-        searchData: [],
+        searchURLs: [],
         filtersVisible: false,
         addFilterText: '',
-    }
+    };
 
     showModal = () => this.setState({filtersVisible: true});
     hideModal = () => this.setState({filtersVisible: false});
@@ -49,15 +51,22 @@ const Search = connect(state => ({filters: state.user_info.filters}))(class exte
         if (!query) {
             return;
         }
+
         //react state is actually kinda async so i have to do await here and
         // down on setting the new state or there will be weird behavior
-        await this.setState({searching: true, searchedYet: true, searchData: []});
+        await this.setState({searching: true, searchedYet: true, searchURLs: []});
 
-        const activeFilters = this.props.filters.filter(({active}) => active)
+        const activeFilters = this.props.filters.filter(({active}) => active);
+        this.props.add_search(query, activeFilters)
 
-        const searchData = await search(query, activeFilters, searches);
-        await this.setState({searching: false, searchData})
-    }
+        activeFilters.forEach(filter => {
+            query += ' ' + filter
+        });
+
+
+        const searchRes = await search(query);
+        await this.setState({searching: false, searchURLs: searchRes.results})
+    };
 
     render() {
         return (
@@ -85,7 +94,7 @@ const Search = connect(state => ({filters: state.user_info.filters}))(class exte
                     />
                     <Button color='white'
                             onPress={() => {
-                                Keyboard.dismiss()
+                                Keyboard.dismiss();
                                 this.showModal()
                             }}
                             style={{
@@ -105,7 +114,7 @@ const Search = connect(state => ({filters: state.user_info.filters}))(class exte
                                     onPress={(URL) => {
                                         this.props.navigation.navigate('Food', {URL})
                                     }}
-                                    blocksPerCrossAxis={2} URLs={this.state.searchData}
+                                    blocksPerCrossAxis={2} URLs={this.state.searchURLs}
                                     blockLength={160}/>
                         ) : <View style={{
                             flex: 1,
@@ -119,7 +128,7 @@ const Search = connect(state => ({filters: state.user_info.filters}))(class exte
             </SafeAreaView>
         )
     }
-})
+});
 
 const cardStyle = StyleSheet.create({
     container: {

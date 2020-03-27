@@ -21,7 +21,7 @@ export default class Login extends React.Component {
             onSubmit: () => {
                 this.props.navigation.navigate('Restrictions')
             }
-        })
+        });
 
         this.Restrictions = withProps(Restrictions, {
             onSubmit: () => {
