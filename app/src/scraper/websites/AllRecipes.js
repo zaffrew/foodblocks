@@ -49,12 +49,6 @@ async function scrape(recipe) {
         throw new Error('The page is not recognized as an allrecipe recipe page')
     }
 
-    //sometimes the last direction is empty:
-    let lastDirection;
-    if (lastDirection = recipe.directions.pop()) {
-        recipe.directions.push(lastDirection)
-    }
-
     recipe.loaded.page = moment().toISOString();
     recipe.source = "All Recipes"
 }

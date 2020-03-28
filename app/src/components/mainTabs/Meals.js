@@ -8,6 +8,7 @@ import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../utils/withRouteParams";
 import Food from "../Food";
 import {SafeAreaView} from "react-native-safe-area-context";
+import headlessNavigator from "../../utils/headlessNavigator";
 
 
 const Navigator = createStackNavigator();
@@ -34,13 +35,7 @@ class Meals extends React.Component {
 
 const ConnectedMeals = connect((state) => ({recipes: state.saved_recipes}))(Meals);
 
-export default class MealNavigator extends React.Component {
-    render() {
-        return (
-            <Navigator.Navigator headerMode={'none'} initialRouteName="Meals">
-                <Navigator.Screen name="Meals" component={ConnectedMeals}/>
-                <Navigator.Screen name="Food" component={FoodWithParams}/>
-            </Navigator.Navigator>
-        )
-    }
-}
+export default props => headlessNavigator([
+    {name: 'Meals', component: ConnectedMeals, mainPage: true},
+    {name: 'Food', component: FoodWithParams}
+])

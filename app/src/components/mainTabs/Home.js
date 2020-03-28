@@ -8,6 +8,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {Headline, Text, Title} from "react-native-paper";
 import {ScrollView, View} from "react-native";
 import filterUnique from "../../utils/filterUnique";
+import headlessNavigator from "../../utils/headlessNavigator";
 
 const testRecipes = [
     'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
@@ -78,14 +79,7 @@ const Home = connect((state) => ({
     }
 });
 
-export default class HomeNavigator extends React.Component {
-    render() {
-        return (
-            <HomeStack.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
-                                 initialRouteName="Home">
-                <HomeStack.Screen options={{headerShown: false}} name="Home" component={Home}/>
-                <HomeStack.Screen options={{headerShown: false}} name="Food" component={FoodWithProps}/>
-            </HomeStack.Navigator>
-        )
-    }
-}
+export default props => headlessNavigator([
+    {name: 'Home', component: Home, mainPage: true},
+    {name: 'Food', component: FoodWithProps}
+])

@@ -16,6 +16,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
 import moment from "moment";
+import headlessNavigator from "../../../utils/headlessNavigator";
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -170,14 +171,10 @@ const chipStyle = StyleSheet.create({
     }
 });
 
-const SearchNavigator = (props) => {
-    return (
-        <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
-                             initialRouteName="Search">
-            <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
-            <Navigator.Screen options={{headerShown: false}} name="Food" component={FoodWithParams}/>
-        </Navigator.Navigator>
-    )
-};
-
+const SearchNavigator = (props) => (
+    headlessNavigator([
+        {name: 'Search', component: Search, mainPage: true},
+        {name: 'Food', component: FoodWithParams}
+    ])
+)
 export default SearchNavigator;
