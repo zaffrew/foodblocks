@@ -77,18 +77,29 @@ export default connect((state, ownProps) => {
         const {recipeVisible, selectorVisible} = this.state;
 
         const ingredients = recipe.ingredients.map((text, i) =>
-            <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
-        const directions = recipe.directions.map((text, i) =>
-            <Text style={textStyles.body} key={i} style={{padding: 5, fontSize: 12}}>{text}</Text>);
+            <View key={i} style={(i % 2 == 0) ? bodyStyle.even : bodyStyle.odd}>
+                <Text key={i} style={textStyles.body}>{text}</Text>
+            </View>
+            );
 
+        const directions = recipe.directions.map((text, i) =>
+            <View key={i} style={[(i % 2 == 0) ? bodyStyle.even : bodyStyle.odd, {flexDirection: 'row'}]}>
+                <Text key={i} style={[textStyles.body, {paddingHorizontal:5, fontSize:16}]}>{i + 1}</Text>
+                <Text key={i} style={[textStyles.body, {flex: 1, flexShrink: 1}]}>{text}</Text>
+            </View>
+            );
+
+        const ingredientCount = recipe.ingredients.length;
+ 
         const timing = []
         Object.keys(recipe.time).forEach((key, i) => {
             const value = recipe.time[key]
             if (value) {
                 timing.push(
-                    <Paragraph key={i} style={textStyles.body}>
-                        {capitalizeFirstLetter(key)} Time: {moment.duration(value).asMinutes()}M
-                    </Paragraph>)
+                    <View style={{flexDirection:'row', padding:10}}>
+                        <Avatar.Text size={40} labelStyle={{fontSize: 14}} label={moment.duration(value).asMinutes()}/>
+                        <Text key={i} style={{textAlignVertical: 'center', padding: 10}}>{capitalizeFirstLetter(key)} Time</Text>
+                    </View>)
             }
         })
 
@@ -100,8 +111,8 @@ export default connect((state, ownProps) => {
                     paddingHorizontal: 60,
                     paddingTop: 5
                 }}>
-                    <Avatar.Text label={moment.duration(recipe.time.total).asMinutes()}/>
-                    <Avatar.Text/>
+                    <Avatar.Text labelStyle={{fontSize: 16}} label={moment.duration(recipe.time.total).asMinutes()}/>
+                    <Avatar.Text labelStyle={{fontSize: 16}} label={ingredientCount}/>
                     <Avatar.Text/>
                 </View>
                 <View style={{
@@ -123,11 +134,11 @@ export default connect((state, ownProps) => {
         )
 
         const recipe_info = (
-            <View>
+            <View style={{flexWrap:'wrap'}}>
                 <Surface style={surfaceStyles.surface}>
                     <Button color={colors.foodblocksRed} icon='close' onPress={this._hideRecipe}></Button>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        <Title style={textStyles.title}>{recipe.title}</Title>
+                    <ScrollView showsVerticalScrollIndicator={false} >
+                        <Title style={textStyles.title}>{recipe.name}</Title>
                         <View style={{flexDirection: 'row'}}>
                             <Text
                                 style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
@@ -140,9 +151,7 @@ export default connect((state, ownProps) => {
                                 by {recipe.author}</Text>
                             <Text style={[textStyles.sub, {
                                 textAlign: 'center',
-                                fontStyle: 'italic'
                             }]}>{recipe.description}</Text>
-                            {bubble_info}
                             <Title style={textStyles.heading}>Ingredients Required</Title>
                             {ingredients}
                             <View style={{paddingVertical: 10}}>
@@ -175,7 +184,7 @@ export default connect((state, ownProps) => {
         const main_view = (
             <View style={{backgroundColor: 'white', flex: 1}}>
                 <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
-                <View style={{paddingBottom: 5}}>
+                <View style={{paddingBottom: 20}}>
                     <Title style={textStyles.title}>{recipe.name}</Title>
                     <View style={{flexDirection: 'row'}}>
                         <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
@@ -271,7 +280,20 @@ const textStyles = StyleSheet.create({
         fontSize: 14,
         fontFamily: 'montserrat',
         color: colors.darkGrey,
+        padding: 2,
     },
+    odd: {
+        fontSize: 14,
+        fontFamily: 'montserrat',
+        color: colors.lightGrey,
+        padding: 2,
+    },
+    even: {
+        fontSize: 14,
+        fontFamily: 'montserrat',
+        color: colors.darkGrey,
+        padding: 2,
+    }
 })
 
 const circleStyle = StyleSheet.create({
@@ -280,8 +302,21 @@ const circleStyle = StyleSheet.create({
         width: 65,
         borderRadius: 35,
         backgroundColor: colors.foodblocksRed,
-        fontSize: 16,
+        fontSize: 12,
         paddingHorizontal: 20,
         justifyContent: 'center',
     },
+})
+
+const bodyStyle = StyleSheet.create({
+    odd: {
+        backgroundColor: '#ffffff',
+        padding: 4,
+        flex: 1,
+    },
+    even: {
+        backgroundColor: colors.lightGrey2,
+        padding: 4,
+        flex: 1,
+    }
 })

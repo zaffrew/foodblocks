@@ -84,7 +84,7 @@ export default class HomeNavigator extends React.Component {
             <HomeStack.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
                                  initialRouteName="Home">
                 <HomeStack.Screen options={{headerShown: false}} name="Home" component={Home}/>
-                <HomeStack.Screen name="Food" component={FoodWithProps}/>
+                <HomeStack.Screen options={{headerShown: false}} name="Food" component={FoodWithProps}/>
             </HomeStack.Navigator>
         )
     }
