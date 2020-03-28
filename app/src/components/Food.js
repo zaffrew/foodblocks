@@ -78,27 +78,28 @@ export default connect((state, ownProps) => {
 
         const ingredients = recipe.ingredients.map((text, i) =>
             <View key={i} style={(i % 2 == 0) ? bodyStyle.even : bodyStyle.odd}>
-                <Text key={i} style={textStyles.body}>{text}</Text>
+                <Text style={textStyles.body}>{text}</Text>
             </View>
-            );
+        );
 
         const directions = recipe.directions.map((text, i) =>
             <View key={i} style={[(i % 2 == 0) ? bodyStyle.even : bodyStyle.odd, {flexDirection: 'row'}]}>
-                <Text key={i} style={[textStyles.body, {paddingHorizontal:5, fontSize:16}]}>{i + 1}</Text>
-                <Text key={i} style={[textStyles.body, {flex: 1, flexShrink: 1}]}>{text}</Text>
+                <Text style={[textStyles.body, {paddingHorizontal: 5, fontSize: 16}]}>{i + 1}</Text>
+                <Text style={[textStyles.body, {flex: 1, flexShrink: 1}]}>{text}</Text>
             </View>
-            );
+        );
 
-        const ingredientCount = recipe.ingredients.length;
- 
         const timing = []
         Object.keys(recipe.time).forEach((key, i) => {
             const value = recipe.time[key]
             if (value) {
                 timing.push(
-                    <View style={{flexDirection:'row', padding:10}}>
+                    <View key={i} style={{flexDirection: 'row', padding: 10}}>
                         <Avatar.Text size={40} labelStyle={{fontSize: 14}} label={moment.duration(value).asMinutes()}/>
-                        <Text key={i} style={{textAlignVertical: 'center', padding: 10}}>{capitalizeFirstLetter(key)} Time</Text>
+                        <Text style={{
+                            textAlignVertical: 'center',
+                            padding: 10
+                        }}>Minutes {capitalizeFirstLetter(key)} Time</Text>
                     </View>)
             }
         })
@@ -112,7 +113,7 @@ export default connect((state, ownProps) => {
                     paddingTop: 5
                 }}>
                     <Avatar.Text labelStyle={{fontSize: 16}} label={moment.duration(recipe.time.total).asMinutes()}/>
-                    <Avatar.Text labelStyle={{fontSize: 16}} label={ingredientCount}/>
+                    <Avatar.Text labelStyle={{fontSize: 16}} label={recipe.ingredients.length}/>
                     <Avatar.Text/>
                 </View>
                 <View style={{
@@ -134,10 +135,10 @@ export default connect((state, ownProps) => {
         )
 
         const recipe_info = (
-            <View style={{flexWrap:'wrap'}}>
+            <View style={{flexWrap: 'wrap'}}>
                 <Surface style={surfaceStyles.surface}>
                     <Button color={colors.foodblocksRed} icon='close' onPress={this._hideRecipe}></Button>
-                    <ScrollView showsVerticalScrollIndicator={false} >
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         <Title style={textStyles.title}>{recipe.name}</Title>
                         <View style={{flexDirection: 'row'}}>
                             <Text
