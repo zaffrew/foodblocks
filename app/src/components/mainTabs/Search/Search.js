@@ -175,7 +175,7 @@ const SearchNavigator = (props) => {
         <Navigator.Navigator screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}
                              initialRouteName="Search">
             <Navigator.Screen options={{headerShown: false}} name="Search" component={Search}/>
-            <Navigator.Screen name="Food" component={FoodWithParams}/>
+            <Navigator.Screen options={{headerShown: false}} name="Food" component={FoodWithParams}/>
         </Navigator.Navigator>
     )
 };
