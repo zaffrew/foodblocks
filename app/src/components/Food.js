@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Image, StyleSheet, View, ScrollView} from 'react-native'
 import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph} from "react-native-paper";
 import {connect} from "react-redux";
@@ -6,6 +6,8 @@ import {ACTIONS} from "../state/State";
 import moment from "moment";
 import {getRecipe} from "../scraper/Scraper";
 import colors from '../../settings/colors';
+import * as Calendar from 'expo-calendar'; // to interact with system calendar events
+import DateTimePicker from '@react-native-community/datetimepicker'; // to display an interface for user to choose date and time
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 //TODO: add nutrition values
@@ -40,7 +42,8 @@ export default connect((state, ownProps) => {
 (class Food extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false}
+        this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false, 
+            date: new Date(), pickerMode: 'date', showPicker: false}
     }
 
     componentDidMount() {
@@ -74,7 +77,26 @@ export default connect((state, ownProps) => {
             return <ActivityIndicator/>
         }
 
-        const {recipeVisible, selectorVisible} = this.state;
+        const {recipeVisible, selectorVisible, date, pickerMode, showPicker} = this.state;
+      
+        const onChange = (event, selectedDate) => {
+          const currentDate = selectedDate || date;
+          this.setState({showPicker: Platform.OS === 'ios'});
+          this.setState({date: currentDate});
+        };
+      
+        const showMode = currentMode => {
+          this.setState({showPicker: true});
+          this.setState({pickerMode: currentMode});
+        };
+      
+        const showDatepicker = () => {
+            this.setState({pickerMode: 'date'});
+        };
+      
+        const showTimepicker = () => {
+            this.setState({pickerMode: 'time'});
+        };
 
         const ingredients = recipe.ingredients.map((text, i) =>
             <View key={i} style={(i % 2 == 0) ? bodyStyle.even : bodyStyle.odd}>
@@ -114,7 +136,7 @@ export default connect((state, ownProps) => {
                 }}>
                     <Avatar.Text labelStyle={{fontSize: 16}} label={moment.duration(recipe.time.total).asMinutes()}/>
                     <Avatar.Text labelStyle={{fontSize: 16}} label={recipe.ingredients.length}/>
-                    <Avatar.Text/>
+                    <Avatar.Text labelStyle={{fontSize: 16}} label={recipe.nutrition.calories}/>
                 </View>
                 <View style={{
                     flexDirection: 'row',
@@ -167,17 +189,43 @@ export default connect((state, ownProps) => {
             </View>
         )
 
+        const datetime_view = (
+            <View>
+                {pickerMode === 'date' && <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your day</Text>}
+                {pickerMode === 'time' && <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your time</Text>}
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    timeZoneOffsetInMinutes={0}
+                    value={date}
+                    mode={pickerMode}
+                    is24Hour={true}
+                    display="default"
+                    onChange={onChange}
+                    />
+                {pickerMode === 'date' && <Button mode='contained' contentStyle={{paddingVertical: 10}}
+                        color={colors.foodblocksRed}
+                        onPress={showTimepicker}>Next</Button>}
+                {pickerMode === 'time' && <View style={{flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignSelf: 'stretch'}}>
+                    <Button style={{flex:0.5}}
+                        contentStyle={{paddingVertical: 10}}
+                        color={colors.foodblocksRed}
+                        onPress={showDatepicker}>Back</Button>
+                    <Button style={{flex:0.5}}
+                            mode='contained' contentStyle={{paddingVertical: 10}}
+                            color={colors.foodblocksRed}
+                            onPress={() => this.addFoodblock()}>Save</Button>
+                </View>}
+            </View>
+        );
+
         const add_foodblock_view = (
             <View>
                 <Surface style={surfaceStyles.selector}>
                     <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
-                    <Text style={textStyles.heading}>Plan your meal</Text>
-                    <View>
-                        <Text style={{paddingVertical: 20}}>*Insert selector*</Text>
-                        <Button mode='contained' contentStyle={{paddingVertical: 10}}
-                                color={colors.foodblocksRed}
-                                onPress={() => this.addFoodblock()}>Save</Button>
-                    </View>
+                    <Text style={[textStyles.heading]}>Plan your foodblock</Text>
+                    {datetime_view}
                 </Surface>
             </View>
         )
@@ -240,11 +288,9 @@ const surfaceStyles = StyleSheet.create({
         padding: 20,
         borderRadius: 20,
         elevation: 5,
-        alignItems: 'center',
         alignSelf: 'center',
-        justifyContent: 'center',
-        height: '70%',
-        width: '70%',
+        height: '85%',
+        width: '90%',
     },
 });
 
