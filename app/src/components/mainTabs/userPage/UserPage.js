@@ -12,6 +12,7 @@ import memoizeOne from "memoize-one";
 import {ACTIONS} from "../../../state/State";
 import withProps from "../../../utils/withProps";
 import SafeView from "../../SafeView";
+import headlessNavigator from "../../../utils/headlessNavigator";
 
 const Stack = createStackNavigator();
 
@@ -32,17 +33,13 @@ export default class UserPage extends React.Component {
     }
 
     render() {
-        return (
-            <Stack.Navigator initialRouteName="UserScreen"
-                             screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
-                <Stack.Screen options={{headerShown: false}} name="UserScreen"
-                              component={(UserScreen)}/>
-                <Stack.Screen name="Username" component={this.Username}/>
-                <Stack.Screen name="Email" component={this.Email}/>
-                <Stack.Screen name="Payment Information" component={Payment}/>
-                <Stack.Screen name="Help" component={Help}/>
-            </Stack.Navigator>
-        )
+        return headlessNavigator([
+            {name: 'UserScreen', component: UserScreen, mainPage: true},
+            {name: 'Username', component: this.Username},
+            {name: 'Email', component: this.Email},
+            {name: 'Help', component: Help},
+            {name: 'Payment Information', component: Payment}
+        ])
     }
 }
 

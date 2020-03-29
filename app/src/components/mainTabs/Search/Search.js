@@ -1,8 +1,6 @@
 import React from 'react'
-import {StyleSheet, View, Keyboard} from 'react-native'
-import {
-    Searchbar, Subheading, Portal, Button, Modal, ActivityIndicator
-} from 'react-native-paper';
+import {Keyboard, StyleSheet, View} from 'react-native'
+import {ActivityIndicator, Button, Modal, Portal, Searchbar, Subheading} from 'react-native-paper';
 import colors from '../../../../settings/colors'
 import styles from "../../../../settings/styles"
 import FoodBlockScroll from "../../FoodBlockScroll";
@@ -16,6 +14,7 @@ import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
 import moment from "moment";
 import SafeView from "../../SafeView";
+import headlessNavigator from "../../../utils/headlessNavigator";
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -170,13 +169,11 @@ const chipStyle = StyleSheet.create({
     }
 });
 
-const SearchNavigator = (props) => {
-    return (
-        <Navigator.Navigator headerMode={"none"} initialRouteName="Search">
-            <Navigator.Screen name="Search" component={Search}/>
-            <Navigator.Screen name="Food" component={FoodWithParams}/>
-        </Navigator.Navigator>
-    )
-};
+const SearchNavigator = (props) => (
+    headlessNavigator([
+        {name: 'Search', component: Search, mainPage: true},
+        {name: 'Food', component: FoodWithParams}
+    ])
+)
 
 export default SearchNavigator;

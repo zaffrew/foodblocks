@@ -48,6 +48,7 @@ async function scrape(recipe) {
     } else {
         throw new Error('The page is not recognized as an allrecipe recipe page')
     }
+
     recipe.loaded.page = moment().toISOString();
     recipe.source = "All Recipes"
 }

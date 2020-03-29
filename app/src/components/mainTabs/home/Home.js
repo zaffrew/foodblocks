@@ -6,8 +6,9 @@ import Food from "../../Food";
 import FoodBlockScroll from "../../FoodBlockScroll";
 import {Headline, Text, Title} from "react-native-paper";
 import {ScrollView, View} from "react-native";
-import filterUnique from "../../../utils/filterUnique";
 import SafeView from "../../SafeView";
+import filterUnique from "../../../utils/filterUnique";
+import headlessNavigator from "../../../utils/headlessNavigator";
 
 const testRecipes = [
     'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
@@ -79,13 +80,8 @@ const Home = connect((state) => ({
     }
 });
 
-export default class HomeNavigator extends React.Component {
-    render() {
-        return (
-            <HomeStack.Navigator headerMode={"none"} initialRouteName="Home">
-                <HomeStack.Screen name="Home" component={Home}/>
-                <HomeStack.Screen name="Food" component={FoodWithProps}/>
-            </HomeStack.Navigator>
-        )
-    }
-}
+
+export default props => headlessNavigator([
+    {name: 'Home', component: Home, mainPage: true},
+    {name: 'Food', component: FoodWithProps}
+])

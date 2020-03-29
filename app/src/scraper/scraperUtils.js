@@ -29,7 +29,10 @@ function genericScrape(dest, $, locations) {
             const e = $(location);
             if (Array.isArray(dest[key])) {
                 e.each((i, e) => {
-                    dest[key].push(text($(e)))
+                    const res = text($(e));
+                    if (text) {
+                        dest[key].push(res)
+                    }
                 })
             } else {
                 dest[key] = text(e)
