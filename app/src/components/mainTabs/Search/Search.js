@@ -8,7 +8,7 @@ import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
 import Food from "../../Food";
 
-import {search} from '../../../scraper/Scraper'
+import {getSearch} from '../../../scraper/Scraper'
 import Filters from "./Filters";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
@@ -55,7 +55,7 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
 
         const activeFilters = this.props.filters.filter(({active}) => active).map(filterObj => filterObj.name);
 
-        const searchRes = await search(query, activeFilters);
+        const searchRes = await getSearch(query, activeFilters);
         this.props.add_search(searchRes)
         await this.setState({searching: false, searchURLs: searchRes.results})
     };
@@ -120,6 +120,7 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
             </SafeView>
         )
     }
+
 });
 
 const cardStyle = StyleSheet.create({

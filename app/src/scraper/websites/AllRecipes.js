@@ -110,7 +110,6 @@ function new_scrape(recipe, $) {
 }
 
 function getSearchURL(query, filters) {
-    console.log(filters)
     const excludedIngredients = []
 
     if (filters.includes('Dairy-free')) {
@@ -127,7 +126,6 @@ function getSearchURL(query, filters) {
     URL.set('pathname', 'search/results/');
     URL.set('query', {wt: query, ingExcl: excludedIngredients.join(',')});
 
-    console.log('search URL', URL.href)
     return URL.href
 }
 
