@@ -8,7 +8,7 @@ import moment from "moment";
  * Fills in the searchRes object and returns the recipes loaded.
  */
 async function search(searchRes) {
-    return await getDOM(getSearchURL(searchRes.query)).then($ => {
+    const recipes = await getDOM(getSearchURL(searchRes.query, searchRes.filters)).then($ => {
         const recipes = [];
         $('article.fixed-recipe-card').each((i, e) => {
             if (i >= searchRes.num) {
@@ -33,6 +33,9 @@ async function search(searchRes) {
         });
         return recipes;
     })
+
+    searchRes.loaded = moment().toISOString();
+    return recipes;
 }
 
 async function scrape(recipe) {
@@ -106,10 +109,25 @@ function new_scrape(recipe, $) {
     recipe.image = getHighResURL($('.rec-photo').attr('src'))
 }
 
-function getSearchURL(query) {
+function getSearchURL(query, filters) {
+    console.log(filters)
+    const excludedIngredients = []
+
+    if (filters.includes('Dairy-free')) {
+        excludedIngredients.push('dairy')
+    }
+    if (filters.includes('Gluten-free')) {
+        excludedIngredients.push('gluten')
+    }
+
+    //&ingExcl=dairy,pork
+    //is an example filter
+
     const URL = new URL_PARSE('https://www.allrecipes.com/');
     URL.set('pathname', 'search/results/');
-    URL.set('query', {wt: query});
+    URL.set('query', {wt: query, ingExcl: excludedIngredients.join(',')});
+
+    console.log('search URL', URL.href)
     return URL.href
 }
 
