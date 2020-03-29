@@ -43,7 +43,7 @@ class MainPage extends React.Component {
     render() {
         return (
             <Tab.Navigator barStyle={{backgroundColor: this.props.theme.colors.primary}}
-                           initialRouteName="Search"
+                           initialRouteName="Home"
                            shifting={false}>
                 <Tab.Screen name="Home" component={Home} options={{
                     tabBarIcon: (focused, color) => {

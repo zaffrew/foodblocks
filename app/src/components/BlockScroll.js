@@ -3,6 +3,9 @@ import getRowView from "../utils/getRowView";
 import Block from "./Block";
 import {ScrollView} from "react-native";
 
+import nextId from "react-id-generator";
+
+
 const margin = 8;
 const axis = 160;
 
@@ -29,7 +32,7 @@ export default function BlockScroll(props) {
     const blocks = props.blocks.map((block, i) => {
         return (
             <Block margin={margin}
-                   key={i}
+                   key={i + '_' + nextId()}
                    onPress={block.onPress}
                    getData={block.getData}
                    {...blockSizing}

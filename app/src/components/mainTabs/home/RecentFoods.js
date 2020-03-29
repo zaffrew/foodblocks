@@ -11,7 +11,7 @@ export default connect(state => ({
 }))
 (props => (
         props.food_history.length > 0 ?
-            <FoodBlockScroll {...props}/>
+            <FoodBlockScroll {...props} URLs={props.food_history}/>
             :
             <View style={{alignItems: 'center', justifyContent: 'center'}} height={props.scrollLength}>
                 <Text>
