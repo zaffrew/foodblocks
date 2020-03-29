@@ -81,7 +81,11 @@ export default connect((state, ownProps) => {
     render() {
         const recipe = this.state.recipe;
         if (!recipe) {
-            return <ActivityIndicator/>
+            return (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size={'large'}/>
+                </View>
+            )
         }
 
         const {recipeVisible, selectorVisible} = this.state;
