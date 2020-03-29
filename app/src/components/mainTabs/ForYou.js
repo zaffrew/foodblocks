@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Appbar, List, getListItem, Title, Headline, configureFonts } from 'react-native-paper';
+import { Appbar, List, getListItem, Title, Headline, configureFonts, Button } from 'react-native-paper';
 import { StyleSheet, View, Text, Dimensions } from 'react-native';
 import {
   LineChart,
@@ -11,8 +11,9 @@ import {
 } from 'react-native-chart-kit'
 import SafeView from '../SafeView'
 import colors from '../../../settings/colors'
+import {createStackNavigator} from "@react-navigation/stack";
 
-export default class MyComponent extends React.Component {
+class MyComponent extends React.Component {
   render() {
     return (
         <SafeView>
@@ -25,25 +26,161 @@ export default class MyComponent extends React.Component {
     yAxisLabel={'%'}
     chartConfig={chartConfig}
     /> 
+    <Button onPress = {() => this.props.navigation.navigate("Calories")}
+    style={styles.c}
+    >
+      Calories
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("vitmanA")}
+    style={styles.va}
+    >
+      Vitman A
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("vitmanB")}
+    style={styles.vb}
+    >
+      Vitman B
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("vitmanC")}
+    style={styles.vc}
+    >
+      Vitman C
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("totalFat")}
+    style={styles.f}
+    >
+      Total fat
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("iron")}
+    style={styles.i}
+    >
+      Iron
+    </Button>
       </SafeView>
     
     );
   }
 }
+class Calories extends React.Component{
+  render(){
+    return(
+      <SafeView>
+        <Headline>
+       Calories
+        </Headline>
+
+      </SafeView>
+    )
+  }
+}
+
+class vitmanA extends React.Component{
+  render(){
+    return(
+      <SafeView>
+        <Headline>
+       Vitman A
+        </Headline>
+
+      </SafeView>
+    )
+  }
+}
+
+class vitmanB extends React.Component{
+  render(){
+    return(
+      <SafeView>
+        <Headline>
+       Vitman B
+        </Headline>
+
+      </SafeView>
+    )
+  }
+}
+
+class vitmanC extends React.Component{
+  render(){
+    return(
+      <SafeView>
+        <Headline>
+       Vitman C
+        </Headline>
+
+      </SafeView>
+    )
+  }
+}
+
+class iron extends React.Component{
+  render(){
+    return(
+      <SafeView>
+        <Headline>
+       Iron
+        </Headline>
+
+      </SafeView>
+    )
+  }
+}
+
+class totalFat extends React.Component{
+  render(){
+    return(
+      <SafeView>
+        <Headline>
+       Total Fat
+        </Headline>
+
+      </SafeView>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
-  top: {
+  c: {
     position: 'absolute',
     left: 0,
     right: 0,
-    top: 0,
-    bottom: 25,
+    bottom: -275,
   },
   bottom: {
       position: 'absolute',
       left: 0,
       right: 0,
       bottom: -225,
+  },
+  va: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -325,
+  },
+  vb: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -375,
+  },
+  vc: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -425,
+  },
+  f: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -475,
+  },
+  i: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -525,
   }
 });
 const barData = {
@@ -63,4 +200,23 @@ const barData = {
     strokeWidth: 2, // optional, default 3
     barPercentage: 0.5
   };
+
   const screenWidth = Dimensions.get("window").width;
+
+  const Stack = createStackNavigator();
+  const statsNavigator = (props) => {
+  return (
+      <Stack.Navigator initialRouteName="Stats"
+                       screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
+          <Stack.Screen options={{headerShown: false}} name="Calories"
+                        component={(Calories)}/>
+          <Stack.Screen name="Calories" component={Calories}/>
+          <Stack.Screen name="Vitman A" component={vitmanA}/>
+          <Stack.Screen name="Vitman B" component={vitmanB}/>
+          <Stack.Screen name="Vitman C" component={vitmanC}/>
+          <Stack.Screen name="Iron" component={iron}/>
+          <Stack.Screen name="Total fat" component={totalFat}/>
+      </Stack.Navigator>
+  )
+  }
+  export default statsNavigator;
