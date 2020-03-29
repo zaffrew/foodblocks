@@ -31,17 +31,17 @@ class MyComponent extends React.Component {
     >
       Calories
     </Button>
-    <Button onPress = {() => this.props.navigation.navigate("vitmanA")}
+    <Button onPress = {() => this.props.navigation.navigate("vitamanA")}
     style={styles.va}
     >
       Vitman A
     </Button>
-    <Button onPress = {() => this.props.navigation.navigate("vitmanB")}
+    <Button onPress = {() => this.props.navigation.navigate("vitamanB")}
     style={styles.vb}
     >
       Vitman B
     </Button>
-    <Button onPress = {() => this.props.navigation.navigate("vitmanC")}
+    <Button onPress = {() => this.props.navigation.navigate("vitamanC")}
     style={styles.vc}
     >
       Vitman C
@@ -74,7 +74,7 @@ class Calories extends React.Component{
   }
 }
 
-class vitmanA extends React.Component{
+class vitamanA extends React.Component{
   render(){
     return(
       <SafeView>
@@ -87,7 +87,7 @@ class vitmanA extends React.Component{
   }
 }
 
-class vitmanB extends React.Component{
+class vitamanB extends React.Component{
   render(){
     return(
       <SafeView>
@@ -100,7 +100,7 @@ class vitmanB extends React.Component{
   }
 }
 
-class vitmanC extends React.Component{
+class vitamanC extends React.Component{
   render(){
     return(
       <SafeView>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   }
 });
 const barData = {
-    labels: ['Vitman A', 'Vitman B', 'Vitman C', 'Calories', 'Total fat', 'Iron'],
+    labels: ['Vitaman A', 'Vitaman B', 'Vitaman C', 'Calories', 'Total fat', 'Iron'],
     datasets: [
       {
         data: [20, 45, 28, 80, 99, 43],
@@ -206,16 +206,16 @@ const barData = {
   const Stack = createStackNavigator();
   const statsNavigator = (props) => {
   return (
-      <Stack.Navigator initialRouteName="Stats"
+      <Stack.Navigator initialRouteName="MyComponent"
                        screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
-          <Stack.Screen options={{headerShown: false}} name="Calories"
-                        component={(Calories)}/>
+          <Stack.Screen options={{headerShown: false}} name="MyComponent"
+                        component={(MyComponent)}/>
           <Stack.Screen name="Calories" component={Calories}/>
-          <Stack.Screen name="Vitman A" component={vitmanA}/>
-          <Stack.Screen name="Vitman B" component={vitmanB}/>
-          <Stack.Screen name="Vitman C" component={vitmanC}/>
-          <Stack.Screen name="Iron" component={iron}/>
-          <Stack.Screen name="Total fat" component={totalFat}/>
+          <Stack.Screen name="vitamanA" component={vitamanA}/>
+          <Stack.Screen name="vitamanB" component={vitamanB}/>
+          <Stack.Screen name="vitamanC" component={vitamanC}/>
+          <Stack.Screen name="iron" component={iron}/>
+          <Stack.Screen name="totalFat" component={totalFat}/>
       </Stack.Navigator>
   )
   }
