@@ -116,12 +116,12 @@ export default connect((state, ownProps) => {
             const value = recipe.time[key]
             if (value) {
                 timing.push(
-                    <View key={i} style={{flexDirection: 'row', padding: 10}}>
+                    <View key={i} style={{padding: 10}}>
                         <Avatar.Text size={40} labelStyle={{fontSize: 14}} label={moment.duration(value).asMinutes()}/>
                         <Text style={{
                             textAlignVertical: 'center',
-                            padding: 10
-                        }}>Minutes {capitalizeFirstLetter(key)} Time</Text>
+                            paddingVertical: 5
+                        }}>{capitalizeFirstLetter(key)}</Text>
                     </View>)
             }
         })
@@ -172,14 +172,19 @@ export default connect((state, ownProps) => {
                         <View>
                             <Text style={[textStyles.sub, {textAlign: 'center'}]}>Recipe
                                 by {recipe.author}</Text>
+                            <View style={{padding: 5, backgroundColor: colors.lightYellow, borderRadius: 10}}>
                             <Text style={[textStyles.sub, {
-                                textAlign: 'center',
+                                textAlign: 'center', color: colors.darkYellow,
                             }]}>{recipe.description}</Text>
+                            </View>
+
                             <Title style={textStyles.heading}>Ingredients Required</Title>
                             {ingredients}
-                            <View style={{paddingVertical: 10}}>
+                            <View>
                                 <Title style={textStyles.heading}>Time needed</Title>
-                                {timing}
+                                <View style={{flexDirection: 'row'}}>
+                                    {timing}
+                                </View>
                             </View>
                             <Title style={textStyles.heading}>Directions</Title>
                             {directions}
@@ -202,10 +207,10 @@ export default connect((state, ownProps) => {
                     display="default"
                     onChange={onChange}
                     />
-                {pickerMode === 'date' && <Button mode='contained' contentStyle={{paddingVertical: 10}}
+                {Platform.OS === 'ios' && pickerMode === 'date' && <Button mode='contained' contentStyle={{paddingVertical: 10}}
                         color={colors.foodblocksRed}
                         onPress={showTimepicker}>Next</Button>}
-                {pickerMode === 'time' && <View style={{flexDirection: 'row',
+                {Platform.OS === 'ios' && pickerMode === 'time' && <View style={{flexDirection: 'row',
                             justifyContent: 'center',
                             alignSelf: 'stretch'}}>
                     <Button style={{flex:0.5}}
@@ -248,7 +253,7 @@ export default connect((state, ownProps) => {
                         paddingHorizontal: 20,
                         paddingTop: 15
                     }}>
-                        <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.green}
+                        <Button dark={true} mode='contained' contentStyle={{paddingVertical: 10}} color={colors.yellow}
                                 onPress={() => this._showRecipe()}>Get Started</Button>
                         {add_foodblock_button}
                     </View>

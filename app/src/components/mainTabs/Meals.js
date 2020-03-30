@@ -20,7 +20,7 @@ class Meals extends React.Component {
             <View style={{flex: 1}}>
                 <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
                     <Headline style={[{color: 'white'}, {paddingVertical: 20}, {paddingHorizontal: 10}]}>
-                        Saved Meals
+                        My foodblocks
                     </Headline>
                 </SafeAreaView>
                 <FoodBlockScroll onPress={(URL) => {
