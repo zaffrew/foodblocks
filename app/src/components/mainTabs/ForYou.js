@@ -18,14 +18,16 @@ class MyComponent extends React.Component {
     return (
         <SafeView>
         <Text  style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign:'center',}}>Today</Text>
-        <BarChart
-    style={styles.bottom}
-    data={barData}
-    width={screenWidth} // screenWidth
-    height={220}
-    yAxisLabel={'%'}
-    chartConfig={chartConfig}
-    /> 
+        <PieChart
+          data={data}
+          width={screenWidth}
+          height={220}
+          chartConfig={chartConfigCircle}
+          accessor="population"
+          backgroundColor="transparent"
+          paddingLeft="15"
+          absolute
+        />
     <Button onPress = {() => this.props.navigation.navigate("Calories")}
     style={styles.c}
     >
@@ -65,9 +67,15 @@ class Calories extends React.Component{
   render(){
     return(
       <SafeView>
-        <Headline>
-       Calories
-        </Headline>
+        <Text  style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign:'center',}}>Calories</Text>
+        <BarChart
+    style={styles.bottom}
+    data={barData}
+    width={screenWidth} // screenWidth
+    height={220}
+    yAxisLabel={'%'}
+    chartConfig={chartConfigBar}
+    /> 
 
       </SafeView>
     )
@@ -77,10 +85,16 @@ class Calories extends React.Component{
 class vitamanA extends React.Component{
   render(){
     return(
-      <SafeView>
-        <Headline>
-       Vitman A
-        </Headline>
+      <SafeView >
+        <Text  style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign:'center',}}>Vitaman A</Text>
+        <BarChart
+    style={styles.bottom}
+    data={barData}
+    width={screenWidth} // screenWidth
+    height={220}
+    yAxisLabel={'%'}
+    chartConfig={chartConfigBar}
+    /> 
 
       </SafeView>
     )
@@ -91,9 +105,15 @@ class vitamanB extends React.Component{
   render(){
     return(
       <SafeView>
-        <Headline>
-       Vitman B
-        </Headline>
+        <Text  style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign:'center',}}>Vitaman B</Text>
+        <BarChart
+    style={styles.bottom}
+    data={barData}
+    width={screenWidth} // screenWidth
+    height={220}
+    yAxisLabel={'%'}
+    chartConfig={chartConfigBar}
+    /> 
 
       </SafeView>
     )
@@ -104,9 +124,15 @@ class vitamanC extends React.Component{
   render(){
     return(
       <SafeView>
-        <Headline>
-       Vitman C
-        </Headline>
+        <Text  style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign:'center',}}>Vitaman C</Text>
+        <BarChart
+    style={styles.bottom}
+    data={barData}
+    width={screenWidth} // screenWidth
+    height={220}
+    yAxisLabel={'%'}
+    chartConfig={chartConfigBar}
+    /> 
 
       </SafeView>
     )
@@ -117,9 +143,15 @@ class iron extends React.Component{
   render(){
     return(
       <SafeView>
-        <Headline>
-       Iron
-        </Headline>
+        <Text  style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign:'center',}}>Iron</Text>
+        <BarChart
+    style={styles.bottom}
+    data={barData}
+    width={screenWidth} // screenWidth
+    height={220}
+    yAxisLabel={'%'}
+    chartConfig={chartConfigBar}
+    /> 
 
       </SafeView>
     )
@@ -130,9 +162,15 @@ class totalFat extends React.Component{
   render(){
     return(
       <SafeView>
-        <Headline>
-       Total Fat
-        </Headline>
+        <Text  style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign:'center',}}>Total Fat</Text>
+        <BarChart
+    style={styles.bottom}
+    data={barData}
+    width={screenWidth} // screenWidth
+    height={220}
+    yAxisLabel={'%'}
+    chartConfig={chartConfigBar}
+    /> 
 
       </SafeView>
     )
@@ -144,7 +182,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -275,
+    bottom: -50,
   },
   bottom: {
       position: 'absolute',
@@ -156,46 +194,99 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -325,
+    bottom: -100,
   },
   vb: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -375,
+    bottom: -150,
   },
   vc: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -425,
+    bottom: -200,
   },
   f: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -475,
+    bottom: -250,
   },
   i: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: -525,
+    bottom: -300,
   }
 });
 const barData = {
-    labels: ['Vitaman A', 'Vitaman B', 'Vitaman C', 'Calories', 'Total fat', 'Iron'],
+    labels: ['Sunday', 'Monday', 'Tuesday', 'Wedensday', 'Thursday', 'Friday', 'Saturday'],
     datasets: [
       {
-        data: [20, 45, 28, 80, 99, 43],
+        data: [20, 45, 28, 80, 99, 43, 25],
       },
     ],
   };
-  const chartConfig = {
+  const chartConfigBar = {
     backgroundGradientFrom: "#E43938",
-    backgroundGradientFromOpacity: 0.5,
+    backgroundGradientFromOpacity: 0.9,
     backgroundGradientTo: "#E62D1B",
     backgroundGradientToOpacity: 1,
+    color: (opacity = 1) => `rgba(25, 125, 425, ${opacity})`,
+    strokeWidth: 2, // optional, default 3
+    barPercentage: 0.5,
+  };
+  const data = [
+    {
+      name: "Calories",
+      population: 21500000,
+      color: "rgba(131, 167, 234, 1)",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Vitaman A",
+      population: 2800000,
+      color: "#F00",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Vitaman B",
+      population: 527612,
+      color: "green",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Vitamin C",
+      population: 8538000,
+      color: "#ffffff",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Total Fat",
+      population: 2500000,
+      color: "yellow",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    },
+    {
+      name: "Iron",
+      population: 11920000,
+      color: "rgb(0, 0, 255)",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 12
+    }
+  ];
+  const chartConfigCircle = {
+    backgroundGradientFrom: "#1E2923",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientTo: "#08130D",
+    backgroundGradientToOpacity: 0.5,
     color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 0.5
