@@ -7,6 +7,7 @@ import moment from "moment";
 import {getRecipe} from "../scraper/Scraper";
 import colors from '../../settings/colors';
 import * as Calendar from 'expo-calendar'; // to interact with system calendar events
+import * as Permissions from 'expo-permissions';
 import DateTimePicker from '@react-native-community/datetimepicker'; // to display an interface for user to choose date and time
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
@@ -58,10 +59,24 @@ export default connect((state, ownProps) => {
         }
     }
 
-    addFoodblock() {
+    async addFoodblock() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
+        console.log(this.state.date);
         (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
+        const { status } = await Calendar.requestCalendarPermissionsAsync();
+        if (status === 'granted') {
+            try {
+                console.log('Adding Event');
+                const calendarId = (await Calendar.getDefaultCalendarAsync()).id;
+                const endDate = moment(this.state.date).add(this.state.recipe.time.total, 'm').toDate();
+                const eventId = await Calendar.createEventAsync(calendarId, {title: 'New foodblock', startDate: this.state.date, endDate: this.state.date});
+                console.log("Event Id", eventId);
+            }
+            catch(error) {
+                console.log('Error', error);
+            }
+        }
     }
 
     _showRecipe = () => this.setState({recipeVisible: true});
