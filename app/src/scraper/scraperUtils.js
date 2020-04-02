@@ -30,7 +30,7 @@ function genericScrape(dest, $, locations) {
             if (Array.isArray(dest[key])) {
                 e.each((i, e) => {
                     const res = text($(e));
-                    if (text) {
+                    if (res) {
                         dest[key].push(res)
                     }
                 })
