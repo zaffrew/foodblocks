@@ -1,15 +1,10 @@
-const ACTIONS = {
-    SET_GROCERY: "SET_GROCERY",
-    REMOVE_GROCERY: 'REMOVE_GROCERY',
-    OVERWRITE_GROCERIES: 'OVERWRITE_GROCERIES'
-
-};
-
 /**
  * this reducer is rather stupid in that it simply sets the data given to it in the index it is given.
  * the actual state management is handled in Groceries.js
  */
-function reducer(state = [], action) {
+import ACTIONS from "./ACTIONS";
+
+export default function reducer(state = [], action) {
     if (action.type === ACTIONS.REMOVE_GROCERY) {
         state = state.slice();
         state.splice(action.index, 1);
@@ -24,7 +19,3 @@ function reducer(state = [], action) {
         return state;
     }
 }
-
-// const persistedReducer = persistReducer(persistConfig, reducer);
-const persistedReducer = reducer;
-export {persistedReducer as reducer, ACTIONS}

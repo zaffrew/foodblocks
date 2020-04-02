@@ -1,14 +1,14 @@
 import React from "react";
 import {connect} from 'react-redux'
 import {createStackNavigator} from "@react-navigation/stack";
-import withRouteParams from "../../utils/withRouteParams";
-import Food from "../Food";
-import FoodBlockScroll from "../FoodBlockScroll";
-import {SafeAreaView} from "react-native-safe-area-context";
+import withRouteParams from "../../../utils/withRouteParams";
+import Food from "../../Food";
+import FoodBlockScroll from "../../FoodBlockScroll";
 import {Headline, Text, Title} from "react-native-paper";
 import {ScrollView, View} from "react-native";
-import filterUnique from "../../utils/filterUnique";
-import headlessNavigator from "../../utils/headlessNavigator";
+import SafeView from "../../SafeView";
+import filterUnique from "../../../utils/filterUnique";
+import headlessNavigator from "../../../utils/headlessNavigator";
 
 const testRecipes = [
     'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
@@ -26,7 +26,8 @@ const FoodWithProps = withRouteParams(Food);
 
 const Home = connect((state) => ({
     username: state.user_info.username,
-    food_history: filterUnique(state.user_info.food_history.map(({URL}) => URL))
+    //we do the splice so we only get up to 20 in recent history.
+    food_history: filterUnique(state.user_info.food_history.slice(0, 20).map(({URL}) => URL))
 }))
 (class extends React.Component {
     openFood = (URL) => {
@@ -44,7 +45,7 @@ const Home = connect((state) => ({
         };
 
         return (
-            <SafeAreaView style={{flex: 1}}>
+            <SafeView bottom={false} style={{flex: 1}}>
                 <ScrollView>
                     <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
                         Hello {this.props.username}!
@@ -74,10 +75,11 @@ const Home = connect((state) => ({
                     </Headline>
                     <FoodBlockScroll {...scrollProps}/>
                 </ScrollView>
-            </SafeAreaView>
+            </SafeView>
         )
     }
 });
+
 
 export default props => headlessNavigator([
     {name: 'Home', component: Home, mainPage: true},

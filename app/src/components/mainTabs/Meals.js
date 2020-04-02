@@ -7,7 +7,7 @@ import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../utils/withRouteParams";
 import Food from "../Food";
-import {SafeAreaView} from "react-native-safe-area-context";
+import SafeView from "../SafeView";
 import headlessNavigator from "../../utils/headlessNavigator";
 
 
@@ -18,11 +18,11 @@ class Meals extends React.Component {
     render() {
         return (
             <View style={{flex: 1}}>
-                <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
-                    <Headline style={[{color: 'white'}, {paddingVertical: 20}, {paddingHorizontal: 10}]}>
+                <SafeView bottom={false} style={{backgroundColor: colors.foodblocksRed}}>
+                    <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
                         Saved Meals
                     </Headline>
-                </SafeAreaView>
+                </SafeView>
                 <FoodBlockScroll onPress={(URL) => {
                     this.props.navigation.navigate('Food', {URL})
                 }}

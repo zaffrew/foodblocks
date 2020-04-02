@@ -1,19 +1,12 @@
 import settings from '../../settings/appSettings'
-
-const ACTIONS = {
-    USERNAME: 'USERNAME',
-    EMAIL: "EMAIL",
-    SET_FILTER: 'SET_FILTER',
-    ADD_SEARCH_HISTORY: 'ADD_SEARCH_HISTORY',
-    ADD_FOOD_HISTORY: 'ADD_FOOD_HISTORY',
-};
+import ACTIONS from "./ACTIONS";
 
 const initalFilters = settings.defaultFilters.map(name => ({name, active: false}));
 const initialState = {filters: initalFilters, search_history: [], food_history: []};
 
 //i dont know why but for some reason we cant set state={filters: initialFilters}. maybe since it will be changed every time?
 
-function reducer(state = initialState, action) {
+export default function reducer(state = initialState, action) {
     switch (action.type) {
         case ACTIONS.USERNAME:
             return {...state, username: action.username};
@@ -45,7 +38,3 @@ function reducer(state = initialState, action) {
             return state
     }
 }
-
-// const persistedReducer = persistReducer({...persistConfig, whitelist: Object.values(STORES)}, reducer);
-const persistedReducer = reducer;
-export {persistedReducer as reducer, ACTIONS}

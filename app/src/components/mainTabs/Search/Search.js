@@ -1,8 +1,6 @@
 import React from 'react'
-import {StyleSheet, View, Keyboard} from 'react-native'
-import {
-    Searchbar, Subheading, Portal, Button, Modal, ActivityIndicator
-} from 'react-native-paper';
+import {Keyboard, StyleSheet, View} from 'react-native'
+import {ActivityIndicator, Button, Modal, Portal, Searchbar, Subheading} from 'react-native-paper';
 import colors from '../../../../settings/colors'
 import styles from "../../../../settings/styles"
 import FoodBlockScroll from "../../FoodBlockScroll";
@@ -12,10 +10,10 @@ import Food from "../../Food";
 
 import {search} from '../../../scraper/Scraper'
 import Filters from "./Filters";
-import {SafeAreaView} from "react-native-safe-area-context";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
 import moment from "moment";
+import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
 
 const Navigator = createStackNavigator();
@@ -71,7 +69,7 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
 
     render() {
         return (
-            <SafeAreaView style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
+            <SafeView bottom={false} style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
                 <View style={{
                     backgroundColor: colors.foodblocksRed,
                 }}>
@@ -126,7 +124,7 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
                         </View>
                     }
                 </View>
-            </SafeAreaView>
+            </SafeView>
         )
     }
 });
@@ -177,4 +175,5 @@ const SearchNavigator = (props) => (
         {name: 'Food', component: FoodWithParams}
     ])
 )
+
 export default SearchNavigator;

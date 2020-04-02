@@ -15,7 +15,7 @@ import Groceries from "./mainTabs/Groceries";
 import Meals from "./mainTabs/Meals";
 import UserPage from "./mainTabs/userPage/UserPage";
 import {withTheme} from "react-native-paper";
-import Home from "./mainTabs/Home";
+import Home from "./mainTabs/home/Home";
 
 const iconMap = {
     Home: homeButton,

@@ -11,7 +11,7 @@ import Email from "../../login/Email";
 import memoizeOne from "memoize-one";
 import {ACTIONS} from "../../../state/State";
 import withProps from "../../../utils/withProps";
-import {SafeAreaView} from "react-native-safe-area-context";
+import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
 
 const Stack = createStackNavigator();
@@ -58,8 +58,7 @@ const UserScreen = connect((state) => {
 
     render() {
         return (
-            <SafeAreaView
-                style={{flex: 1, flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start'}}>
+            <SafeView bottom={false} style={{flex: 1, alignItems: 'stretch'}}>
                 <Surface
                     style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
                     {this.memoizedAvatar(this.props.username)}
@@ -93,7 +92,7 @@ const UserScreen = connect((state) => {
                         />
                     </List.Section>
                 </Surface>
-            </SafeAreaView>
+            </SafeView>
         )
     }
 });
