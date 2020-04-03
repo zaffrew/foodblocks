@@ -16,8 +16,8 @@ import {createStackNavigator} from "@react-navigation/stack";
 class MyComponent extends React.Component {
   render() {
     return (
-        <SafeView>
-        <Text  style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign:'center',}}>Today</Text>
+        <SafeView style={{backgroundColor: colors.foodblocksRed}}>
+        <Text  style={{padding: 5, fontSize: 50, color: "white", textAlign:'center',}}>Today</Text>
         <PieChart
           data={data}
           width={screenWidth}
@@ -58,7 +58,7 @@ class MyComponent extends React.Component {
     >
       Iron
     </Button>
-      </SafeView>
+    </SafeView>
     
     );
   }
@@ -73,7 +73,7 @@ class Calories extends React.Component{
     data={barData}
     width={screenWidth} // screenWidth
     height={220}
-    yAxisLabel={'%'}
+    yAxisLabel={''}
     chartConfig={chartConfigBar}
     /> 
 
@@ -92,7 +92,7 @@ class vitamanA extends React.Component{
     data={barData}
     width={screenWidth} // screenWidth
     height={220}
-    yAxisLabel={'%'}
+    yAxisLabel={''}
     chartConfig={chartConfigBar}
     /> 
 
@@ -111,7 +111,7 @@ class vitamanB extends React.Component{
     data={barData}
     width={screenWidth} // screenWidth
     height={220}
-    yAxisLabel={'%'}
+    yAxisLabel={''}
     chartConfig={chartConfigBar}
     /> 
 
@@ -130,7 +130,7 @@ class vitamanC extends React.Component{
     data={barData}
     width={screenWidth} // screenWidth
     height={220}
-    yAxisLabel={'%'}
+    yAxisLabel={''}
     chartConfig={chartConfigBar}
     /> 
 
@@ -149,7 +149,7 @@ class iron extends React.Component{
     data={barData}
     width={screenWidth} // screenWidth
     height={220}
-    yAxisLabel={'%'}
+    yAxisLabel={''}
     chartConfig={chartConfigBar}
     /> 
 
@@ -168,7 +168,7 @@ class totalFat extends React.Component{
     data={barData}
     width={screenWidth} // screenWidth
     height={220}
-    yAxisLabel={'%'}
+    yAxisLabel={''}
     chartConfig={chartConfigBar}
     /> 
 
@@ -243,42 +243,42 @@ const barData = {
       name: "Calories",
       population: 21500000,
       color: "rgba(131, 167, 234, 1)",
-      legendFontColor: "#7F7F7F",
+      legendFontColor: "white",
       legendFontSize: 12
     },
     {
       name: "Vitaman A",
       population: 2800000,
-      color: "#F00",
-      legendFontColor: "#7F7F7F",
+      color: "blue",
+      legendFontColor: "white",
       legendFontSize: 12
     },
     {
       name: "Vitaman B",
       population: 527612,
       color: "green",
-      legendFontColor: "#7F7F7F",
+      legendFontColor: "white",
       legendFontSize: 12
     },
     {
       name: "Vitamin C",
       population: 8538000,
-      color: "#ffffff",
-      legendFontColor: "#7F7F7F",
+      color: "orange",
+      legendFontColor: "white",
       legendFontSize: 12
     },
     {
       name: "Total Fat",
       population: 2500000,
       color: "yellow",
-      legendFontColor: "#7F7F7F",
+      legendFontColor: "white",
       legendFontSize: 12
     },
     {
       name: "Iron",
       population: 11920000,
-      color: "rgb(0, 0, 255)",
-      legendFontColor: "#7F7F7F",
+      color: "purple",
+      legendFontColor: "white",
       legendFontSize: 12
     }
   ];
