@@ -62,16 +62,16 @@ export default connect((state, ownProps) => {
     async addFoodblock() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
-        console.log(this.state.date);
         (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
         const { status } = await Calendar.requestCalendarPermissionsAsync();
         if (status === 'granted') {
             try {
-                console.log('Adding Event');
                 const calendarId = (await Calendar.getDefaultCalendarAsync()).id;
-                const endDate = moment(this.state.date).add(this.state.recipe.time.total, 'm').toDate();
-                const eventId = await Calendar.createEventAsync(calendarId, {title: 'New foodblock', startDate: this.state.date, endDate: this.state.date});
-                console.log("Event Id", eventId);
+                const totalTime = moment.duration(this.state.recipe.time.total).asMinutes();
+                const totalTimeMilli = totalTime * 60 * 1000
+                const startDate = this.state.date;
+                const endDate = new Date(startDate.getTime() + totalTimeMilli);
+                const eventId = await Calendar.createEventAsync(calendarId, {title: 'New foodblock', startDate: startDate, endDate: endDate});
             }
             catch(error) {
                 console.log('Error', error);
@@ -87,6 +87,8 @@ export default connect((state, ownProps) => {
 
     render() {
         const recipe = this.state.recipe;
+
+        const offset = new Date().getTimezoneOffset(); 
 
         if (!recipe) {
             return <ActivityIndicator/>
@@ -215,7 +217,7 @@ export default connect((state, ownProps) => {
                 {pickerMode === 'time' && <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your time</Text>}
                 <DateTimePicker
                     testID="dateTimePicker"
-                    timeZoneOffsetInMinutes={0}
+                    timeZoneOffsetInMinutes={-offset}
                     value={date}
                     mode={pickerMode}
                     is24Hour={true}
