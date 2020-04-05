@@ -5,6 +5,7 @@ import {View} from 'react-native'
 import settings from "../../settings/appSettings";
 import {Title, withTheme} from "react-native-paper";
 import {connect} from "react-redux";
+import invertTheme from "../utils/invertTheme";
 
 const splashTransitionTime = settings.splashTransitionTime;
 
@@ -20,11 +21,7 @@ export default connect((state) => ({
     }
 
     render() {
-        const theme = {
-            colors: {
-                text: this.props.theme.colors.background
-            }
-        };
+        const theme = invertTheme(this.props.theme);
 
         return (
             <View style={[styles.centeredContainer, {backgroundColor: this.props.theme.colors.primary}]}>

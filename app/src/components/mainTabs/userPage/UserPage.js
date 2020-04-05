@@ -1,6 +1,5 @@
 import React from 'react'
 import {Avatar, IconButton, List, Subheading, Surface, Title} from 'react-native-paper';
-import SafeView from "../../SafeView";
 import {createStackNavigator} from "@react-navigation/stack";
 import Payment from "./Payment";
 import Help from "./Help";
@@ -11,7 +10,9 @@ import Email from "../../login/Email";
 
 import memoizeOne from "memoize-one";
 import {ACTIONS} from "../../../state/State";
-import withProps from "../../withProps";
+import withProps from "../../../utils/withProps";
+import SafeView from "../../SafeView";
+import headlessNavigator from "../../../utils/headlessNavigator";
 
 const Stack = createStackNavigator();
 
@@ -32,17 +33,13 @@ export default class UserPage extends React.Component {
     }
 
     render() {
-        return (
-            <Stack.Navigator initialRouteName="UserScreen"
-                             screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
-                <Stack.Screen options={{headerShown: false}} name="UserScreen"
-                              component={(UserScreen)}/>
-                <Stack.Screen name="Username" component={this.Username}/>
-                <Stack.Screen name="Email" component={this.Email}/>
-                <Stack.Screen name="Payment Information" component={Payment}/>
-                <Stack.Screen name="Help" component={Help}/>
-            </Stack.Navigator>
-        )
+        return headlessNavigator([
+            {name: 'UserScreen', component: UserScreen, mainPage: true},
+            {name: 'Username', component: this.Username},
+            {name: 'Email', component: this.Email},
+            {name: 'Help', component: Help},
+            {name: 'Payment Information', component: Payment}
+        ])
     }
 }
 
@@ -61,7 +58,7 @@ const UserScreen = connect((state) => {
 
     render() {
         return (
-            <SafeView style={{flex: 1, flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start'}}>
+            <SafeView bottom={false} style={{flex: 1, alignItems: 'stretch'}}>
                 <Surface
                     style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
                     {this.memoizedAvatar(this.props.username)}

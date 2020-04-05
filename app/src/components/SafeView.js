@@ -1,23 +1,27 @@
-import React from 'react'
+import {useSafeArea} from "react-native-safe-area-context";
+import withProps from "../utils/withProps";
+import React from "react";
+import {View} from "react-native";
 
-import {Platform, SafeAreaView} from "react-native";
+export default withProps(props => {
+    const safeAreaInsets = useSafeArea()
 
-import Constants from 'expo-constants'
+    const style = {}
 
-export default function (props) {
-
-    let paddingTop = 0;
-
-    if (props.style && props.style.paddingTop) {
-        paddingTop += props.style.paddingTop
+    if (props.top) {
+        style.paddingTop = (props.style.paddingTop ? props.style.paddingTop : 0) + safeAreaInsets.top
+    }
+    if (props.bottom) {
+        style.paddingBottom = (props.style.paddingBottom ? props.style.paddingBottom : 0) + safeAreaInsets.bottom
     }
 
-    if (Platform.OS === 'android') {
-        paddingTop += Constants.statusBarHeight
+    if (Array.isArray(props.style)) {
+        props = {...props, style: [...props.style, style]}
+    } else {
+        props = {...props, style: {...props.style, ...style}}
     }
-
 
     return (
-        <SafeAreaView {...props} style={[props.style, {paddingTop: paddingTop}]}/>
-    );
-}
+        <View {...props}/>
+    )
+}, {top: true, bottom: true})

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import withProps from "../withProps";
+import withProps from "../../utils/withProps";
 import SingleUserSetting from "../SingleUserSetting";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../state/State";
