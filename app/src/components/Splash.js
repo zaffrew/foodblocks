@@ -3,16 +3,20 @@ import styles from '../../settings/styles'
 
 import {View} from 'react-native'
 import settings from "../../settings/appSettings";
-import {Title, withTheme} from "react-native-paper";
+import {Button, Title, withTheme} from "react-native-paper";
 import {connect} from "react-redux";
 import invertTheme from "../utils/invertTheme";
+import {ACTIONS} from "../state/State";
 
 const splashTransitionTime = settings.splashTransitionTime;
 
-export default connect((state) => ({
-    email: state.user_info.email,
-    username: state.user_info.username
-}))(withTheme(class SplashScreen extends React.Component {
+export default connect(null,
+    {
+        logout: () => ({
+            type: ACTIONS.RESET,
+        }),
+    }
+)(withTheme(class SplashScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,9 +27,13 @@ export default connect((state) => ({
     render() {
         const theme = invertTheme(this.props.theme);
 
+        const logout = __DEV__ ?
+            <Button color={'green'} onPress={this.props.logout}>DEV ONLY LOGOUT</Button> : null;
+
         return (
             <View style={[styles.centeredContainer, {backgroundColor: this.props.theme.colors.primary}]}>
                 <Title theme={theme} style={{padding: 30, fontSize: 50}}>foodblocks</Title>
+                {logout}
             </View>
         );
     }

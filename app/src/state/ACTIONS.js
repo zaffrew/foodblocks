@@ -1,5 +1,5 @@
 export default {
-    RESET: '',
+    RESET: 'RESET',
     CACHE_RECIPE: 'CACHE_RECIPE',
     CACHE_SEARCH: 'CACHE_SEARCH',
     SET_GROCERY: "SET_GROCERY",
