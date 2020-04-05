@@ -1,11 +1,11 @@
 import React from 'react';
-import {View} from 'react-native'
+import {Dimensions, Text, View} from 'react-native'
 import {Button} from 'react-native-paper';
-import {Dimensions, StyleSheet, Text} from 'react-native';
 import {BarChart, PieChart} from 'react-native-chart-kit'
 import SafeView from '../SafeView'
 import colors from '../../../settings/colors'
 import {createStackNavigator} from "@react-navigation/stack";
+import headlessNavigator from "../../utils/headlessNavigator";
 
 const categories = [
     'Calories',
@@ -141,15 +141,11 @@ const screenWidth = Dimensions.get("window").width;
 
 const Stack = createStackNavigator();
 const statsNavigator = (props) => {
-    const screens = categories.map((name, i) => <Stack.Screen key={i} name={name} component={getPage(name)}/>)
+    const screens = categories.map((name, i) => ({name, component: getPage(name)}))
+    screens.push({
+        name: "MyComponent", component: MyComponent
+    })
 
-    return (
-        <Stack.Navigator initialRouteName="MyComponent"
-                         screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
-            <Stack.Screen options={{headerShown: false}} name="MyComponent"
-                          component={(MyComponent)}/>
-            {screens}
-        </Stack.Navigator>
-    )
+    return headlessNavigator(screens)
 }
 export default statsNavigator;

@@ -4479,10 +4479,10 @@ react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.9.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
   integrity sha512-rPCkf/mWBtKc97aLL9/txD8DZdemK0vkA3JMLShjlJB3Pj3s+lpf1KaBzMfQrAmhMQB0n1cU/SUGgKKBCe837Q==
 
-react-native-chart-kit@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/react-native-chart-kit/-/react-native-chart-kit-5.1.1.tgz#dd990a3846c0144a6a4a22a4b39f81b9db971db8"
-  integrity sha512-rnYXIMrwJ/+ZU3bnFVSaaC3SRtO8/l9yeaXcdjTaOJX0FGWDN2y9BSzEAl+EDw0bOawTpQoCPeOjI3uZ3fZoiQ==
+react-native-chart-kit@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-chart-kit/-/react-native-chart-kit-5.3.0.tgz#39c8ca9486ef9c2c5f7b72950ec814d9320abad0"
+  integrity sha512-iYXYbGXA/JTjSt2PmqwEr48bF0UI2pcE6zE8GP+rFzGuHyP3sMUEQRkMd/6HjakOL6F3FISzTy47g0xCLc68gw==
   dependencies:
     lodash "^4.17.13"
     paths-js "^0.4.10"
