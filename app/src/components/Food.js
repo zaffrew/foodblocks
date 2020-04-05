@@ -68,7 +68,7 @@ export default connect((state, ownProps) => {
             try {
                 const calendarId = (await Calendar.getDefaultCalendarAsync()).id;
                 const totalTime = moment.duration(this.state.recipe.time.total).asMinutes();
-                const totalTimeMilli = totalTime * 60 * 1000
+                const totalTimeMilli = totalTime * 60 * 1000;
                 const startDate = this.state.date;
                 const endDate = new Date(startDate.getTime() + totalTimeMilli);
                 const eventId = await Calendar.createEventAsync(calendarId, {title: 'New foodblock', startDate: startDate, endDate: endDate});
