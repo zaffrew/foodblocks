@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Image, StyleSheet, View, ScrollView} from 'react-native'
-import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph} from "react-native-paper";
+import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph, Snackbar} from "react-native-paper";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
 import moment from "moment";
@@ -43,7 +43,7 @@ export default connect((state, ownProps) => {
 (class Food extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false, 
+        this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false, snackbarVisible: false,
             date: new Date(), pickerMode: 'date', showPicker: false}
     }
 
@@ -66,18 +66,34 @@ export default connect((state, ownProps) => {
         const { status } = await Calendar.requestCalendarPermissionsAsync();
         if (status === 'granted') {
             try {
+
                 const calendarId = (await Calendar.getDefaultCalendarAsync()).id;
                 const totalTime = moment.duration(this.state.recipe.time.total).asMinutes();
                 const totalTimeMilli = totalTime * 60 * 1000;
                 const startDate = this.state.date;
                 const endDate = new Date(startDate.getTime() + totalTimeMilli);
-                const eventId = await Calendar.createEventAsync(calendarId, {title: 'New foodblock', startDate: startDate, endDate: endDate});
+                const title = `Make "${this.state.recipe.name}"`;
+                const notes = `Time to play chef!
+
+Open this on foodblocks
+link.to.app
+
+Open this on ${this.state.recipe.source}
+${this.state.recipe.URL}`;
+
+                const eventId = await Calendar.createEventAsync(calendarId, {title: title, notes: notes,  startDate: startDate, endDate: endDate});
+                this._hideSelector();
+                this._showSnackbar();
+
             }
             catch(error) {
                 console.log('Error', error);
             }
         }
     }
+
+    _showSnackbar = () => this.setState({snackbarVisible: true});
+    _hideSnackbar = () => this.setState({snackbarVisible: false});
 
     _showRecipe = () => this.setState({recipeVisible: true});
     _hideRecipe = () => this.setState({recipeVisible: false});
@@ -94,7 +110,7 @@ export default connect((state, ownProps) => {
             return <ActivityIndicator/>
         }
 
-        const {recipeVisible, selectorVisible, date, pickerMode, showPicker} = this.state;
+        const {recipeVisible, selectorVisible, snackbarVisible, date, pickerMode, showPicker} = this.state;
       
         const onChange = (event, selectedDate) => {
           const currentDate = selectedDate || date;
@@ -281,6 +297,14 @@ export default connect((state, ownProps) => {
         return (
             <View style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
                 <Portal>
+                    <Snackbar
+                    duration={4000}
+                    visible={snackbarVisible}
+                    onDismiss={this._hideSnackbar}
+                    style={{backgroundColor: colors.lightRed, padding: 10}}
+                    >
+                    foodblock added!
+                    </Snackbar>
                     <Modal visible={recipeVisible} onDismiss={this._hideRecipe}>
                         {recipe_info}
                     </Modal>
