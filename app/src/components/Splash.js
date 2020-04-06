@@ -10,7 +10,10 @@ import {ACTIONS} from "../state/State";
 
 const splashTransitionTime = settings.splashTransitionTime;
 
-export default connect(null,
+export default connect((state) => ({
+        //we use the username to see if the user is logged in
+        username: state.user_info.username
+    }),
     {
         logout: () => ({
             type: ACTIONS.RESET,

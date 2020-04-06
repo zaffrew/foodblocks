@@ -1,12 +1,9 @@
 import React from 'react'
 import {connect} from "react-redux";
-import filterUnique from "../../../utils/filterUnique";
-import FoodBlockScroll from "../../FoodBlockScroll";
 import {View} from "react-native";
 import {Text} from "react-native-paper";
 import BlockScroll from "../../BlockScroll";
-import {getRecipe, getThumbnail} from "../../../scraper/Scraper";
-import SafeView from "../../SafeView";
+import {getThumbnail} from "../../../scraper/Scraper";
 
 const RecentSearches = props => {
     if (props.search_history.length === 0) {
@@ -24,19 +21,21 @@ const RecentSearches = props => {
 
     for (let i = 0; i < props.search_history.length; i++) {
         const search = props.search_history[i]
-        if (search.results.length === 0 || queries.includes(search.query)) {
+        const query_with_filters = search.filters.join(' ') + ' ' + search.query;
+
+        if (search.results.length === 0 || queries.includes(query_with_filters)) {
             continue;
         }
-        queries.push(search.query)
+        queries.push(query_with_filters)
 
         blocks.push({
             onPress: () => {
-                props.onSearchPress(search.query, search.results)
+                props.onSearchPress(query_with_filters, search.results)
             },
             getData: async () => {
                 const recipe = await getThumbnail(search.results[0])
                 return {
-                    title: search.query,
+                    title: query_with_filters,
                     image: recipe.image
                 }
             }

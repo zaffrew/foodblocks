@@ -1,4 +1,4 @@
-import {getDOM, text, genericScrape, getHTML, getTime} from "../scraperUtils";
+import {genericScrape, getDOM, getTime, text} from "../scraperUtils";
 import {removeRepeatedWhitespace} from "../StringUtils";
 import URL_PARSE from "url-parse";
 import Recipe from "../Recipe";
@@ -110,17 +110,27 @@ function new_scrape(recipe, $) {
 }
 
 function getSearchURL(query, filters) {
+    //this both adds certain ingredients to the excluded list and adds the name of the filter to the front.
+
     const excludedIngredients = []
 
-    if (filters.includes('Dairy-free')) {
+    //&ingExcl=dairy,pork
+    //is an example filter
+    if (filters.includes('Dairy-free') || filters.includes('Vegan')) {
         excludedIngredients.push('dairy')
     }
     if (filters.includes('Gluten-free')) {
         excludedIngredients.push('gluten')
     }
+    if (filters.includes('Vegan') || filters.includes('Vegetarian')) {
+        excludedIngredients.push('meat')
+    }
+    if (filters.includes('Vegan')) {
+        excludedIngredients.push('milk')
+        excludedIngredients.push('egg')
+    }
 
-    //&ingExcl=dairy,pork
-    //is an example filter
+    query = filters.join(' ') + ' ' + query;
 
     const URL = new URL_PARSE('https://www.allrecipes.com/');
     URL.set('pathname', 'search/results/');
