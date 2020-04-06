@@ -118,6 +118,13 @@ export default connect((state, ownProps) => {
             }
         })
 
+        const timingComponent = timing.length == 0 ? null : (
+            <View style={{paddingVertical: 10}}>
+                <Title style={textStyles.heading}>Time needed</Title>
+                {timing}
+            </View>
+        );
+
         const bubble_info = (
             <View>
                 <View style={{
@@ -126,9 +133,10 @@ export default connect((state, ownProps) => {
                     paddingHorizontal: 60,
                     paddingTop: 5
                 }}>
-                    <Avatar.Text labelStyle={{fontSize: 16}} label={moment.duration(recipe.time.total).asMinutes()}/>
+                    <Avatar.Text labelStyle={{fontSize: 16}}
+                                 label={recipe.time.total ? moment.duration(recipe.time.total).asMinutes() : ''}/>
                     <Avatar.Text labelStyle={{fontSize: 16}} label={recipe.ingredients.length}/>
-                    <Avatar.Text/>
+                    <Avatar.Text labelStyle={{fontSize: 16}} label={recipe.nutrition.calories}/>
                 </View>
                 <View style={{
                     flexDirection: 'row',
@@ -169,10 +177,7 @@ export default connect((state, ownProps) => {
                             }]}>{recipe.description}</Text>
                             <Title style={textStyles.heading}>Ingredients Required</Title>
                             {ingredients}
-                            <View style={{paddingVertical: 10}}>
-                                <Title style={textStyles.heading}>Time needed</Title>
-                                {timing}
-                            </View>
+                            {timingComponent}
                             <Title style={textStyles.heading}>Directions</Title>
                             {directions}
                         </View>

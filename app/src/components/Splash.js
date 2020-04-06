@@ -31,7 +31,7 @@ export default connect((state) => ({
         const theme = invertTheme(this.props.theme);
 
         const logout = __DEV__ ?
-            <Button color={'green'} onPress={this.props.logout}>DEV ONLY LOGOUT</Button> : null;
+            <Button color={'black'} onPress={this.props.logout}>DEV ONLY LOGOUT</Button> : null;
 
         return (
             <View style={[styles.centeredContainer, {backgroundColor: this.props.theme.colors.primary}]}>

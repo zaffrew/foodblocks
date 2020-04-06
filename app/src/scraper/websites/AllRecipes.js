@@ -151,13 +151,25 @@ function getHighResURL(URL) {
 //Nutrition is all per serving
 function getNutrition(str, recipe) {
     str = str.replace('Per Serving:', '');
+
+    //it can be spelt any way
     str = str.replace('Full Nutrition', '');
     str = str.replace('Full nutrition', '');
+
+    //theres a weird thing where it will seperate categories by ; but sodium is a .
+    str = str.replace('sodium.', 'sodium;')
+
     str = removeRepeatedWhitespace(str);
     const categories = str.split(';');
     categories.forEach(fact => {
         if (fact) {
-            const key = fact.split(' ').pop();
+            //special case since total fat is two words:
+            let key;
+            if (fact.includes('total fat')) {
+                key = 'total fat';
+            } else {
+                key = fact.split(' ').pop();
+            }
             fact = removeRepeatedWhitespace(fact.replace(key, ''));
             recipe.nutrition[key.toLowerCase()] = fact;
         }
