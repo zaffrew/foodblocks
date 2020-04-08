@@ -114,8 +114,22 @@ ${this.state.recipe.URL}`;
       
         const onChange = (event, selectedDate) => {
           const currentDate = selectedDate || date;
-          this.setState({showPicker: Platform.OS === 'ios'});
-          this.setState({date: currentDate});
+          if (Platform.OS === 'ios') {
+            this.setState({showPicker: Platform.OS === 'ios'});
+            this.setState({date: currentDate});
+          } else {
+              if (pickerMode === 'date' && event.type === 'set') {
+                  this.setState({pickerMode: 'time'});
+              } else if (pickerMode === 'time' && event.type === 'set'){
+                  this.setState({showPicker: false});
+                  this.setState({selectorVisisble: false})
+                  this._hideSelector();
+                  this.setState({date: currentDate});
+              } else if (event.type !== 'set') {
+                  this._hideSelector();
+              }
+          }
+
         };
       
         const showMode = currentMode => {
@@ -227,12 +241,12 @@ ${this.state.recipe.URL}`;
             </View>
         )
 
-        const datetime_view = (
+        const datetime_view_ios = (
             <View>
                 {pickerMode === 'date' && <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your day</Text>}
                 {pickerMode === 'time' && <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your time</Text>}
                 <DateTimePicker
-                    testID="dateTimePicker"
+                    testID="dateTimePickerIOS"
                     timeZoneOffsetInMinutes={-offset}
                     value={date}
                     mode={pickerMode}
@@ -240,10 +254,10 @@ ${this.state.recipe.URL}`;
                     display="default"
                     onChange={onChange}
                     />
-                {Platform.OS === 'ios' && pickerMode === 'date' && <Button mode='contained' contentStyle={{paddingVertical: 10}}
+                {pickerMode === 'date' && <Button mode='contained' contentStyle={{paddingVertical: 10}}
                         color={colors.foodblocksRed}
                         onPress={showTimepicker}>Next</Button>}
-                {Platform.OS === 'ios' && pickerMode === 'time' && <View style={{flexDirection: 'row',
+                {pickerMode === 'time' && <View style={{flexDirection: 'row',
                             justifyContent: 'center',
                             alignSelf: 'stretch'}}>
                     <Button style={{flex:0.5}}
@@ -258,15 +272,32 @@ ${this.state.recipe.URL}`;
             </View>
         );
 
-        const add_foodblock_view = (
+        const add_foodblock_view_ios = (
             <View>
                 <Surface style={surfaceStyles.selector}>
                     <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
                     <Text style={[textStyles.heading]}>Plan your foodblock</Text>
-                    {datetime_view}
+                    {datetime_view_ios}
                 </Surface>
             </View>
-        )
+        );
+
+        const add_foodblock_view_android = (
+            <View>
+                    <DateTimePicker
+                    testID="dateTimePickerAndroid"
+                    timeZoneOffsetInMinutes={-offset}
+                    value={date}
+                    mode={pickerMode}
+                    is24Hour={true}
+                    display="default"
+                    onChange={onChange}
+                    textColor={colors.foodblocksRed}
+                    
+                    />
+
+            </View>
+        );
 
         const main_view = (
             <View style={{backgroundColor: 'white', flex: 1}}>
@@ -294,22 +325,28 @@ ${this.state.recipe.URL}`;
             </View>
         )
 
+        const status_snackbar = (
+            <Snackbar
+            duration={4000}
+            visible={snackbarVisible}
+            onDismiss={this._hideSnackbar}
+            style={{backgroundColor: colors.lightRed, padding: 10}}
+            >
+            foodblock added!
+            </Snackbar>
+        );
+
         return (
             <View style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
                 <Portal>
-                    <Snackbar
-                    duration={4000}
-                    visible={snackbarVisible}
-                    onDismiss={this._hideSnackbar}
-                    style={{backgroundColor: colors.lightRed, padding: 10}}
-                    >
-                    foodblock added!
-                    </Snackbar>
+                    {status_snackbar}
                     <Modal visible={recipeVisible} onDismiss={this._hideRecipe}>
                         {recipe_info}
+                        {status_snackbar}
                     </Modal>
                     <Modal visible={selectorVisible} onDismiss={this._hideSelector}>
-                        {add_foodblock_view}
+                        {Platform.OS === 'ios' ?
+                        add_foodblock_view_ios : add_foodblock_view_android}
                     </Modal>
                 </Portal>
                 {main_view}
