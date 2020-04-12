@@ -1,18 +1,18 @@
 import React from 'react'
 
 import withProps from "../../utils/withProps";
-import SingleUserSetting from "../SingleUserSetting";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../state/State";
 
 import validator from "email-validator";
+import FullPageSingleuserSetting from "../FullPageSingleUserSetting";
 
 export default connect(null, {
     updateValue: (email) => ({
         type: ACTIONS.EMAIL,
         email: email.trim(),
     }),
-})(withProps(SingleUserSetting, {
+})(withProps(FullPageSingleuserSetting, {
     placeholder: 'Email',
     question: 'What is your email?',
     valid: (email) => {

@@ -9,6 +9,7 @@ import colors from '../../settings/colors';
 import ListView from "./lists/ListOfLists";
 import CreateList from "./lists/CreateList";
 import withProps from "../utils/withProps";
+import SafeView from "./SafeView";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 //TODO: add nutrition values
@@ -268,7 +269,13 @@ export default connect((state, ownProps) => {
                         {list_view}
                     </Modal>
                     <Modal visible={this.state.addListVisible} onDismiss={this._hideAddList}>
-                        <Surface style={surfaceStyles.surface}>
+                        <Surface style={{
+                            alignSelf: 'center',
+                            alignItems: 'center',
+                            paddingTop: 20,
+                            borderRadius: 20,
+                            elevation: 4,
+                        }}>
                             <CreateList onSubmit={this._hideAddList}/>
                         </Surface>
                     </Modal>

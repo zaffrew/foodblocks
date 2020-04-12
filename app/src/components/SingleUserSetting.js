@@ -3,11 +3,11 @@ import React from 'react'
 import styles from '../../settings/styles'
 import {View} from "react-native";
 
-import {Button, Dialog, Paragraph, Portal, TextInput, Title, withTheme} from 'react-native-paper'
+import {Button, Dialog, Paragraph, Portal, Provider, TextInput, Title, withTheme} from 'react-native-paper'
 import withProps from "../utils/withProps";
 import invertTheme from "../utils/invertTheme";
 
-export default withProps(withTheme(class extends React.Component {
+export default withProps(class extends React.Component {
 
     constructor(props) {
         super(props);
@@ -33,24 +33,22 @@ export default withProps(withTheme(class extends React.Component {
     }
 
     render() {
-        const theme = invertTheme(this.props.theme);
+        const theme = this.props.theme;
 
         return (
-            <View style={[styles.centeredContainer, {backgroundColor: theme.colors.background}]}>
-                <View style={[styles.centeredContainer, {backgroundColor: theme.colors.background}]}>
-                    <Title theme={theme}>
-                        {this.props.question}
-                    </Title>
-                    <View style={{margin: 20, flexDirection: 'row'}}>
-                        <TextInput
-                            {...this.props.textInputProps}
-                            style={{flex: 0.9}}
-                            theme={theme}
-                            onSubmitEditing={() => this.onSubmit()}
-                            onChangeText={text => this.onChangeText(text)}
-                            value={this.state.value}
-                            placeholder={this.props.placeholder}/>
-                    </View>
+            <View style={{alignItems: 'center'}}>
+                <Title theme={theme}>
+                    {this.props.question}
+                </Title>
+                <View style={{margin: 20, flexDirection: 'row'}}>
+                    <TextInput
+                        {...this.props.textInputProps}
+                        theme={theme}
+                        style={{flex: 0.9}}
+                        onSubmitEditing={() => this.onSubmit()}
+                        onChangeText={text => this.onChangeText(text)}
+                        value={this.state.value}
+                        placeholder={this.props.placeholder}/>
                 </View>
                 <Portal>
                     <Dialog
@@ -68,4 +66,4 @@ export default withProps(withTheme(class extends React.Component {
             </View>
         );
     }
-}), {invalidMessage: 'Invalid Input', valid: () => true});
+}, {invalidMessage: 'Invalid Input', valid: () => true});
