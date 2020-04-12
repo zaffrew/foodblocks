@@ -84,7 +84,7 @@ const Home = connect((state) => ({
 });
 
 
-export default props => headlessNavigator([
+export default headlessNavigator([
     {name: 'Home', component: Home, mainPage: true},
     {name: 'Food', component: FoodWithProps},
     {name: 'SearchPage', component: SearchPage}

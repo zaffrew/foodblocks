@@ -35,7 +35,7 @@ class Meals extends React.Component {
 
 const ConnectedMeals = connect((state) => ({recipes: state.saved_recipes}))(Meals);
 
-export default props => headlessNavigator([
+export default headlessNavigator([
     {name: 'Meals', component: ConnectedMeals, mainPage: true},
     {name: 'Food', component: FoodWithParams}
 ])

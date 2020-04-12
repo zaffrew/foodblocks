@@ -1,11 +1,14 @@
 import React from 'react'
-import {Image, StyleSheet, View, ScrollView} from 'react-native'
-import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph} from "react-native-paper";
+import {Image, ScrollView, StyleSheet, View} from 'react-native'
+import {ActivityIndicator, Avatar, Button, List, Modal, Portal, Surface, Text, Title} from "react-native-paper";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
 import moment from "moment";
 import {getRecipe} from "../scraper/Scraper";
 import colors from '../../settings/colors';
+import ListView from "./lists/ListOfLists";
+import CreateList from "./lists/CreateList";
+import withProps from "../utils/withProps";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 //TODO: add nutrition values
@@ -34,6 +37,11 @@ export default connect((state, ownProps) => {
         type: ACTIONS.ADD_FOOD_HISTORY,
         URL,
         time: moment().toISOString(),
+    }),
+    add_to_list: (URL, listName) => ({
+        type: ACTIONS.ADD_TO_LIST,
+        URL,
+        name: listName,
     })
 })
 
@@ -43,7 +51,13 @@ export default connect((state, ownProps) => {
 
     constructor(props) {
         super(props);
-        this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false}
+        this.state = {
+            pressed: props.saved,
+            recipeVisible: false,
+            selectorVisible: false,
+            listVisible: false,
+            addListVisible: false
+        }
     }
 
     componentDidMount() {
@@ -78,6 +92,13 @@ export default connect((state, ownProps) => {
     _showSelector = () => this.setState({selectorVisible: true});
     _hideSelector = () => this.setState({selectorVisible: false});
 
+    _showList = () => this.setState({listVisible: true})
+    _hideList = () => this.setState({listVisible: false})
+
+    _showAddList = () => this.setState({addListVisible: true})
+    _hideAddList = () => this.setState({addListVisible: false})
+
+
     render() {
         const recipe = this.state.recipe;
         if (!recipe) {
@@ -87,8 +108,6 @@ export default connect((state, ownProps) => {
                 </View>
             )
         }
-
-        const {recipeVisible, selectorVisible} = this.state;
 
         const ingredients = recipe.ingredients.map((text, i) =>
             <View key={i} style={(i % 2 == 0) ? bodyStyle.even : bodyStyle.odd}>
@@ -157,48 +176,44 @@ export default connect((state, ownProps) => {
         )
 
         const recipe_info = (
-            <View style={{flexWrap: 'wrap'}}>
-                <Surface style={surfaceStyles.surface}>
-                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideRecipe}></Button>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        <Title style={textStyles.title}>{recipe.name}</Title>
-                        <View style={{flexDirection: 'row'}}>
-                            <Text
-                                style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
-                            <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}}
-                                    compact={true}>MORE INFO</Button>
-                        </View>
-                        {add_foodblock_button}
-                        <View>
-                            <Text style={[textStyles.sub, {textAlign: 'center'}]}>Recipe
-                                by {recipe.author}</Text>
-                            <Text style={[textStyles.sub, {
-                                textAlign: 'center',
-                            }]}>{recipe.description}</Text>
-                            <Title style={textStyles.heading}>Ingredients Required</Title>
-                            {ingredients}
-                            {timingComponent}
-                            <Title style={textStyles.heading}>Directions</Title>
-                            {directions}
-                        </View>
-                    </ScrollView>
-                </Surface>
-            </View>
+            <Surface style={surfaceStyles.surface}>
+                <Button color={colors.foodblocksRed} icon='close' onPress={this._hideRecipe}></Button>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <Title style={textStyles.title}>{recipe.name}</Title>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text
+                            style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
+                        <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}}
+                                compact={true}>MORE INFO</Button>
+                    </View>
+                    {add_foodblock_button}
+                    <View>
+                        <Text style={[textStyles.sub, {textAlign: 'center'}]}>Recipe
+                            by {recipe.author}</Text>
+                        <Text style={[textStyles.sub, {
+                            textAlign: 'center',
+                        }]}>{recipe.description}</Text>
+                        <Title style={textStyles.heading}>Ingredients Required</Title>
+                        {ingredients}
+                        {timingComponent}
+                        <Title style={textStyles.heading}>Directions</Title>
+                        {directions}
+                    </View>
+                </ScrollView>
+            </Surface>
         )
 
         const add_foodblock_view = (
-            <View>
-                <Surface style={surfaceStyles.selector}>
-                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
-                    <Text style={textStyles.heading}>Plan your meal</Text>
-                    <View>
-                        <Text style={{paddingVertical: 20}}>*Insert selector*</Text>
-                        <Button mode='contained' contentStyle={{paddingVertical: 10}}
-                                color={colors.foodblocksRed}
-                                onPress={() => this.addFoodblock()}>Save</Button>
-                    </View>
-                </Surface>
-            </View>
+            <Surface style={surfaceStyles.selector}>
+                <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
+                <Text style={textStyles.heading}>Plan your meal</Text>
+                <View>
+                    <Text style={{paddingVertical: 20}}>*Insert selector*</Text>
+                    <Button mode='contained' contentStyle={{paddingVertical: 10}}
+                            color={colors.foodblocksRed}
+                            onPress={() => this.addFoodblock()}>Save</Button>
+                </View>
+            </Surface>
         )
 
         const main_view = (
@@ -206,10 +221,13 @@ export default connect((state, ownProps) => {
                 <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
                 <View style={{paddingBottom: 20}}>
                     <Title style={textStyles.title}>{recipe.name}</Title>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{justifyContent: 'space-around', flexDirection: 'row'}}>
                         <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
                         <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>
                             MORE INFO
+                        </Button>
+                        <Button color={'purple'} onPress={this._showList}>
+                            Add to List
                         </Button>
                     </View>
                     {bubble_info}
@@ -227,14 +245,32 @@ export default connect((state, ownProps) => {
             </View>
         )
 
+        const list_view = (
+            <Surface style={styles.surface}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <List.Subheader>Pick a list</List.Subheader>
+                    <Button onPress={this._showAddList}>Create new list</Button>
+                </View>
+                <ListView onPress={name => this.props.add_to_list(recipe.URL, name)}/>
+            </Surface>
+        )
+
         return (
             <View style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
                 <Portal>
-                    <Modal visible={recipeVisible} onDismiss={this._hideRecipe}>
+                    <Modal visible={this.state.recipeVisible} onDismiss={this._hideRecipe}>
                         {recipe_info}
                     </Modal>
-                    <Modal visible={selectorVisible} onDismiss={this._hideSelector}>
+                    <Modal visible={this.state.selectorVisible} onDismiss={this._hideSelector}>
                         {add_foodblock_view}
+                    </Modal>
+                    <Modal visible={this.state.listVisible} onDismiss={this._hideList}>
+                        {list_view}
+                    </Modal>
+                    <Modal visible={this.state.addListVisible} onDismiss={this._hideAddList}>
+                        <Surface style={surfaceStyles.surface}>
+                            <CreateList onSubmit={this._hideAddList}/>
+                        </Surface>
                     </Modal>
                 </Portal>
                 {main_view}

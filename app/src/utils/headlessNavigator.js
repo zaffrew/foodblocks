@@ -13,7 +13,7 @@ export default function headlessNavigator(screens) {
                                  }}/>
     })
 
-    return (
+    return props => (
         <Navigator.Navigator>
             {screenComponents}
         </Navigator.Navigator>

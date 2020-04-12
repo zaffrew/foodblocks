@@ -7,15 +7,16 @@ import user_reducer from './UserInfo'
 import groceries_reducer from './Groceries'
 import cache_reducer from './Cache'
 import saved_reducer from './SavedRecipes'
+import list_reducer from './Lists'
 
 import generalPersistConfig from './PersistConfig'
-import {createFilter, persistFilter} from "redux-persist-transform-filter";
 
 const app_reducer = combineReducers({
     groceries: groceries_reducer,
     cache: cache_reducer,
     user_info: user_reducer,
-    saved_recipes: saved_reducer
+    saved_recipes: saved_reducer,
+    lists: list_reducer,
 });
 
 function root_reducer(state = {}, action) {

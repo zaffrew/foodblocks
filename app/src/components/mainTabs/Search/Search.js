@@ -163,11 +163,7 @@ const chipStyle = StyleSheet.create({
     }
 });
 
-const SearchNavigator = (props) => (
-    headlessNavigator([
-        {name: 'Search', component: Search, mainPage: true},
-        {name: 'Food', component: FoodWithParams}
-    ])
-)
-
-export default SearchNavigator;
+export default headlessNavigator([
+    {name: 'Search', component: Search, mainPage: true},
+    {name: 'Food', component: FoodWithParams}
+])
