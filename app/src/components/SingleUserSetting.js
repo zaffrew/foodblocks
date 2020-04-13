@@ -1,11 +1,8 @@
 import React from 'react'
-
-import styles from '../../settings/styles'
 import {View} from "react-native";
 
-import {Button, Dialog, Paragraph, Portal, Provider, TextInput, Title, withTheme} from 'react-native-paper'
+import {Button, Dialog, Paragraph, Portal, TextInput, Title} from 'react-native-paper'
 import withProps from "../utils/withProps";
-import invertTheme from "../utils/invertTheme";
 
 export default withProps(class extends React.Component {
 
@@ -66,4 +63,4 @@ export default withProps(class extends React.Component {
             </View>
         );
     }
-}, {invalidMessage: 'Invalid Input', valid: () => true});
+}, {invalidMessage: 'Invalid Input', valid: value => true});
