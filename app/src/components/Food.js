@@ -228,7 +228,7 @@ export default connect((state, ownProps) => {
                             MORE INFO
                         </Button>
                         <Button color={'purple'} onPress={this._showList}>
-                            Add to List
+                            Add To List
                         </Button>
                     </View>
                     {bubble_info}

@@ -29,7 +29,7 @@ class SavedLists extends React.Component {
                             Saved Lists
                         </Headline>
                         <Button color={'white'} onPress={this._showAddList}>
-                            Add to List
+                            Add List
                         </Button>
                     </View>
                 </SafeView>
@@ -57,9 +57,9 @@ export default class extends React.Component {
             {name: 'SavedLists', component: SavedLists, mainPage: true},
             {
                 name: 'List',
-                component: withRouteParams(withProps(ListPage, {onPress: URL => props.navigation.navigate('Food', {URL})}))
+                component: withRouteParams(withProps(ListPage, {onPress: URL => props.navigation.navigate('FoodFromList', {URL})}))
             },
-            {name: 'Food', component: withRouteParams(Food)},
+            {name: 'FoodFromList', component: withRouteParams(Food)},
         ])
     }
 
