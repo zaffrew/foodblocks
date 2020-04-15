@@ -2,8 +2,8 @@ import React from 'react'
 
 import {connect} from 'react-redux'
 import withProps from "../../utils/withProps";
-import SingleUserSetting from "../SingleUserSetting";
 import {ACTIONS} from "../../state/State";
+import FullPageSingleuserSetting from "../FullPageSingleUserSetting";
 
 
 export default connect(null, {
@@ -11,7 +11,7 @@ export default connect(null, {
         type: ACTIONS.USERNAME,
         username,
     }),
-})(withProps(SingleUserSetting, {
+})(withProps(FullPageSingleuserSetting, {
     placeholder: 'Name',
     question: 'What is your name?',
     textInputProps: {

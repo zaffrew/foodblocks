@@ -8,7 +8,7 @@ import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
 import Food from "../../Food";
 
-import {search} from '../../../scraper/Scraper'
+import {getSearch} from '../../../scraper/Scraper'
 import Filters from "./Filters";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
@@ -23,11 +23,9 @@ const FoodWithParams = withRouteParams(Food);
 //TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
 
 const Search = connect(state => ({filters: state.user_info.filters}), {
-    add_search: (query, filters) => ({
+    add_search: (searchRes) => ({
         type: ACTIONS.ADD_SEARCH_HISTORY,
-        query,
-        filters,
-        time: moment().toISOString()
+        searchRes,
     })
 })(class extends React.Component {
 
@@ -55,15 +53,10 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
         // down on setting the new state or there will be weird behavior
         await this.setState({searching: true, searchedYet: true, searchURLs: []});
 
-        const activeFilters = this.props.filters.filter(({active}) => active);
-        this.props.add_search(query, activeFilters)
+        const activeFilters = this.props.filters.filter(({active}) => active).map(filterObj => filterObj.name);
 
-        activeFilters.forEach(filter => {
-            query += ' ' + filter
-        });
-
-
-        const searchRes = await search(query);
+        const searchRes = await getSearch(query, activeFilters);
+        this.props.add_search(searchRes)
         await this.setState({searching: false, searchURLs: searchRes.results})
     };
 
@@ -127,6 +120,7 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
             </SafeView>
         )
     }
+
 });
 
 const cardStyle = StyleSheet.create({
@@ -169,11 +163,7 @@ const chipStyle = StyleSheet.create({
     }
 });
 
-const SearchNavigator = (props) => (
-    headlessNavigator([
-        {name: 'Search', component: Search, mainPage: true},
-        {name: 'Food', component: FoodWithParams}
-    ])
-)
-
-export default SearchNavigator;
+export default headlessNavigator([
+    {name: 'Search', component: Search, mainPage: true},
+    {name: 'Food', component: FoodWithParams}
+])

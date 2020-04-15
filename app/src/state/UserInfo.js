@@ -20,11 +20,7 @@ export default function reducer(state = initialState, action) {
         case ACTIONS.ADD_SEARCH_HISTORY:
             return {
                 ...state,
-                search_history: [...state.search_history, {
-                    query: action.query,
-                    filters: action.filters,
-                    time: action.time
-                }]
+                search_history: [action.searchRes, ...state.search_history]
             };
         case ACTIONS.ADD_FOOD_HISTORY:
             return {

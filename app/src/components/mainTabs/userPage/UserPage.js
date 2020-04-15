@@ -20,26 +20,29 @@ export default class UserPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.Username = withProps(Username, {
+        const this_Username = withProps(Username, {
             onSubmit: () => {
                 this.props.navigation.navigate('UserScreen')
             }
         });
-        this.Email = withProps(Email, {
+        const this_Email = withProps(Email, {
             onSubmit: () => {
                 this.props.navigation.navigate('UserScreen')
             }
         });
-    }
 
-    render() {
-        return headlessNavigator([
+        this.HeadlessNavigator = headlessNavigator([
             {name: 'UserScreen', component: UserScreen, mainPage: true},
-            {name: 'Username', component: this.Username},
-            {name: 'Email', component: this.Email},
+            {name: 'Username', component: this_Username},
+            {name: 'Email', component: this_Email},
             {name: 'Help', component: Help},
             {name: 'Payment Information', component: Payment}
         ])
+    }
+
+    render() {
+        const HeadlessNavigator = this.HeadlessNavigator;
+        return <HeadlessNavigator/>
     }
 }
 

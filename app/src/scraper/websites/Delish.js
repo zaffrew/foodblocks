@@ -8,7 +8,7 @@ import moment from "moment";
  */
 export async function search(searchRes) {
     const searchURL = getSearchURL(searchRes.query);
-    return await getDOM(searchURL).then($ => {
+    const recipes = await getDOM(searchURL).then($ => {
         const recipes = [];
         $('div.simple-item.grid-simple-item').each((i, e) => {
             if (i >= searchRes.num) {
@@ -40,6 +40,9 @@ export async function search(searchRes) {
         });
         return recipes
     })
+    searchRes.loaded = moment().toISOString();
+
+    return recipes;
 }
 
 async function scrape(recipe) {

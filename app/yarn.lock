@@ -4431,6 +4431,11 @@ react-dom@16.9.0:
     prop-types "^15.6.2"
     scheduler "^0.15.0"
 
+react-id-generator@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-id-generator/-/react-id-generator-3.0.0.tgz#20fba0a12355924f1d7b4bfe2ac262c0ad02c7ef"
+  integrity sha512-egmdswpzA/z8UlignCZKmJqrO0EaqmW13M8756wE+V/6NtYf0CdvDjkGpat/Q/djXfg7F/C0267Gff1RHgpfIQ==
+
 react-is@^16.12.0, react-is@^16.13.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -4930,6 +4935,11 @@ setprototypeof@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
   integrity sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw==
+
+shallow-equal@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/shallow-equal/-/shallow-equal-1.2.1.tgz#4c16abfa56043aa20d050324efa68940b0da79da"
+  integrity sha512-S4vJDjHHMBaiZuT9NPb616CSmLf618jawtv3sufLl6ivK8WocjAo58cXwbRV1cgqxH0Qbv+iUt6m05eqEa2IRA==
 
 shebang-command@^1.2.0:
   version "1.2.0"
