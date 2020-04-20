@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Image, StyleSheet, View, ScrollView} from 'react-native'
-import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph, Snackbar} from "react-native-paper";
+import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph, Snackbar, Checkbox} from "react-native-paper";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
 import moment from "moment";
@@ -44,7 +44,7 @@ export default connect((state, ownProps) => {
     constructor(props) {
         super(props);
         this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false, snackbarVisible: false,
-            date: new Date(), pickerMode: 'date', showPicker: false}
+            date: new Date(), pickerMode: 'date', showPicker: false, useCalendar: true}
     }
 
     componentDidMount() {
@@ -59,14 +59,20 @@ export default connect((state, ownProps) => {
         }
     }
 
-    async addFoodblock() {
+    async addToMyFoodblocks() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
         (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
+        if (pressed && this.state.useCalendar) {
+            this.addToCalendar();
+        }
+        this._hideSelector();
+    }
+
+    async addToCalendar() {
         const { status } = await Calendar.requestCalendarPermissionsAsync();
         if (status === 'granted') {
             try {
-
                 const calendarId = (await Calendar.getDefaultCalendarAsync()).id;
                 const totalTime = moment.duration(this.state.recipe.time.total).asMinutes();
                 const totalTimeMilli = totalTime * 60 * 1000;
@@ -81,15 +87,11 @@ link.to.app
 Open this on ${this.state.recipe.source}
 ${this.state.recipe.URL}`;
 
-                const eventId = await Calendar.createEventAsync(calendarId, {title: title, notes: notes,  startDate: startDate, endDate: endDate});
-                this._hideSelector();
-                this._showSnackbar();
-
-            }
-            catch(error) {
-                console.log('Error', error);
-            }
-        }
+                const eventId = await Calendar.createEventAsync(calendarId, {title: title, notes: notes, startDate: startDate, endDate: endDate});
+                } catch(error) {
+                    console.log('Error', error);
+                }
+         }
     }
 
     _showSnackbar = () => this.setState({snackbarVisible: true});
@@ -110,7 +112,7 @@ ${this.state.recipe.URL}`;
             return <ActivityIndicator/>
         }
 
-        const {recipeVisible, selectorVisible, snackbarVisible, date, pickerMode, showPicker} = this.state;
+        const {recipeVisible, selectorVisible, snackbarVisible, date, pickerMode, showPicker, useCalendar} = this.state;
       
         const onChange = (event, selectedDate) => {
           const currentDate = selectedDate || date;
@@ -120,7 +122,7 @@ ${this.state.recipe.URL}`;
           } else {
               if (pickerMode === 'date' && event.type === 'set') {
                   this.setState({pickerMode: 'time'});
-              } else if (pickerMode === 'time' && event.type === 'set'){
+              } else if (pickerMode === 'time' && event.type === 'set') {
                   this.setState({showPicker: false});
                   this.setState({selectorVisisble: false})
                   this._hideSelector();
@@ -129,6 +131,12 @@ ${this.state.recipe.URL}`;
                   this._hideSelector();
               }
           }
+
+        };
+
+        const androidOnChange = (event, selectedDate) => {
+            const currentDate = selectedDate || date;
+            
 
         };
       
@@ -198,9 +206,11 @@ ${this.state.recipe.URL}`;
             </View>
         )
 
+        const add = "Add foodblock";
+        const remove = "Unsave";
         const add_foodblock_button = (
             <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
-                    onPress={() => this._showSelector()}>Add foodblock</Button>
+                    onPress={() => this._showSelector()}>{this.props.saved ? remove : add}</Button>
         )
 
         const recipe_info = (
@@ -267,24 +277,16 @@ ${this.state.recipe.URL}`;
                     <Button style={{flex:0.5}}
                             mode='contained' contentStyle={{paddingVertical: 10}}
                             color={colors.foodblocksRed}
-                            onPress={() => this.addFoodblock()}>Save</Button>
+                            onPress={() => this.addToMyFoodblocks()}>Save</Button>
                 </View>}
             </View>
         );
 
-        const add_foodblock_view_ios = (
+        const datetime_view_android = (
             <View>
-                <Surface style={surfaceStyles.selector}>
-                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
-                    <Text style={[textStyles.heading]}>Plan your foodblock</Text>
-                    {datetime_view_ios}
-                </Surface>
-            </View>
-        );
-
-        const add_foodblock_view_android = (
-            <View>
-                    <DateTimePicker
+                <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your day</Text>
+                <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your time</Text>
+                <DateTimePicker
                     testID="dateTimePickerAndroid"
                     timeZoneOffsetInMinutes={-offset}
                     value={date}
@@ -292,10 +294,49 @@ ${this.state.recipe.URL}`;
                     is24Hour={true}
                     display="default"
                     onChange={onChange}
-                    textColor={colors.foodblocksRed}
-                    
-                    />
+                />
+                <Button style={{flex:0.5}}
+                        mode='contained' contentStyle={{paddingVertical: 10}}
+                        color={colors.foodblocksRed}
+                        onPress={() => this.addToMyFoodblocks()}>Save</Button>
+            </View>
+        )
 
+        const add_foodblock_view_ios = (
+            <View>
+                <Surface style={surfaceStyles.selector}>
+                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
+                    <Text style={[textStyles.heading]}>Plan your foodblock</Text>
+                    {datetime_view_ios}
+                    <View style={checkBoxStyle.container}>
+                        <Text style={checkBoxStyle.title}>Use calendar</Text>
+                        <View style={{backgroundColor: colors.lightYellow, borderRadius: 20}}>
+                            <Checkbox
+                            status={useCalendar ? 'checked' : 'unchecked'}
+                            color={colors.darkYellow}
+                            onPress={() => { this.setState({ useCalendar: !useCalendar }); }}/>
+                        </View>
+                    </View>
+                </Surface>
+            </View>
+        );
+
+        const add_foodblock_view_android = (
+            <View>
+                <Surface style={surfaceStyles.selector}>
+                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
+                    <Text style={[textStyles.heading]}>Plan your foodblock</Text>
+                    {datetime_view_android}
+                    <View style={checkBoxStyle.container}>
+                        <Text style={checkBoxStyle.title}>Use calendar</Text>
+                        <View style={{backgroundColor: colors.lightYellow, borderRadius: 20}}>
+                            <Checkbox
+                            status={useCalendar ? 'checked' : 'unchecked'}
+                            color={colors.darkYellow}
+                            onPress={() => { this.setState({ useCalendar: !useCalendar }); }}/>
+                        </View>
+                    </View>
+                </Surface>
             </View>
         );
 
@@ -344,7 +385,7 @@ ${this.state.recipe.URL}`;
                         {recipe_info}
                         {status_snackbar}
                     </Modal>
-                    <Modal visible={selectorVisible} onDismiss={this._hideSelector}>
+                    <Modal visible={selectorVisible && !this.props.saved} onDismiss={this._hideSelector}>
                         {Platform.OS === 'ios' ?
                         add_foodblock_view_ios : add_foodblock_view_android}
                     </Modal>
@@ -372,10 +413,24 @@ const surfaceStyles = StyleSheet.create({
         borderRadius: 20,
         elevation: 5,
         alignSelf: 'center',
-        height: '85%',
+        height: '87%',
         width: '90%',
     },
 });
+
+const checkBoxStyle = StyleSheet.create({
+    title: {
+        fontSize: 14,
+        padding: 10,
+        fontFamily: 'montserrat',
+        color: colors.darkGrey,
+    },
+    container: {
+        padding: 10,
+        alignSelf: 'center',
+        flexDirection: 'row',
+    },
+})
 
 const textStyles = StyleSheet.create({
     heading: {
