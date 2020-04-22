@@ -69,11 +69,48 @@ export default connect((state, ownProps) => {
         this._hideSelector();
     }
 
+    async getDefaultCalendarSource() {
+        const calendars = await Calendar.getCalendarsAsync();
+        const defaultCalendars = calendars.filter(each => each.source.name === 'Default');
+        return defaultCalendars[0].source;
+      }
+
+    async getFoodblocksCalendarSource() {
+        const calendars = await Calendar.getCalendarsAsync();
+        const cals = calendars.filter(each => each.title === 'My foodblocks');
+        if (cals && cals.length) {
+            return cals[0];
+        }
+        return -1;
+    }
+
+    async createCalendar() {
+        const defaultCalendarSource =
+        Platform.OS === 'ios'
+        ? (await Calendar.getDefaultCalendarAsync()).source
+        : { isLocalAccount: true, name: 'My foodblocks' };
+        const newCalendarId = await Calendar.createCalendarAsync({
+            title: 'My foodblocks',
+            color: colors.foodblocksRed,
+            entityType: Calendar.EntityTypes.EVENT,
+            sourceId: defaultCalendarSource.id,
+            source: defaultCalendarSource,
+            name: 'My foodblocks',
+            ownerAccount: 'personal',
+            accessLevel: Calendar.CalendarAccessLevel.OWNER,
+        });
+    }
+
     async addToCalendar() {
         const { status } = await Calendar.requestCalendarPermissionsAsync();
         if (status === 'granted') {
             try {
-                const calendarId = (await Calendar.getDefaultCalendarAsync()).id;
+                const calendarExists = await this.getFoodblocksCalendarSource();
+                if (calendarExists === -1 && Platform.OS !== 'ios') {
+                    await this.createCalendar();
+                }
+                const calendarSource = Platform.OS === 'ios' ? await Calendar.getDefaultCalendarAsync() : await this.getFoodblocksCalendarSource();
+                const calendarId = calendarSource.id;
                 const totalTime = moment.duration(this.state.recipe.time.total).asMinutes();
                 const totalTimeMilli = totalTime * 60 * 1000;
                 const startDate = this.state.date;
@@ -120,25 +157,21 @@ ${this.state.recipe.URL}`;
             this.setState({showPicker: Platform.OS === 'ios'});
             this.setState({date: currentDate});
           } else {
-              if (pickerMode === 'date' && event.type === 'set') {
-                  this.setState({pickerMode: 'time'});
-              } else if (pickerMode === 'time' && event.type === 'set') {
-                  this.setState({showPicker: false});
-                  this.setState({selectorVisisble: false})
-                  this._hideSelector();
-                  this.setState({date: currentDate});
-              } else if (event.type !== 'set') {
-                  this._hideSelector();
-              }
+              this.setState({date: currentDate, showPicker: false});
           }
 
         };
 
-        const androidOnChange = (event, selectedDate) => {
-            const currentDate = selectedDate || date;
-            
-
-        };
+        const onSaveButtonPress = () => {
+            if (!this.state.pressed) {
+                this._showSelector();
+            } else {
+                const pressed = !this.state.pressed;
+                this.setState({pressed});
+                (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
+                this.setState({pickerMode: 'date'});
+            }
+        }
       
         const showMode = currentMode => {
           this.setState({showPicker: true});
@@ -209,8 +242,8 @@ ${this.state.recipe.URL}`;
         const add = "Add foodblock";
         const remove = "Unsave";
         const add_foodblock_button = (
-            <Button mode='contained' contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
-                    onPress={() => this._showSelector()}>{this.props.saved ? remove : add}</Button>
+            <Button mode={this.props.saved ? 'outlined' : 'contained'} contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
+                    onPress={() => onSaveButtonPress()} style={{flex: 0.9}}>{this.props.saved ? remove : add}</Button>
         )
 
         const recipe_info = (
@@ -284,19 +317,22 @@ ${this.state.recipe.URL}`;
 
         const datetime_view_android = (
             <View>
-                <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your day</Text>
-                <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your time</Text>
-                <DateTimePicker
+                <Text style={{fontSize: 14, color: colors.darkGrey, padding: 20}}>Choose your day</Text>
+                <Button onPress={() => {this.setState({showPicker: true, pickerMode: 'date'})}}
+                mode='outlined' contentStyle={{paddingVertical: 10}} color={colors.lightRed}>Day</Button>
+                <Text style={{fontSize: 14, color: colors.darkGrey, padding: 20}}>Choose your time</Text>
+                <Button onPress={() => {this.setState({showPicker: true, pickerMode: 'time'})}}
+                mode='outlined' contentStyle={{paddingVertical: 10}} color={colors.lightRed}>Time</Button>
+                {this.state.showPicker && <DateTimePicker
                     testID="dateTimePickerAndroid"
                     timeZoneOffsetInMinutes={-offset}
                     value={date}
-                    mode={pickerMode}
+                    mode={this.state.pickerMode}
                     is24Hour={true}
                     display="default"
                     onChange={onChange}
-                />
-                <Button style={{flex:0.5}}
-                        mode='contained' contentStyle={{paddingVertical: 10}}
+                />}
+                <Button mode='contained' contentStyle={{paddingVertical: 10}}
                         color={colors.foodblocksRed}
                         onPress={() => this.addToMyFoodblocks()}>Save</Button>
             </View>
@@ -329,12 +365,10 @@ ${this.state.recipe.URL}`;
                     {datetime_view_android}
                     <View style={checkBoxStyle.container}>
                         <Text style={checkBoxStyle.title}>Use calendar</Text>
-                        <View style={{backgroundColor: colors.lightYellow, borderRadius: 20}}>
                             <Checkbox
                             status={useCalendar ? 'checked' : 'unchecked'}
-                            color={colors.darkYellow}
+                            color={colors.foodblocksRed}
                             onPress={() => { this.setState({ useCalendar: !useCalendar }); }}/>
-                        </View>
                     </View>
                 </Surface>
             </View>
@@ -354,11 +388,11 @@ ${this.state.recipe.URL}`;
                     {bubble_info}
                     <View style={{
                         flexDirection: 'row',
-                        justifyContent: 'space-between',
+                        justifyContent: 'space-around',
                         paddingHorizontal: 20,
-                        paddingTop: 15
+                        paddingTop: 15,
                     }}>
-                        <Button dark={true} mode='contained' contentStyle={{paddingVertical: 10}} color={colors.yellow}
+                        <Button dark={true} mode='contained' contentStyle={{paddingVertical: 10}} color={colors.orange}
                                 onPress={() => this._showRecipe()}>Get Started</Button>
                         {add_foodblock_button}
                     </View>
