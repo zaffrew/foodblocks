@@ -1,7 +1,8 @@
 import React from 'react'
 import {Image} from "react-native";
-import {ActivityIndicator, Card, Text} from "react-native-paper";
+import {ActivityIndicator, Card, Text, Button} from "react-native-paper";
 import {getThumbnail} from "../scraper/Scraper";
+import colors from '../../settings/colors';
 
 export default class FoodBlock extends React.Component {
     state = {};
@@ -24,7 +25,7 @@ export default class FoodBlock extends React.Component {
                     alignItems: 'center',
                     flex: 1,
                     justifyContent: 'center',
-                    flexDirection: 'row'
+                    flexDirection: 'row',
                     // im not sure why but this flex direction row is needed
                 }}>
                     <ActivityIndicator/>

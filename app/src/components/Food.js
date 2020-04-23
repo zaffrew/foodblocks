@@ -14,8 +14,26 @@ import DateTimePicker from '@react-native-community/datetimepicker'; // to displ
 //TODO: add nutrition values
 //TODO: change the ordering of the page so the description isn't as big.
 
+var months = [
+            "jan",
+            "feb",
+            "mar",
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec"];
+
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function formatDate(date) {
+    return months[date.getMonth()] + " " + date.getDate() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 }
 
 export default connect((state, ownProps) => {
@@ -44,7 +62,7 @@ export default connect((state, ownProps) => {
     constructor(props) {
         super(props);
         this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false, snackbarVisible: false,
-            date: new Date(), pickerMode: 'date', showPicker: false, useCalendar: true}
+            date: new Date(), pickerMode: 'date', showPicker: false, useCalendar: true, eventId: -1}
     }
 
     componentDidMount() {
@@ -67,6 +85,7 @@ export default connect((state, ownProps) => {
             this.addToCalendar();
         }
         this._hideSelector();
+        this._showSnackbar();
     }
 
     async getDefaultCalendarSource() {
@@ -109,7 +128,7 @@ export default connect((state, ownProps) => {
                 if (calendarExists === -1 && Platform.OS !== 'ios') {
                     await this.createCalendar();
                 }
-                const calendarSource = Platform.OS === 'ios' ? await Calendar.getDefaultCalendarAsync() : await this.getFoodblocksCalendarSource();
+                const calendarSource = Platform.OS === 'ios' ? await Calendar.getDefaultCalendarAsync() : calendarExists;
                 const calendarId = calendarSource.id;
                 const totalTime = moment.duration(this.state.recipe.time.total).asMinutes();
                 const totalTimeMilli = totalTime * 60 * 1000;
@@ -125,6 +144,8 @@ Open this on ${this.state.recipe.source}
 ${this.state.recipe.URL}`;
 
                 const eventId = await Calendar.createEventAsync(calendarId, {title: title, notes: notes, startDate: startDate, endDate: endDate});
+                this.setState({eventId: eventId});
+
                 } catch(error) {
                     console.log('Error', error);
                 }
@@ -162,22 +183,22 @@ ${this.state.recipe.URL}`;
 
         };
 
-        const onSaveButtonPress = () => {
+        const onSaveButtonPress = async () => {
             if (!this.state.pressed) {
-                this._showSelector();
+                // user wants to save recipe
+                this._showSelector(); // allow user to use datetime selector
             } else {
+                // user wants to remove recipe from saved
                 const pressed = !this.state.pressed;
                 this.setState({pressed});
                 (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
-                this.setState({pickerMode: 'date'});
+                await Calendar.deleteEventAsync(this.state.eventId);
+                this.setState({eventId: -1})
+                this.setState({pickerMode: 'date'}); // reset mode to date
+                this._showSnackbar(); // show status message
             }
         }
-      
-        const showMode = currentMode => {
-          this.setState({showPicker: true});
-          this.setState({pickerMode: currentMode});
-        };
-      
+
         const showDatepicker = () => {
             this.setState({pickerMode: 'date'});
         };
@@ -240,9 +261,9 @@ ${this.state.recipe.URL}`;
         )
 
         const add = "Add foodblock";
-        const remove = "Unsave";
+        const remove = formatDate(this.state.date);
         const add_foodblock_button = (
-            <Button mode={this.props.saved ? 'outlined' : 'contained'} contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
+            <Button icon={this.props.saved ? 'close' : ''} mode={this.props.saved ? 'outlined' : 'contained'} contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
                     onPress={() => onSaveButtonPress()} style={{flex: 0.9}}>{this.props.saved ? remove : add}</Button>
         )
 
@@ -296,6 +317,7 @@ ${this.state.recipe.URL}`;
                     is24Hour={true}
                     display="default"
                     onChange={onChange}
+                    minimumDate={new Date()}
                     />
                 {pickerMode === 'date' && <Button mode='contained' contentStyle={{paddingVertical: 10}}
                         color={colors.foodblocksRed}
@@ -315,14 +337,17 @@ ${this.state.recipe.URL}`;
             </View>
         );
 
+        const formattedDate = formatDate(this.state.date);
+        const day = formattedDate.split(' ')[0] + ' ' + formattedDate.split(' ')[1];
+        const time = formattedDate.split(' ')[2];
         const datetime_view_android = (
             <View>
                 <Text style={{fontSize: 14, color: colors.darkGrey, padding: 20}}>Choose your day</Text>
                 <Button onPress={() => {this.setState({showPicker: true, pickerMode: 'date'})}}
-                mode='outlined' contentStyle={{paddingVertical: 10}} color={colors.lightRed}>Day</Button>
+                icon='pencil' mode='outlined' contentStyle={{paddingVertical: 10}} color={colors.lightRed}>{day}</Button>
                 <Text style={{fontSize: 14, color: colors.darkGrey, padding: 20}}>Choose your time</Text>
                 <Button onPress={() => {this.setState({showPicker: true, pickerMode: 'time'})}}
-                mode='outlined' contentStyle={{paddingVertical: 10}} color={colors.lightRed}>Time</Button>
+                icon='pencil' mode='outlined' contentStyle={{paddingVertical: 10}} color={colors.lightRed}>{time}</Button>
                 {this.state.showPicker && <DateTimePicker
                     testID="dateTimePickerAndroid"
                     timeZoneOffsetInMinutes={-offset}
@@ -331,6 +356,7 @@ ${this.state.recipe.URL}`;
                     is24Hour={true}
                     display="default"
                     onChange={onChange}
+                    minimumDate={new Date()}
                 />}
                 <Button mode='contained' contentStyle={{paddingVertical: 10}}
                         color={colors.foodblocksRed}
@@ -400,14 +426,15 @@ ${this.state.recipe.URL}`;
             </View>
         )
 
+        const snackbarMessage = this.props.saved ? "foodblock added" : "foodblock removed";
         const status_snackbar = (
             <Snackbar
-            duration={4000}
+            duration={2500}
             visible={snackbarVisible}
             onDismiss={this._hideSnackbar}
-            style={{backgroundColor: colors.lightRed, padding: 10}}
+            style={{backgroundColor: colors.lightRed}}
             >
-            foodblock added!
+            {snackbarMessage}
             </Snackbar>
         );
 
