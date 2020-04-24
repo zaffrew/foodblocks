@@ -1,8 +1,7 @@
 import React from 'react'
 import {Image} from "react-native";
-import {ActivityIndicator, Card, Text, Button} from "react-native-paper";
+import {ActivityIndicator, Card, Text} from "react-native-paper";
 import {getThumbnail} from "../scraper/Scraper";
-import colors from '../../settings/colors';
 
 export default class FoodBlock extends React.Component {
     state = {};

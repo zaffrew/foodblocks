@@ -1,32 +1,43 @@
-import React, {useState} from 'react'
-import {Image, StyleSheet, View, ScrollView} from 'react-native'
-import {ActivityIndicator, Button, Surface, Modal, Portal, Title, Text, Avatar, Paragraph, Snackbar, Checkbox} from "react-native-paper";
+import React from 'react'
+import {Image, ScrollView, StyleSheet, View} from 'react-native'
+import {
+    ActivityIndicator,
+    Avatar,
+    Button,
+    Checkbox,
+    Modal,
+    Portal,
+    Snackbar,
+    Surface,
+    Text,
+    Title
+} from "react-native-paper";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
 import moment from "moment";
 import {getRecipe} from "../scraper/Scraper";
 import colors from '../../settings/colors';
 import * as Calendar from 'expo-calendar'; // to interact with system calendar events
-import * as Permissions from 'expo-permissions';
 import DateTimePicker from '@react-native-community/datetimepicker'; // to display an interface for user to choose date and time
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 //TODO: add nutrition values
 //TODO: change the ordering of the page so the description isn't as big.
+const foodblock_calendar_name = 'My foodblocks';
 
-var months = [
-            "jan",
-            "feb",
-            "mar",
-            "apr",
-            "may",
-            "jun",
-            "jul",
-            "aug",
-            "sep",
-            "oct",
-            "nov",
-            "dec"];
+const months = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec"];
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -61,8 +72,10 @@ export default connect((state, ownProps) => {
 (class Food extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {pressed: props.saved, recipeVisible: false, selectorVisible: false, snackbarVisible: false,
-            date: new Date(), pickerMode: 'date', showPicker: false, useCalendar: true, eventId: -1}
+        this.state = {
+            pressed: props.saved, recipeVisible: false, selectorVisible: false, snackbarVisible: false,
+            date: new Date(), pickerMode: 'date', showPicker: false, useCalendar: true, eventId: -1
+        }
     }
 
     componentDidMount() {
@@ -88,47 +101,49 @@ export default connect((state, ownProps) => {
         this._showSnackbar();
     }
 
-    async getDefaultCalendarSource() {
-        const calendars = await Calendar.getCalendarsAsync();
-        const defaultCalendars = calendars.filter(each => each.source.name === 'Default');
-        return defaultCalendars[0].source;
-      }
-
     async getFoodblocksCalendarSource() {
         const calendars = await Calendar.getCalendarsAsync();
-        const cals = calendars.filter(each => each.title === 'My foodblocks');
+        const cals = calendars.filter(each => each.title === foodblock_calendar_name);
         if (cals && cals.length) {
             return cals[0];
         }
-        return -1;
+        return null;
     }
 
-    async createCalendar() {
+    async createFoodblocksCalendar() {
         const defaultCalendarSource =
-        Platform.OS === 'ios'
-        ? (await Calendar.getDefaultCalendarAsync()).source
-        : { isLocalAccount: true, name: 'My foodblocks' };
-        const newCalendarId = await Calendar.createCalendarAsync({
-            title: 'My foodblocks',
+            Platform.OS === 'ios'
+                ? (await Calendar.getDefaultCalendarAsync()).source
+                : {isLocalAccount: true, name: foodblock_calendar_name};
+
+        await Calendar.createCalendarAsync({
+            title: foodblock_calendar_name,
             color: colors.foodblocksRed,
-            entityType: Calendar.EntityTypes.EVENT,
-            sourceId: defaultCalendarSource.id,
-            source: defaultCalendarSource,
-            name: 'My foodblocks',
-            ownerAccount: 'personal',
-            accessLevel: Calendar.CalendarAccessLevel.OWNER,
+            entityType: Calendar.EntityTypes.EVENT, //iOS only
+            sourceId: defaultCalendarSource.id, //iOS only
+            source: defaultCalendarSource, //android only
+            name: foodblock_calendar_name, //android only
+            ownerAccount: 'personal', //android only
+            accessLevel: Calendar.CalendarAccessLevel.OWNER, //android only
         });
     }
 
     async addToCalendar() {
-        const { status } = await Calendar.requestCalendarPermissionsAsync();
+        const {status} = await Calendar.requestCalendarPermissionsAsync();
         if (status === 'granted') {
             try {
-                const calendarExists = await this.getFoodblocksCalendarSource();
-                if (calendarExists === -1 && Platform.OS !== 'ios') {
-                    await this.createCalendar();
+                //first see if the foodblocks calendar exists
+                let calendarSource = await this.getFoodblocksCalendarSource();
+                //if the calendar doesnt exist then we try and create a new one
+                if (!calendarSource) {
+                    await this.createFoodblocksCalendar();
+                    calendarSource = await this.getFoodblocksCalendarSource();
                 }
-                const calendarSource = Platform.OS === 'ios' ? await Calendar.getDefaultCalendarAsync() : calendarExists;
+                //if it still doesnt exist we go with the default calendar
+                if (!calendarSource) {
+                    calendarSource = await Calendar.getDefaultCalendarAsync();
+                }
+
                 const calendarId = calendarSource.id;
                 const totalTime = moment.duration(this.state.recipe.time.total).asMinutes();
                 const totalTimeMilli = totalTime * 60 * 1000;
@@ -143,13 +158,19 @@ link.to.app
 Open this on ${this.state.recipe.source}
 ${this.state.recipe.URL}`;
 
-                const eventId = await Calendar.createEventAsync(calendarId, {title: title, notes: notes, startDate: startDate, endDate: endDate});
+                const eventId = await Calendar.createEventAsync(calendarId, {
+                    title: title,
+                    notes: notes,
+                    startDate: startDate,
+                    endDate: endDate
+                });
                 this.setState({eventId: eventId});
 
-                } catch(error) {
-                    console.log('Error', error);
-                }
-         }
+            } catch (error) {
+                console.log('Error:', error);
+            }
+        }
+        //TODO: if the user does not have permissions allowed we should notify them.
     }
 
     _showSnackbar = () => this.setState({snackbarVisible: true});
@@ -164,23 +185,19 @@ ${this.state.recipe.URL}`;
     render() {
         const recipe = this.state.recipe;
 
-        const offset = new Date().getTimezoneOffset(); 
+        const offset = new Date().getTimezoneOffset();
 
         if (!recipe) {
             return <ActivityIndicator/>
         }
 
-        const {recipeVisible, selectorVisible, snackbarVisible, date, pickerMode, showPicker, useCalendar} = this.state;
-      
-        const onChange = (event, selectedDate) => {
-          const currentDate = selectedDate || date;
-          if (Platform.OS === 'ios') {
-            this.setState({showPicker: Platform.OS === 'ios'});
-            this.setState({date: currentDate});
-          } else {
-              this.setState({date: currentDate, showPicker: false});
-          }
+        const {recipeVisible, selectorVisible, snackbarVisible, date, pickerMode, useCalendar} = this.state;
 
+        //this is for the date pickers
+        const onChange = (event, selectedDate) => {
+            // the ios datepicker calls this method every time the date is changed
+            // and the android one calls this every time that the OK button is selected.
+            this.setState({showPicker: Platform.OS === 'ios', date: selectedDate})
         };
 
         const onSaveButtonPress = async () => {
@@ -192,9 +209,9 @@ ${this.state.recipe.URL}`;
                 const pressed = !this.state.pressed;
                 this.setState({pressed});
                 (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
+
                 await Calendar.deleteEventAsync(this.state.eventId);
-                this.setState({eventId: -1})
-                this.setState({pickerMode: 'date'}); // reset mode to date
+                this.setState({eventId: -1, pickerMode: 'date'}) //reset mode to date
                 this._showSnackbar(); // show status message
             }
         }
@@ -202,7 +219,7 @@ ${this.state.recipe.URL}`;
         const showDatepicker = () => {
             this.setState({pickerMode: 'date'});
         };
-      
+
         const showTimepicker = () => {
             this.setState({pickerMode: 'time'});
         };
@@ -263,7 +280,8 @@ ${this.state.recipe.URL}`;
         const add = "Add foodblock";
         const remove = formatDate(this.state.date);
         const add_foodblock_button = (
-            <Button icon={this.props.saved ? 'close' : ''} mode={this.props.saved ? 'outlined' : 'contained'} contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
+            <Button icon={this.props.saved ? 'close' : ''} mode={this.props.saved ? 'outlined' : 'contained'}
+                    contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
                     onPress={() => onSaveButtonPress()} style={{flex: 0.9}}>{this.props.saved ? remove : add}</Button>
         )
 
@@ -284,9 +302,9 @@ ${this.state.recipe.URL}`;
                             <Text style={[textStyles.sub, {textAlign: 'center'}]}>Recipe
                                 by {recipe.author}</Text>
                             <View style={{padding: 5, backgroundColor: colors.lightYellow, borderRadius: 10}}>
-                            <Text style={[textStyles.sub, {
-                                textAlign: 'center', color: colors.darkYellow,
-                            }]}>{recipe.description}</Text>
+                                <Text style={[textStyles.sub, {
+                                    textAlign: 'center', color: colors.darkYellow,
+                                }]}>{recipe.description}</Text>
                             </View>
 
                             <Title style={textStyles.heading}>Ingredients Required</Title>
@@ -318,22 +336,34 @@ ${this.state.recipe.URL}`;
                     display="default"
                     onChange={onChange}
                     minimumDate={new Date()}
-                    />
-                {pickerMode === 'date' && <Button mode='contained' contentStyle={{paddingVertical: 10}}
+                />
+                {pickerMode === 'date' &&
+                <Button mode='contained' contentStyle={{paddingVertical: 10}}
                         color={colors.foodblocksRed}
-                        onPress={showTimepicker}>Next</Button>}
-                {pickerMode === 'time' && <View style={{flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignSelf: 'stretch'}}>
-                    <Button style={{flex:0.5}}
-                        contentStyle={{paddingVertical: 10}}
-                        color={colors.foodblocksRed}
-                        onPress={showDatepicker}>Back</Button>
-                    <Button style={{flex:0.5}}
+                        onPress={showTimepicker}>
+                    Next
+                </Button>
+                }
+                {pickerMode === 'time' &&
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignSelf: 'stretch'
+                }}>
+                    <Button style={{flex: 0.5}}
+                            contentStyle={{paddingVertical: 10}}
+                            color={colors.foodblocksRed}
+                            onPress={showDatepicker}>
+                        Back
+                    </Button>
+                    <Button style={{flex: 0.5}}
                             mode='contained' contentStyle={{paddingVertical: 10}}
                             color={colors.foodblocksRed}
-                            onPress={() => this.addToMyFoodblocks()}>Save</Button>
-                </View>}
+                            onPress={() => this.addToMyFoodblocks()}>
+                        Save
+                    </Button>
+                </View>
+                }
             </View>
         );
 
@@ -342,12 +372,24 @@ ${this.state.recipe.URL}`;
         const time = formattedDate.split(' ')[2];
         const datetime_view_android = (
             <View>
-                <Text style={{fontSize: 14, color: colors.darkGrey, padding: 20}}>Choose your day</Text>
-                <Button onPress={() => {this.setState({showPicker: true, pickerMode: 'date'})}}
-                icon='pencil' mode='outlined' contentStyle={{paddingVertical: 10}} color={colors.lightRed}>{day}</Button>
+                <Text style={{fontSize: 14, color: colors.darkGrey, padding: 20}}>
+                    Choose your day
+                </Text>
+                <Button onPress={() => {
+                    this.setState({showPicker: true, pickerMode: 'date'})
+                }}
+                        icon='pencil' mode='outlined' contentStyle={{paddingVertical: 10}}
+                        color={colors.lightRed}>
+                    {day}
+                </Button>
                 <Text style={{fontSize: 14, color: colors.darkGrey, padding: 20}}>Choose your time</Text>
-                <Button onPress={() => {this.setState({showPicker: true, pickerMode: 'time'})}}
-                icon='pencil' mode='outlined' contentStyle={{paddingVertical: 10}} color={colors.lightRed}>{time}</Button>
+                <Button onPress={() => {
+                    this.setState({showPicker: true, pickerMode: 'time'})
+                }}
+                        icon='pencil' mode='outlined' contentStyle={{paddingVertical: 10}}
+                        color={colors.lightRed}>
+                    {time}
+                </Button>
                 {this.state.showPicker && <DateTimePicker
                     testID="dateTimePickerAndroid"
                     timeZoneOffsetInMinutes={-offset}
@@ -358,46 +400,49 @@ ${this.state.recipe.URL}`;
                     onChange={onChange}
                     minimumDate={new Date()}
                 />}
-                <Button mode='contained' contentStyle={{paddingVertical: 10}}
+                <Button style={{marginTop: 20}}
+                        mode='contained' contentStyle={{paddingVertical: 10}}
                         color={colors.foodblocksRed}
-                        onPress={() => this.addToMyFoodblocks()}>Save</Button>
+                        onPress={() => this.addToMyFoodblocks()}>
+                    Save
+                </Button>
             </View>
         )
 
         const add_foodblock_view_ios = (
-            <View>
-                <Surface style={surfaceStyles.selector}>
-                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
-                    <Text style={[textStyles.heading]}>Plan your foodblock</Text>
-                    {datetime_view_ios}
-                    <View style={checkBoxStyle.container}>
-                        <Text style={checkBoxStyle.title}>Use calendar</Text>
-                        <View style={{backgroundColor: colors.lightYellow, borderRadius: 20}}>
-                            <Checkbox
+            <Surface style={surfaceStyles.selector}>
+                <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
+                <Text style={[textStyles.heading]}>Plan your foodblock</Text>
+                {datetime_view_ios}
+                <View style={checkBoxStyle.container}>
+                    <Text style={checkBoxStyle.title}>Use calendar</Text>
+                    <View style={{backgroundColor: colors.lightYellow, borderRadius: 20}}>
+                        <Checkbox
                             status={useCalendar ? 'checked' : 'unchecked'}
                             color={colors.darkYellow}
-                            onPress={() => { this.setState({ useCalendar: !useCalendar }); }}/>
-                        </View>
+                            onPress={() => {
+                                this.setState({useCalendar: !useCalendar});
+                            }}/>
                     </View>
-                </Surface>
-            </View>
+                </View>
+            </Surface>
         );
 
         const add_foodblock_view_android = (
-            <View>
-                <Surface style={surfaceStyles.selector}>
-                    <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
-                    <Text style={[textStyles.heading]}>Plan your foodblock</Text>
-                    {datetime_view_android}
-                    <View style={checkBoxStyle.container}>
-                        <Text style={checkBoxStyle.title}>Use calendar</Text>
-                            <Checkbox
-                            status={useCalendar ? 'checked' : 'unchecked'}
-                            color={colors.foodblocksRed}
-                            onPress={() => { this.setState({ useCalendar: !useCalendar }); }}/>
-                    </View>
-                </Surface>
-            </View>
+            <Surface style={surfaceStyles.selector}>
+                <Button color={colors.foodblocksRed} icon='close' onPress={this._hideSelector}></Button>
+                <Text style={[textStyles.heading]}>Plan your foodblock</Text>
+                {datetime_view_android}
+                <View style={checkBoxStyle.container}>
+                    <Text style={checkBoxStyle.title}>Use calendar</Text>
+                    <Checkbox
+                        status={useCalendar ? 'checked' : 'unchecked'}
+                        color={colors.foodblocksRed}
+                        onPress={() => {
+                            this.setState({useCalendar: !useCalendar});
+                        }}/>
+                </View>
+            </Surface>
         );
 
         const main_view = (
@@ -429,12 +474,12 @@ ${this.state.recipe.URL}`;
         const snackbarMessage = this.props.saved ? "foodblock added" : "foodblock removed";
         const status_snackbar = (
             <Snackbar
-            duration={2500}
-            visible={snackbarVisible}
-            onDismiss={this._hideSnackbar}
-            style={{backgroundColor: colors.lightRed}}
+                duration={2500}
+                visible={snackbarVisible}
+                onDismiss={this._hideSnackbar}
+                style={{backgroundColor: colors.lightRed}}
             >
-            {snackbarMessage}
+                {snackbarMessage}
             </Snackbar>
         );
 
@@ -447,8 +492,7 @@ ${this.state.recipe.URL}`;
                         {status_snackbar}
                     </Modal>
                     <Modal visible={selectorVisible && !this.props.saved} onDismiss={this._hideSelector}>
-                        {Platform.OS === 'ios' ?
-                        add_foodblock_view_ios : add_foodblock_view_android}
+                        {Platform.OS === 'ios' ? add_foodblock_view_ios : add_foodblock_view_android}
                     </Modal>
                 </Portal>
                 {main_view}
