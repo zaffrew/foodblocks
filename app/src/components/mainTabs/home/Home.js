@@ -1,14 +1,15 @@
 import React from "react";
 import {connect} from 'react-redux'
 import {createStackNavigator} from "@react-navigation/stack";
-import withRouteParams from "../../utils/withRouteParams";
-import Food from "../Food";
-import FoodBlockScroll from "../FoodBlockScroll";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {Headline, Text, Title} from "react-native-paper";
-import {ScrollView, View} from "react-native";
-import filterUnique from "../../utils/filterUnique";
-import headlessNavigator from "../../utils/headlessNavigator";
+import withRouteParams from "../../../utils/withRouteParams";
+import Food from "../../Food";
+import FoodBlockScroll from "../../FoodBlockScroll";
+import {Headline, Title} from "react-native-paper";
+import {ScrollView} from "react-native";
+import SafeView from "../../SafeView";
+import headlessNavigator from "../../../utils/headlessNavigator";
+import RecentFoods from "./RecentFoods";
+import RecentSearches from "./RecentSearches";
 
 const testRecipes = [
     'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
@@ -20,13 +21,22 @@ const testRecipes = [
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food);
 
-//TODO: the home page updates before the food navigated to
-
-//TODO: i cant navigate while things are loading
+const SearchPage = withRouteParams(props => (
+    <SafeView style={{flex: 1}} bottom={false}>
+        <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
+            Search: {props.title}
+        </Title>
+        <FoodBlockScroll
+            onPress={(URL) => {
+                props.navigation.navigate('Food', {URL})
+            }}
+            blocksPerCrossAxis={2} URLs={props.URLs}
+            blockLength={160}/>
+    </SafeView>
+))
 
 const Home = connect((state) => ({
     username: state.user_info.username,
-    food_history: filterUnique(state.user_info.food_history.map(({URL}) => URL))
 }))
 (class extends React.Component {
     openFood = (URL) => {
@@ -44,27 +54,21 @@ const Home = connect((state) => ({
         };
 
         return (
-            <SafeAreaView style={{flex: 1}}>
+            <SafeView bottom={false} style={{flex: 1}}>
                 <ScrollView>
                     <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
                         Hello {this.props.username}!
                     </Title>
                     <Headline>
-                        Recommended For You
+                        Recently Searched
                     </Headline>
-                    <FoodBlockScroll {...scrollProps}/>
+                    <RecentSearches onSearchPress={(title, URLs) => {
+                        this.props.navigation.navigate('SearchPage', {URLs, title})
+                    }}{...scrollProps}/>
                     <Headline>
                         Recently Viewed
                     </Headline>
-                    {this.props.food_history.length > 0 ?
-                        <FoodBlockScroll {...scrollProps} URLs={this.props.food_history}/>
-                        :
-                        <View style={{alignItems: 'center', justifyContent: 'center'}} height={scrollLength}>
-                            <Text>
-                                View some foods to see them appear!
-                            </Text>
-                        </View>
-                    }
+                    <RecentFoods {...scrollProps}/>
                     <Headline>
                         Next up
                     </Headline>
@@ -74,12 +78,14 @@ const Home = connect((state) => ({
                     </Headline>
                     <FoodBlockScroll {...scrollProps}/>
                 </ScrollView>
-            </SafeAreaView>
+            </SafeView>
         )
     }
 });
 
-export default props => headlessNavigator([
+
+export default headlessNavigator([
     {name: 'Home', component: Home, mainPage: true},
-    {name: 'Food', component: FoodWithProps}
+    {name: 'Food', component: FoodWithProps},
+    {name: 'SearchPage', component: SearchPage}
 ])

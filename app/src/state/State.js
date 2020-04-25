@@ -1,22 +1,16 @@
-import {persistReducer, persistStore} from "redux-persist";
+import {createTransform, persistReducer, persistStore} from "redux-persist";
 import {combineReducers, createStore} from "redux";
 
-import {reducer as user_reducer, ACTIONS as user_actions} from './UserInfo'
-import {reducer as groceries_reducer, ACTIONS as groceries_actions} from './Groceries'
-import {reducer as cache_reducer, ACTIONS as cache_actions} from './Cache'
-import {reducer as saved_reducer, ACTIONS as saved_actions} from './SavedRecipes'
-import {reducer as calendar_reducer, ACTIONS as calendar_actions} from './FoodblocksCalendar'
+import ACTIONS from "./ACTIONS";
+
+import user_reducer from './UserInfo'
+import groceries_reducer from './Groceries'
+import cache_reducer from './Cache'
+import saved_reducer from './SavedRecipes'
+import list_reducer from './Lists'
+import calendar_reducer from './FoodblocksCalendar'
 
 import generalPersistConfig from './PersistConfig'
-
-const ACTIONS = {
-    ...user_actions,
-    ...groceries_actions,
-    ...cache_actions,
-    ...saved_actions,
-    ...calendar_actions,
-    RESET: 'RESET'
-};
 
 const app_reducer = combineReducers({
     groceries: groceries_reducer,
@@ -24,6 +18,7 @@ const app_reducer = combineReducers({
     user_info: user_reducer,
     saved_recipes: saved_reducer,
     calendar: calendar_reducer,
+    lists: list_reducer,
 });
 
 function root_reducer(state = {}, action) {
@@ -34,9 +29,31 @@ function root_reducer(state = {}, action) {
     return app_reducer(state, action)
 }
 
+//this saves only the recipes that need saving
+const recipeTransform = createTransform(
+    (inboundState, key) => {
+        const filteredRecipes = {}
+        for (const [URL, recipe] of Object.entries(inboundState.recipes)) {
+            if (recipe.requiredBy) {
+                filteredRecipes[URL] = recipe
+            }
+        }
+
+        return {
+            ...inboundState,
+            recipes: filteredRecipes
+        }
+    },
+    (outboundState, key) => {
+        return outboundState
+    },
+    {whitelist: ['cache']}
+)
+
 const persistConfig = {
     ...generalPersistConfig,
-    blacklist: ['cache']
+    // blacklist: ['cache'],
+    transforms: [recipeTransform]
 };
 
 const persistedReducer = persistReducer(persistConfig, root_reducer);

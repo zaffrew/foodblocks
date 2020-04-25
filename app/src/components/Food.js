@@ -1,10 +1,11 @@
 import React from 'react'
-import {Image, ScrollView, StyleSheet, View} from 'react-native'
+import {Image, ScrollView, View, StyleSheet} from 'react-native'
 import {
     ActivityIndicator,
     Avatar,
     Button,
     Checkbox,
+    List,
     Modal,
     Portal,
     Snackbar,
@@ -19,6 +20,8 @@ import {getRecipe} from "../scraper/Scraper";
 import colors from '../../settings/colors';
 import * as Calendar from 'expo-calendar'; // to interact with system calendar events
 import DateTimePicker from '@react-native-community/datetimepicker'; // to display an interface for user to choose date and time
+import ListView from "./lists/ListOfLists";
+import CreateList from "./lists/CreateList";
 
 //TODO: for air fryer oreos(R) the R doesnt show up as a trademark but rather just an R
 //TODO: add nutrition values
@@ -82,10 +85,18 @@ export default connect((state, ownProps) => {
     }),
     remove_from_calendar: URL => ({
         type: ACTIONS.REMOVE_EVENT, URL
+    }),
+    add_to_list: (URL, listName) => ({
+        type: ACTIONS.ADD_TO_LIST,
+        URL,
+        name: listName,
     })
 })
 
 (class Food extends React.Component {
+    //this fixes the error of updating a non-mounted component
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -97,13 +108,23 @@ export default connect((state, ownProps) => {
             pickerMode: 'date',
             showPicker: false,
             useCalendar: true,
+            listVisible: false,
+            addListVisible: false
         }
     }
 
     componentDidMount() {
-        //TODO: this call lags out the opening of the food
+        this._isMounted = true;
         this.props.add_to_history(this.props.URL);
-        getRecipe(this.props.URL).then(recipe => this.setState({recipe}))
+        getRecipe(this.props.URL).then(recipe => {
+            if (this._isMounted) {
+                this.setState({recipe})
+            }
+        })
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentDidUpdate() {
@@ -207,14 +228,26 @@ ${this.props.URL}`;
     _showSelector = () => this.setState({selectorVisible: true});
     _hideSelector = () => this.setState({selectorVisible: false});
 
+    _showList = () => this.setState({listVisible: true});
+    _hideList = () => this.setState({listVisible: false});
+
+    _showAddList = () => this.setState({addListVisible: true});
+    _hideAddList = () => this.setState({addListVisible: false});
+
+
     render() {
         const recipe = this.state.recipe;
 
+        if (!recipe) {
+            return (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size={'large'}/>
+                </View>
+            )
+        }
+
         const offset = new Date().getTimezoneOffset();
 
-        if (!recipe) {
-            return <ActivityIndicator/>
-        }
 
         //this is for the date pickers
         const onChange = (event, selectedDate) => {
@@ -234,11 +267,11 @@ ${this.props.URL}`;
                 (pressed ? this.props.save : this.props.unsave)(this.props.URL);
 
                 await Calendar.deleteEventAsync(this.props.eventID);
-                this.props.remove_from_calendar(this.state.URL)
-                this.setState({pickerMode: 'date'}) //reset mode to date
+                this.props.remove_from_calendar(this.state.URL);
+                this.setState({pickerMode: 'date'}); //reset mode to date
                 this._showSnackbar(); // show status message
             }
-        }
+        };
 
         const showDatepicker = () => {
             this.setState({pickerMode: 'date'});
@@ -249,21 +282,21 @@ ${this.props.URL}`;
         };
 
         const ingredients = recipe.ingredients.map((text, i) =>
-            <View key={i} style={(i % 2 == 0) ? bodyStyle.even : bodyStyle.odd}>
+            <View key={i} style={(i % 2 === 0) ? bodyStyle.even : bodyStyle.odd}>
                 <Text style={textStyles.body}>{text}</Text>
             </View>
         );
 
         const directions = recipe.directions.map((text, i) =>
-            <View key={i} style={[(i % 2 == 0) ? bodyStyle.even : bodyStyle.odd, {flexDirection: 'row'}]}>
+            <View key={i} style={[(i % 2 === 0) ? bodyStyle.even : bodyStyle.odd, {flexDirection: 'row'}]}>
                 <Text style={[textStyles.body, {paddingHorizontal: 5, fontSize: 16}]}>{i + 1}</Text>
                 <Text style={[textStyles.body, {flex: 1, flexShrink: 1}]}>{text}</Text>
             </View>
         );
 
-        const timing = []
+        const timing = [];
         Object.keys(recipe.time).forEach((key, i) => {
-            const value = recipe.time[key]
+            const value = recipe.time[key];
             if (value) {
                 timing.push(
                     <View key={i} style={{padding: 10}}>
@@ -274,7 +307,14 @@ ${this.props.URL}`;
                         }}>{capitalizeFirstLetter(key)}</Text>
                     </View>)
             }
-        })
+        });
+
+        const timingComponent = timing.length === 0 ? null : (
+            <View style={{paddingVertical: 10}}>
+                <Title style={textStyles.heading}>Time needed</Title>
+                {timing}
+            </View>
+        );
 
         const bubble_info = (
             <View>
@@ -284,7 +324,8 @@ ${this.props.URL}`;
                     paddingHorizontal: 60,
                     paddingTop: 5
                 }}>
-                    <Avatar.Text labelStyle={{fontSize: 16}} label={moment.duration(recipe.time.total).asMinutes()}/>
+                    <Avatar.Text labelStyle={{fontSize: 16}}
+                                 label={recipe.time.total ? moment.duration(recipe.time.total).asMinutes() : ''}/>
                     <Avatar.Text labelStyle={{fontSize: 16}} label={recipe.ingredients.length}/>
                     <Avatar.Text labelStyle={{fontSize: 16}} label={recipe.nutrition.calories}/>
                 </View>
@@ -299,7 +340,7 @@ ${this.props.URL}`;
                     <Text style={[textStyles.circleText, {color: 'black'}]}>Calories</Text>
                 </View>
             </View>
-        )
+        );
 
         const message = this.props.saved ? formatDate(this.props.savedDate) : "Add foodblock";
         const add_foodblock_button = (
@@ -307,7 +348,7 @@ ${this.props.URL}`;
                     contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
                     onPress={() => onSaveButtonPress()}
                     style={{flex: 0.9}}>{message}</Button>
-        )
+        );
 
         const recipe_info = (
             <View style={{flexWrap: 'wrap'}}>
@@ -345,7 +386,7 @@ ${this.props.URL}`;
                     </ScrollView>
                 </Surface>
             </View>
-        )
+        );
 
         const datetime_view_ios = (
             <View>
@@ -433,7 +474,7 @@ ${this.props.URL}`;
                     Save
                 </Button>
             </View>
-        )
+        );
 
         const add_foodblock_view_ios = (
             <Surface style={surfaceStyles.selector}>
@@ -476,10 +517,13 @@ ${this.props.URL}`;
                 <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
                 <View style={{paddingBottom: 20}}>
                     <Title style={textStyles.title}>{recipe.name}</Title>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{justifyContent: 'space-around', flexDirection: 'row'}}>
                         <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
                         <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>
                             MORE INFO
+                        </Button>
+                        <Button color={'purple'} onPress={this._showList}>
+                            Add To List
                         </Button>
                     </View>
                     {bubble_info}
@@ -495,7 +539,7 @@ ${this.props.URL}`;
                     </View>
                 </View>
             </View>
-        )
+        );
 
         const snackbarMessage = this.props.saved ? "foodblock added" : "foodblock removed";
         const status_snackbar = (
@@ -509,6 +553,16 @@ ${this.props.URL}`;
             </Snackbar>
         );
 
+        const list_view = (
+            <Surface style={styles.surface}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <List.Subheader>Pick a list</List.Subheader>
+                    <Button onPress={this._showAddList}>Create new list</Button>
+                </View>
+                <ListView onPress={name => this.props.add_to_list(recipe.URL, name)}/>
+            </Surface>
+        );
+
         return (
             <View style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
                 <Portal>
@@ -519,6 +573,20 @@ ${this.props.URL}`;
                     </Modal>
                     <Modal visible={this.state.selectorVisible && !this.props.saved} onDismiss={this._hideSelector}>
                         {Platform.OS === 'ios' ? add_foodblock_view_ios : add_foodblock_view_android}
+                    </Modal>
+                    <Modal visible={this.state.listVisible} onDismiss={this._hideList}>
+                        {list_view}
+                    </Modal>
+                    <Modal visible={this.state.addListVisible} onDismiss={this._hideAddList}>
+                        <Surface style={{
+                            alignSelf: 'center',
+                            alignItems: 'center',
+                            paddingTop: 20,
+                            borderRadius: 20,
+                            elevation: 4,
+                        }}>
+                            <CreateList onSubmit={this._hideAddList}/>
+                        </Surface>
                     </Modal>
                 </Portal>
                 {main_view}
@@ -561,7 +629,7 @@ const checkBoxStyle = StyleSheet.create({
         alignSelf: 'center',
         flexDirection: 'row',
     },
-})
+});
 
 const textStyles = StyleSheet.create({
     heading: {
@@ -601,7 +669,7 @@ const textStyles = StyleSheet.create({
     odd: {
         fontSize: 14,
         fontFamily: 'montserrat',
-        color: colors.lightGrey,
+        color: colors.lightGrey1,
         padding: 2,
     },
     even: {
@@ -610,7 +678,7 @@ const textStyles = StyleSheet.create({
         color: colors.darkGrey,
         padding: 2,
     }
-})
+});
 
 const circleStyle = StyleSheet.create({
     circle: {
@@ -622,7 +690,7 @@ const circleStyle = StyleSheet.create({
         paddingHorizontal: 20,
         justifyContent: 'center',
     },
-})
+});
 
 const bodyStyle = StyleSheet.create({
     odd: {
@@ -635,4 +703,4 @@ const bodyStyle = StyleSheet.create({
         padding: 4,
         flex: 1,
     }
-})
+});

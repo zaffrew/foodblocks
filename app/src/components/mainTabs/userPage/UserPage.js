@@ -11,7 +11,7 @@ import Email from "../../login/Email";
 import memoizeOne from "memoize-one";
 import {ACTIONS} from "../../../state/State";
 import withProps from "../../../utils/withProps";
-import {SafeAreaView} from "react-native-safe-area-context";
+import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
 
 const Stack = createStackNavigator();
@@ -20,26 +20,29 @@ export default class UserPage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.Username = withProps(Username, {
+        const this_Username = withProps(Username, {
             onSubmit: () => {
                 this.props.navigation.navigate('UserScreen')
             }
         });
-        this.Email = withProps(Email, {
+        const this_Email = withProps(Email, {
             onSubmit: () => {
                 this.props.navigation.navigate('UserScreen')
             }
         });
-    }
 
-    render() {
-        return headlessNavigator([
+        this.HeadlessNavigator = headlessNavigator([
             {name: 'UserScreen', component: UserScreen, mainPage: true},
-            {name: 'Username', component: this.Username},
-            {name: 'Email', component: this.Email},
+            {name: 'Username', component: this_Username},
+            {name: 'Email', component: this_Email},
             {name: 'Help', component: Help},
             {name: 'Payment Information', component: Payment}
         ])
+    }
+
+    render() {
+        const HeadlessNavigator = this.HeadlessNavigator;
+        return <HeadlessNavigator/>
     }
 }
 
@@ -58,8 +61,7 @@ const UserScreen = connect((state) => {
 
     render() {
         return (
-            <SafeAreaView
-                style={{flex: 1, flexDirection: 'column', alignItems: 'stretch', justifyContent: 'flex-start'}}>
+            <SafeView bottom={false} style={{flex: 1, alignItems: 'stretch'}}>
                 <Surface
                     style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
                     {this.memoizedAvatar(this.props.username)}
@@ -93,7 +95,7 @@ const UserScreen = connect((state) => {
                         />
                     </List.Section>
                 </Surface>
-            </SafeAreaView>
+            </SafeView>
         )
     }
 });

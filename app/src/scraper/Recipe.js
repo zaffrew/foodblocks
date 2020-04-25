@@ -31,4 +31,6 @@ export default function Recipe(URL) {
         page: false,
         thumbnail: false,
     }
+
+    this.requiredBy = []
 }
