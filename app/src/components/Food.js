@@ -44,15 +44,24 @@ function capitalizeFirstLetter(string) {
 }
 
 function formatDate(date) {
+    date = new Date(date);
     return months[date.getMonth()] + " " + date.getDate() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
 }
 
 export default connect((state, ownProps) => {
     const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
-        return ownProps.URL === URL
+        return ownProps.URL === URL;
     }).length === 1;
 
-    return {saved}
+    const calendarEntry = state.calendar[ownProps.URL];
+    let savedDate = null;
+    let eventID = null;
+    if (calendarEntry) {
+        eventID = calendarEntry.eventID;
+        savedDate = calendarEntry.date;
+    }
+
+    return {saved, savedDate, eventID}
 }, {
     save: (URL) => ({
         type: ACTIONS.SAVE_RECIPE,
@@ -66,6 +75,13 @@ export default connect((state, ownProps) => {
         type: ACTIONS.ADD_FOOD_HISTORY,
         URL,
         time: moment().toISOString(),
+    }),
+    add_to_calendar: (URL, date, eventID) => ({
+        type: ACTIONS.ADD_EVENT,
+        URL, date, eventID
+    }),
+    remove_from_calendar: URL => ({
+        type: ACTIONS.REMOVE_EVENT, URL
     })
 })
 
@@ -73,8 +89,14 @@ export default connect((state, ownProps) => {
     constructor(props) {
         super(props);
         this.state = {
-            pressed: props.saved, recipeVisible: false, selectorVisible: false, snackbarVisible: false,
-            date: new Date(), pickerMode: 'date', showPicker: false, useCalendar: true, eventId: -1
+            pressed: props.saved,
+            recipeVisible: false,
+            selectorVisible: false,
+            snackbarVisible: false,
+            selectedDate: new Date(),
+            pickerMode: 'date',
+            showPicker: false,
+            useCalendar: true,
         }
     }
 
@@ -93,7 +115,7 @@ export default connect((state, ownProps) => {
     async addToMyFoodblocks() {
         const pressed = !this.state.pressed;
         this.setState({pressed});
-        (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
+        (pressed ? this.props.save : this.props.unsave)(this.props.URL);
         if (pressed && this.state.useCalendar) {
             this.addToCalendar();
         }
@@ -147,7 +169,7 @@ export default connect((state, ownProps) => {
                 const calendarId = calendarSource.id;
                 const totalTime = moment.duration(this.state.recipe.time.total).asMinutes();
                 const totalTimeMilli = totalTime * 60 * 1000;
-                const startDate = this.state.date;
+                const startDate = this.state.selectedDate;
                 const endDate = new Date(startDate.getTime() + totalTimeMilli);
                 const title = `Make "${this.state.recipe.name}"`;
                 const notes = `Time to play chef!
@@ -156,15 +178,18 @@ Open this on foodblocks
 link.to.app
 
 Open this on ${this.state.recipe.source}
-${this.state.recipe.URL}`;
+${this.props.URL}`;
 
-                const eventId = await Calendar.createEventAsync(calendarId, {
+                //TODO: save the event even after the app is closed
+
+                const eventID = await Calendar.createEventAsync(calendarId, {
                     title: title,
                     notes: notes,
                     startDate: startDate,
                     endDate: endDate
                 });
-                this.setState({eventId: eventId});
+                //we have to await this since the props for the saved date need to be updated
+                await this.props.add_to_calendar(this.props.URL, startDate, eventID)
 
             } catch (error) {
                 console.log('Error:', error);
@@ -191,13 +216,11 @@ ${this.state.recipe.URL}`;
             return <ActivityIndicator/>
         }
 
-        const {recipeVisible, selectorVisible, snackbarVisible, date, pickerMode, useCalendar} = this.state;
-
         //this is for the date pickers
         const onChange = (event, selectedDate) => {
             // the ios datepicker calls this method every time the date is changed
             // and the android one calls this every time that the OK button is selected.
-            this.setState({showPicker: Platform.OS === 'ios', date: selectedDate})
+            this.setState({showPicker: Platform.OS === 'ios', selectedDate})
         };
 
         const onSaveButtonPress = async () => {
@@ -208,10 +231,11 @@ ${this.state.recipe.URL}`;
                 // user wants to remove recipe from saved
                 const pressed = !this.state.pressed;
                 this.setState({pressed});
-                (pressed ? this.props.save : this.props.unsave)(this.state.recipe.URL);
+                (pressed ? this.props.save : this.props.unsave)(this.props.URL);
 
-                await Calendar.deleteEventAsync(this.state.eventId);
-                this.setState({eventId: -1, pickerMode: 'date'}) //reset mode to date
+                await Calendar.deleteEventAsync(this.props.eventID);
+                this.props.remove_from_calendar(this.state.URL)
+                this.setState({pickerMode: 'date'}) //reset mode to date
                 this._showSnackbar(); // show status message
             }
         }
@@ -277,12 +301,12 @@ ${this.state.recipe.URL}`;
             </View>
         )
 
-        const add = "Add foodblock";
-        const remove = formatDate(this.state.date);
+        const message = this.props.saved ? formatDate(this.props.savedDate) : "Add foodblock";
         const add_foodblock_button = (
             <Button icon={this.props.saved ? 'close' : ''} mode={this.props.saved ? 'outlined' : 'contained'}
                     contentStyle={{paddingVertical: 10}} color={colors.foodblocksRed}
-                    onPress={() => onSaveButtonPress()} style={{flex: 0.9}}>{this.props.saved ? remove : add}</Button>
+                    onPress={() => onSaveButtonPress()}
+                    style={{flex: 0.9}}>{message}</Button>
         )
 
         const recipe_info = (
@@ -325,26 +349,28 @@ ${this.state.recipe.URL}`;
 
         const datetime_view_ios = (
             <View>
-                {pickerMode === 'date' && <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your day</Text>}
-                {pickerMode === 'time' && <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your time</Text>}
+                {this.state.pickerMode === 'date' &&
+                <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your day</Text>}
+                {this.state.pickerMode === 'time' &&
+                <Text style={{fontSize: 14, color: colors.darkGrey}}>Choose your time</Text>}
                 <DateTimePicker
                     testID="dateTimePickerIOS"
                     timeZoneOffsetInMinutes={-offset}
-                    value={date}
-                    mode={pickerMode}
+                    value={this.state.selectedDate}
+                    mode={this.state.pickerMode}
                     is24Hour={true}
                     display="default"
                     onChange={onChange}
                     minimumDate={new Date()}
                 />
-                {pickerMode === 'date' &&
+                {this.state.pickerMode === 'date' &&
                 <Button mode='contained' contentStyle={{paddingVertical: 10}}
                         color={colors.foodblocksRed}
                         onPress={showTimepicker}>
                     Next
                 </Button>
                 }
-                {pickerMode === 'time' &&
+                {this.state.pickerMode === 'time' &&
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'center',
@@ -367,7 +393,7 @@ ${this.state.recipe.URL}`;
             </View>
         );
 
-        const formattedDate = formatDate(this.state.date);
+        const formattedDate = formatDate(this.state.selectedDate);
         const day = formattedDate.split(' ')[0] + ' ' + formattedDate.split(' ')[1];
         const time = formattedDate.split(' ')[2];
         const datetime_view_android = (
@@ -393,7 +419,7 @@ ${this.state.recipe.URL}`;
                 {this.state.showPicker && <DateTimePicker
                     testID="dateTimePickerAndroid"
                     timeZoneOffsetInMinutes={-offset}
-                    value={date}
+                    value={this.state.selectedDate}
                     mode={this.state.pickerMode}
                     is24Hour={true}
                     display="default"
@@ -418,10 +444,10 @@ ${this.state.recipe.URL}`;
                     <Text style={checkBoxStyle.title}>Use calendar</Text>
                     <View style={{backgroundColor: colors.lightYellow, borderRadius: 20}}>
                         <Checkbox
-                            status={useCalendar ? 'checked' : 'unchecked'}
+                            status={this.state.useCalendar ? 'checked' : 'unchecked'}
                             color={colors.darkYellow}
                             onPress={() => {
-                                this.setState({useCalendar: !useCalendar});
+                                this.setState({useCalendar: !this.state.useCalendar});
                             }}/>
                     </View>
                 </View>
@@ -436,10 +462,10 @@ ${this.state.recipe.URL}`;
                 <View style={checkBoxStyle.container}>
                     <Text style={checkBoxStyle.title}>Use calendar</Text>
                     <Checkbox
-                        status={useCalendar ? 'checked' : 'unchecked'}
+                        status={this.state.useCalendar ? 'checked' : 'unchecked'}
                         color={colors.foodblocksRed}
                         onPress={() => {
-                            this.setState({useCalendar: !useCalendar});
+                            this.setState({useCalendar: !this.state.useCalendar});
                         }}/>
                 </View>
             </Surface>
@@ -475,7 +501,7 @@ ${this.state.recipe.URL}`;
         const status_snackbar = (
             <Snackbar
                 duration={2500}
-                visible={snackbarVisible}
+                visible={this.state.snackbarVisible}
                 onDismiss={this._hideSnackbar}
                 style={{backgroundColor: colors.lightRed}}
             >
@@ -487,11 +513,11 @@ ${this.state.recipe.URL}`;
             <View style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
                 <Portal>
                     {status_snackbar}
-                    <Modal visible={recipeVisible} onDismiss={this._hideRecipe}>
+                    <Modal visible={this.state.recipeVisible} onDismiss={this._hideRecipe}>
                         {recipe_info}
                         {status_snackbar}
                     </Modal>
-                    <Modal visible={selectorVisible && !this.props.saved} onDismiss={this._hideSelector}>
+                    <Modal visible={this.state.selectorVisible && !this.props.saved} onDismiss={this._hideSelector}>
                         {Platform.OS === 'ios' ? add_foodblock_view_ios : add_foodblock_view_android}
                     </Modal>
                 </Portal>
