@@ -21,4 +21,7 @@ export default {
 
     CREATE_LIST: 'CREATE_LIST',
     ADD_TO_LIST: 'ADD_TO_LIST',
+
+    ADD_EVENT: "ADD_EVENT",
+    REMOVE_EVENT: 'REMOVE_EVENT',
 };
