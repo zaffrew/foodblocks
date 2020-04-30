@@ -1,24 +1,17 @@
 import {Notifications} from "expo";
+import {ensureEnabled} from "./PermissionManager";
 import * as Permissions from 'expo-permissions';
 
-
-export async function areNotificationsEnabled() {
-    return (await Permissions.getAsync(Permissions.NOTIFICATIONS)) === 'granted'
-}
-
-export async function ensureNotificationsEnabled() {
-    if (!await areNotificationsEnabled()) {
-        return await Permissions.askAsync(Permissions.NOTIFICATIONS);
-    }
+async function ensureNotificationsEnabled() {
+    await ensureEnabled(Permissions.NOTIFICATIONS)
 }
 
 export async function pushNotification(title, body, time) {
-    if (!await ensureNotificationsEnabled()) {
-        return null;
-    }
+    await ensureNotificationsEnabled()
 
     const notification = {
         title, body, ios: {
+            //this line dictates whether notifications will be shown while the app is in the foreground
             _displayInForeground: true
         }
     }
@@ -28,4 +21,9 @@ export async function pushNotification(title, body, time) {
     } else {
         return await Notifications.presentLocalNotificationAsync(notification)
     }
+}
+
+export async function cancelNotification(notificationID) {
+    await ensureNotificationsEnabled();
+    await Notifications.cancelScheduledNotificationAsync(notificationID);
 }

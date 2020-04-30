@@ -1,5 +1,5 @@
 import {genericScrape, getDOM, getTime, text} from "../scraperUtils";
-import {removeRepeatedWhitespace} from "../StringUtils";
+import {removeRepeatedWhitespace} from "../../utils/StringUtils";
 import URL_PARSE from "url-parse";
 import Recipe from "../Recipe";
 import moment from "moment";

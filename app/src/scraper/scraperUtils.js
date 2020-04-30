@@ -1,5 +1,5 @@
 import cheerio from "react-native-cheerio";
-import {removeRepeatedWhitespace} from "./StringUtils";
+import {removeRepeatedWhitespace} from "../utils/StringUtils";
 import moment from "moment";
 
 async function getHTML(URL) {
