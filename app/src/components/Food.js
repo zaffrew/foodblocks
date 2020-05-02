@@ -5,6 +5,7 @@ import {
     Avatar,
     Button,
     Checkbox,
+    IconButton,
     List,
     Modal,
     Portal,
@@ -55,17 +56,19 @@ export default connect((state, ownProps) => {
         return ownProps.URL === URL;
     }).length === 1;
 
-    const calendarEntry = state.calendar[ownProps.URL];
+    const food_metadata = state.food_metadata[ownProps.URL];
     let savedDate = null;
     let eventID = null;
     let notificationID = null;
-    if (calendarEntry) {
-        eventID = calendarEntry.eventID;
-        savedDate = calendarEntry.date;
-        notificationID = calendarEntry.notificationID;
+    let rating = 0;
+    if (food_metadata) {
+        eventID = food_metadata.eventID;
+        savedDate = food_metadata.date;
+        notificationID = food_metadata.notificationID;
+        rating = food_metadata.rating;
     }
 
-    return {saved, savedDate, eventID, notificationID}
+    return {saved, savedDate, eventID, notificationID, rating}
 }, {
     save: (URL) => ({
         type: ACTIONS.SAVE_RECIPE,
@@ -81,16 +84,22 @@ export default connect((state, ownProps) => {
         time: moment().toISOString(),
     }),
     add_to_calendar: (URL, date, eventID, notificationID) => ({
-        type: ACTIONS.ADD_EVENT,
-        URL, date, eventID, notificationID
+        type: ACTIONS.ADD_METADATA,
+        URL,
+        metadata: {date, eventID, notificationID}
     }),
     remove_from_calendar: URL => ({
-        type: ACTIONS.REMOVE_EVENT, URL
+        type: ACTIONS.REMOVE_METADATA, URL
     }),
     add_to_list: (URL, listName) => ({
         type: ACTIONS.ADD_TO_LIST,
         URL,
         name: listName,
+    }),
+    update_rating: (URL, rating) => ({
+        type: ACTIONS.ADD_METADATA,
+        URL,
+        metadata: {rating}
     })
 })
 
@@ -172,7 +181,7 @@ export default connect((state, ownProps) => {
         await Calendar.deleteEventAsync(this.props.eventID);
 
         //only cancel the notification if it was not already sent out.
-        if(new Date().getTime() <= this.props.savedDate.getTime()) {
+        if (new Date().getTime() <= this.props.savedDate.getTime()) {
             await NotificationManager.cancelNotification(this.props.notificationID);
         }
         this.props.remove_from_calendar(this.state.URL);
@@ -453,7 +462,42 @@ export default connect((state, ownProps) => {
             <View style={{backgroundColor: 'white', flex: 1}}>
                 <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
                 <View style={{paddingBottom: 20}}>
-                    <Title style={textStyles.title}>{recipe.name}</Title>
+                    <View style={{flexDirection: 'row'}}>
+                        <Title style={textStyles.title}>{recipe.name}</Title>
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'space-around',
+                            alignItems: 'flex-end'
+                        }}>
+                            {
+                                this.props.rating === 1 ?
+                                    <IconButton
+                                        onPress={() => {
+                                            this.props.update_rating(this.props.URL, 0)
+                                        }}
+                                        icon={'thumb-up'} color={'green'}/> :
+                                    <IconButton
+                                        onPress={() => {
+                                            this.props.update_rating(this.props.URL, 1)
+                                        }}
+                                        icon={'thumb-up-outline'}/>
+                            }
+                            {
+                                this.props.rating === -1 ?
+                                    <IconButton
+                                        onPress={() => {
+                                            this.props.update_rating(this.props.URL, 0)
+                                        }}
+                                        icon={'thumb-down'} color={'red'}/> :
+                                    <IconButton
+                                        onPress={() => {
+                                            this.props.update_rating(this.props.URL, -1)
+                                        }}
+                                        icon={'thumb-down-outline'}/>
+                            }
+                        </View>
+                    </View>
                     <View style={{justifyContent: 'space-around', flexDirection: 'row'}}>
                         <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
                         <Button color={colors.foodblocksRed} style={{color: colors.foodblocksRed}} compact={true}>
@@ -574,7 +618,6 @@ const textStyles = StyleSheet.create({
     },
     title: {
         fontSize: 24,
-        lineHeight: 30,
         paddingTop: 20,
         paddingHorizontal: 20,
         fontFamily: 'montserrat'
