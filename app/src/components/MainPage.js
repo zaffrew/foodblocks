@@ -9,7 +9,6 @@ import search from "../../assets/search.png";
 import groceries from "../../assets/grocceries.png";
 import meals from "../../assets/plate.png";
 
-import ForYou from "./mainTabs/ForYou";
 import Search from "./mainTabs/Search/Search";
 import Groceries from "./mainTabs/Groceries";
 import Meals from "./mainTabs/Meals";
@@ -20,7 +19,6 @@ import SavedLists from "./lists/SavedLists";
 
 const iconMap = {
     Home: homeButton,
-    ForYou: forYou,
     Search: search,
     Groceries: groceries,
     Meals: meals,
@@ -50,11 +48,6 @@ class MainPage extends React.Component {
                 <Tab.Screen name="Home" component={Home} options={{
                     tabBarIcon: (focused, color) => {
                         return (getImage("Home", focused, color))
-                    }
-                }}/>
-                <Tab.Screen name="ForYou" component={ForYou} options={{
-                    tabBarIcon: (focused, color) => {
-                        return (getImage("ForYou", focused, color))
                     }
                 }}/>
                 <Tab.Screen name="Search" component={Search} options={{

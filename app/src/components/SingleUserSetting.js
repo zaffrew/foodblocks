@@ -1,66 +1,52 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {View} from "react-native";
 
 import {Button, Dialog, Paragraph, Portal, TextInput, Title} from 'react-native-paper'
 import withProps from "../utils/withProps";
 
-export default withProps(class extends React.Component {
+function SingleUserSetting(props) {
+    const [popup, setPopup] = useState(false)
+    const [value, setValue] = useState('')
 
-    constructor(props) {
-        super(props);
-        this.state = {popup: false, value: ''}
-    }
-
-    onChangeText(text) {
-        this.setState({
-            value: text
-        })
-    }
-
-    showDialog = () => this.setState({popup: true});
-    hideDialog = () => this.setState({popup: false});
-
-    async onSubmit() {
-        if (this.props.valid(this.state.value)) {
-            this.props.updateValue(this.state.value);
-            this.props.onSubmit();
+    async function onSubmit() {
+        if (props.valid(value)) {
+            props.updateValue(value);
+            props.onSubmit();
         } else {
-            this.showDialog()
+            setPopup(true);
         }
     }
 
-    render() {
-        const theme = this.props.theme;
-
-        return (
-            <View style={{alignItems: 'center'}}>
-                <Title theme={theme}>
-                    {this.props.question}
-                </Title>
-                <View style={{margin: 20, flexDirection: 'row'}}>
-                    <TextInput
-                        {...this.props.textInputProps}
-                        theme={theme}
-                        style={{flex: 0.9}}
-                        onSubmitEditing={() => this.onSubmit()}
-                        onChangeText={text => this.onChangeText(text)}
-                        value={this.state.value}
-                        placeholder={this.props.placeholder}/>
-                </View>
-                <Portal>
-                    <Dialog
-                        visible={this.state.popup}
-                        onDismiss={this.hideDialog}>
-                        <Dialog.Title>Alert</Dialog.Title>
-                        <Dialog.Content>
-                            <Paragraph>{this.props.invalidMessage}</Paragraph>
-                        </Dialog.Content>
-                        <Dialog.Actions>
-                            <Button onPress={this.hideDialog}>Done</Button>
-                        </Dialog.Actions>
-                    </Dialog>
-                </Portal>
+    return (
+        <View style={{alignItems: 'center'}}>
+            <Title theme={props.theme}>
+                {props.question}
+            </Title>
+            <View style={{margin: 20, flexDirection: 'row'}}>
+                <TextInput
+                    {...props.textInputProps}
+                    theme={props.theme}
+                    style={{flex: 0.9}}
+                    onSubmitEditing={onSubmit}
+                    onChangeText={text => setValue(text)}
+                    value={value}
+                    placeholder={props.placeholder}/>
             </View>
-        );
-    }
-}, {invalidMessage: 'Invalid Input', valid: value => true});
+            <Portal>
+                <Dialog
+                    visible={popup}
+                    onDismiss={() => setPopup(false)}>
+                    <Dialog.Title>Alert</Dialog.Title>
+                    <Dialog.Content>
+                        <Paragraph>{props.invalidMessage}</Paragraph>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={() => setPopup(true)}>Done</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+        </View>
+    );
+}
+
+export default withProps(SingleUserSetting, {invalidMessage: 'Invalid Input', valid: value => true});

@@ -10,15 +10,8 @@ import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
 import RecentFoods from "./RecentFoods";
 import RecentSearches from "./RecentSearches";
-import ReccommendedFoods from "./ReccommendedFoods";
+import RecommendedFoods from "./ReccommendedFoods";
 import {getRecipe} from '../../../scraper/Scraper'
-
-const testRecipes = [
-    'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
-    'https://www.allrecipes.com/recipe/217962/jans-pretzel-dogs/',
-    'https://www.delish.com/cooking/recipe-ideas/a28143935/taco-bloody-marys-recipe/',
-    'https://www.allrecipes.com/recipe/14169/mexican-bean-salad/',
-];
 
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food);
@@ -50,7 +43,6 @@ const Home = connect(state => ({
             props.navigation.navigate('Food', {URL})
         },
         horizontal: true,
-        URLs: testRecipes,
     };
 
 
@@ -76,7 +68,7 @@ const Home = connect(state => ({
                 <Headline>
                     Because you liked {name}
                 </Headline>
-                <ReccommendedFoods foodName={name} {...scrollProps}/>
+                <RecommendedFoods foodName={name} {...scrollProps}/>
             </React.Fragment>
         ));
 
@@ -87,7 +79,6 @@ const Home = connect(state => ({
             </Headline>
             <FoodBlockScroll {...scrollProps} URLs={props.saved_recipes}/>
         </React.Fragment> : null
-
 
 
     return (
