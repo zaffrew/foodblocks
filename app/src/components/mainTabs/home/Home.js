@@ -10,7 +10,7 @@ import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
 import RecentFoods from "./RecentFoods";
 import RecentSearches from "./RecentSearches";
-import ReccomendedFoods from "./ReccomendedFoods";
+import ReccommendedFoods from "./ReccommendedFoods";
 import {getRecipe} from '../../../scraper/Scraper'
 
 const testRecipes = [
@@ -75,7 +75,7 @@ const Home = connect((state) => ({
                 <Headline>
                     Because you liked {name}
                 </Headline>
-                <ReccomendedFoods foodName={name} {...scrollProps}/>
+                <ReccommendedFoods foodName={name} {...scrollProps}/>
             </React.Fragment>
         ));
 
