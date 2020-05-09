@@ -67,11 +67,6 @@ class MainPage extends React.Component {
                         return (getImage("Groceries", focused, color))
                     }
                 }}/>
-                <Tab.Screen name="Meals" component={Meals} options={{
-                    tabBarIcon: (focused, color) => {
-                        return (getImage("Meals", focused, color))
-                    }
-                }}/>
                 <Tab.Screen name="Lists" component={SavedLists} options={{
                     tabBarIcon: (focused, color) => {
                         return (getImage("ListsPage", focused, color))
