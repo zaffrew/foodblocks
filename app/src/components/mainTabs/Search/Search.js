@@ -15,6 +15,7 @@ import {ACTIONS} from "../../../state/State";
 import moment from "moment";
 import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
+import getActiveFilters from "../../../utils/getActiveFilters";
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -22,7 +23,7 @@ const FoodWithParams = withRouteParams(Food);
 //TODO: validate that a search has enough valid results i.e. it wont have info missing
 //TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
 
-const Search = connect(state => ({filters: state.user_info.filters}), {
+const Search = connect(null, {
     add_search: (searchRes) => ({
         type: ACTIONS.ADD_SEARCH_HISTORY,
         searchRes,
@@ -53,7 +54,7 @@ const Search = connect(state => ({filters: state.user_info.filters}), {
         // down on setting the new state or there will be weird behavior
         await this.setState({searching: true, searchedYet: true, searchURLs: []});
 
-        const activeFilters = this.props.filters.filter(({active}) => active).map(filterObj => filterObj.name);
+        const activeFilters = getActiveFilters();
 
         const searchRes = await getSearch(query, activeFilters);
         this.props.add_search(searchRes)

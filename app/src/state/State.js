@@ -9,6 +9,7 @@ import cache_reducer from './Cache'
 import saved_reducer from './SavedRecipes'
 import list_reducer from './Lists'
 import food_metadata_reducer from './food_metadata'
+import liked_foods_reducer from './LikedFoods'
 import {AsyncStorage} from "react-native";
 
 const generalPersistConfig = {
@@ -24,6 +25,7 @@ const app_reducer = combineReducers({
     saved_recipes: saved_reducer,
     food_metadata: food_metadata_reducer,
     lists: list_reducer,
+    liked_foods : liked_foods_reducer,
 });
 
 function root_reducer(state = {}, action) {

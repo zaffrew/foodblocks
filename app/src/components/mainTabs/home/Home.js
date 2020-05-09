@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {connect} from 'react-redux'
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
@@ -10,6 +10,8 @@ import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
 import RecentFoods from "./RecentFoods";
 import RecentSearches from "./RecentSearches";
+import ReccomendedFoods from "./ReccomendedFoods";
+import {getRecipe} from '../../../scraper/Scraper'
 
 const testRecipes = [
     'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
@@ -37,50 +39,66 @@ const SearchPage = withRouteParams(props => (
 
 const Home = connect((state) => ({
     username: state.user_info.username,
-}))
-(class extends React.Component {
-    openFood = (URL) => {
-        this.props.navigation.navigate('Food', {URL})
+    liked_foods: state.liked_foods.slice(0, 3),
+}))(props => {
+    const scrollLength = 200;
+    const scrollProps = {
+        scrollLength,
+        blockLength: 160,
+        onPress: URL => {
+            props.navigation.navigate('Food', {URL})
+        },
+        horizontal: true,
+        URLs: testRecipes,
     };
 
-    render() {
-        const scrollLength = 200;
-        const scrollProps = {
-            scrollLength,
-            blockLength: 160,
-            onPress: this.openFood,
-            horizontal: true,
-            URLs: testRecipes,
-        };
 
-        return (
-            <SafeView bottom={false} style={{flex: 1}}>
-                <ScrollView>
-                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
-                        Hello {this.props.username}!
-                    </Title>
-                    <Headline>
-                        Recently Searched
-                    </Headline>
-                    <RecentSearches onSearchPress={(title, URLs) => {
-                        this.props.navigation.navigate('SearchPage', {URLs, title})
-                    }}{...scrollProps}/>
-                    <Headline>
-                        Recently Viewed
-                    </Headline>
-                    <RecentFoods {...scrollProps}/>
-                    <Headline>
-                        Next up
-                    </Headline>
-                    <FoodBlockScroll {...scrollProps}/>
-                    <Headline>
-                        Popular in your area
-                    </Headline>
-                    <FoodBlockScroll {...scrollProps}/>
-                </ScrollView>
-            </SafeView>
-        )
-    }
+    //get the liked foods
+    const [likedFoodNames, updateLikedFoodNames] = useState([]);
+
+    useEffect(() => {
+        async function effect() {
+            const foodNames = []
+            for (const URL of props.liked_foods) {
+                const name = (await getRecipe(URL)).name
+                foodNames.push(name)
+            }
+            updateLikedFoodNames(foodNames);
+        }
+
+        effect();
+    }, [props.liked_foods])
+
+    const reccomendedFoods = likedFoodNames
+        .map(name => (
+            <React.Fragment key={name}>
+                <Headline>
+                    Because you liked {name}
+                </Headline>
+                <ReccomendedFoods foodName={name} {...scrollProps}/>
+            </React.Fragment>
+        ));
+
+    return (
+        <SafeView bottom={false} style={{flex: 1}}>
+            <ScrollView>
+                <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
+                    Hello {props.username}!
+                </Title>
+                <Headline>
+                    Recently Searched
+                </Headline>
+                <RecentSearches onSearchPress={(title, URLs) => {
+                    props.navigation.navigate('SearchPage', {URLs, title})
+                }}{...scrollProps}/>
+                <Headline>
+                    Recently Viewed
+                </Headline>
+                <RecentFoods {...scrollProps}/>
+                {reccomendedFoods}
+            </ScrollView>
+        </SafeView>
+    )
 });
 
 
