@@ -8,6 +8,7 @@ import groceries_reducer from './Groceries'
 import cache_reducer from './Cache'
 import saved_reducer from './SavedRecipes'
 import list_reducer from './Lists'
+import calendar_reducer from './FoodblocksCalendar'
 
 import generalPersistConfig from './PersistConfig'
 
@@ -16,6 +17,7 @@ const app_reducer = combineReducers({
     cache: cache_reducer,
     user_info: user_reducer,
     saved_recipes: saved_reducer,
+    calendar: calendar_reducer,
     lists: list_reducer,
 });
 
