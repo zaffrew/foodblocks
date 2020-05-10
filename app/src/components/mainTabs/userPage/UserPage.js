@@ -16,34 +16,27 @@ import headlessNavigator from "../../../utils/headlessNavigator";
 
 const Stack = createStackNavigator();
 
-export default class UserPage extends React.Component {
+export default function UserPage(props) {
+    const this_Username = withProps(Username, {
+        onSubmit: () => {
+            props.navigation.navigate('UserScreen')
+        }
+    });
+    const this_Email = withProps(Email, {
+        onSubmit: () => {
+            props.navigation.navigate('UserScreen')
+        }
+    });
 
-    constructor(props) {
-        super(props);
-        const this_Username = withProps(Username, {
-            onSubmit: () => {
-                this.props.navigation.navigate('UserScreen')
-            }
-        });
-        const this_Email = withProps(Email, {
-            onSubmit: () => {
-                this.props.navigation.navigate('UserScreen')
-            }
-        });
+    const HeadlessNavigator = headlessNavigator([
+        {name: 'UserScreen', component: UserScreen, mainPage: true},
+        {name: 'Username', component: this_Username},
+        {name: 'Email', component: this_Email},
+        {name: 'Help', component: Help},
+        {name: 'Payment Information', component: Payment}
+    ])
 
-        this.HeadlessNavigator = headlessNavigator([
-            {name: 'UserScreen', component: UserScreen, mainPage: true},
-            {name: 'Username', component: this_Username},
-            {name: 'Email', component: this_Email},
-            {name: 'Help', component: Help},
-            {name: 'Payment Information', component: Payment}
-        ])
-    }
-
-    render() {
-        const HeadlessNavigator = this.HeadlessNavigator;
-        return <HeadlessNavigator/>
-    }
+    return <HeadlessNavigator/>
 }
 
 const UserScreen = connect((state) => {
@@ -52,52 +45,46 @@ const UserScreen = connect((state) => {
     logout: () => ({
         type: ACTIONS.RESET,
     }),
-})(class extends React.Component {
-    memoizedAvatar = memoizeOne(getAvatar);
+})(function (props) {
+    const memoizedAvatar = memoizeOne(getAvatar);
 
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <SafeView bottom={false} style={{flex: 1, alignItems: 'stretch'}}>
-                <Surface
-                    style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
-                    {this.memoizedAvatar(this.props.username)}
-                    <Title>{this.props.username}</Title>
-                    <Subheading>{this.props.email}</Subheading>
-                </Surface>
-                <Surface
-                    style={{
-                        flex: 0,
-                        padding: 8,
-                        elevation: 4,
-                        alignItems: 'stretch',
-                        justifyContent: 'flex-start'
-                    }}>
-                    <List.Section>
-                        {getListItem('Username', 'account', this.props.navigation)}
-                        {getListItem('Email', 'email', this.props.navigation)}
-                        {getListItem('Payment Information', 'currency-usd', this.props.navigation)}
-                        {getListItem('Help', 'help-rhombus', this.props.navigation)}
-                    </List.Section>
-                    <List.Section>
-                        <List.Item
-                            title={"Logout"}
-                            left={() => {
-                                return <IconButton icon={'logout'}/>
-                            }}
-                            onPress={() => {
-                                this.props.logout();
-                                this.props.navigation.popToTop()
-                            }}
-                        />
-                    </List.Section>
-                </Surface>
-            </SafeView>
-        )
-    }
+    return (
+        <SafeView bottom={false} style={{flex: 1, alignItems: 'stretch'}}>
+            <Surface
+                style={{flex: 0, padding: 8, elevation: 4, alignItems: 'center', justifyContent: 'flex-start'}}>
+                {memoizedAvatar(props.username)}
+                <Title>{props.username}</Title>
+                <Subheading>{props.email}</Subheading>
+            </Surface>
+            <Surface
+                style={{
+                    flex: 0,
+                    padding: 8,
+                    elevation: 4,
+                    alignItems: 'stretch',
+                    justifyContent: 'flex-start'
+                }}>
+                <List.Section>
+                    {getListItem('Username', 'account', props.navigation)}
+                    {getListItem('Email', 'email', props.navigation)}
+                    {getListItem('Payment Information', 'currency-usd', props.navigation)}
+                    {getListItem('Help', 'help-rhombus', props.navigation)}
+                </List.Section>
+                <List.Section>
+                    <List.Item
+                        title={"Logout"}
+                        left={() => {
+                            return <IconButton icon={'logout'}/>
+                        }}
+                        onPress={() => {
+                            props.logout();
+                            props.navigation.popToTop()
+                        }}
+                    />
+                </List.Section>
+            </Surface>
+        </SafeView>
+    )
 });
 
 function getListItem(title, iconLeft, navigator) {

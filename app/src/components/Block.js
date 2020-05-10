@@ -9,11 +9,15 @@ export default function Block(props) {
     const [image, setImage] = useState('')
 
     useEffect(() => {
+        let inEffect = true;
         props.getData().then(({image, title}) => {
-            setTitle(title)
-            setImage(image)
-            setLoaded(true)
+            if (inEffect) {
+                setTitle(title)
+                setImage(image)
+                setLoaded(true)
+            }
         })
+        return () => inEffect = false;
     }, [props.getData])
 
     const content = loaded ?
