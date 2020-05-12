@@ -1,5 +1,5 @@
 import React from 'react'
-import {Image, ScrollView, StyleSheet, View} from 'react-native'
+import {Image, ImageBackground, ScrollView, StyleSheet, View} from 'react-native'
 import {
     ActivityIndicator,
     Avatar,
@@ -12,7 +12,8 @@ import {
     Snackbar,
     Surface,
     Text,
-    Title
+    Title,
+    FAB
 } from "react-native-paper";
 import {connect} from "react-redux";
 import {ACTIONS} from "../state/State";
@@ -460,43 +461,49 @@ export default connect((state, ownProps) => {
 
         const main_view = (
             <View style={{backgroundColor: 'white', flex: 1}}>
-                <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
+                <ImageBackground style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}>
+                    <View style={{
+                                flex: 1,
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'flex-end',
+                                padding: 10
+                            }}>
+                                {
+                                    this.props.rating === 1 ?
+                                        <FAB
+                                            style={{backgroundColor: 'white'}}
+                                            onPress={() => {
+                                                this.props.update_rating(this.props.URL, 0)
+                                            }}
+                                            icon={'thumb-up'} color={'green'}/> :
+                                        <FAB
+                                            style={{backgroundColor: colors.foodblocksRed}}
+                                            onPress={() => {
+                                                this.props.update_rating(this.props.URL, 1)
+                                            }}
+                                            icon={'thumb-up'}/>
+                                }
+                                {
+                                    this.props.rating === -1 ?
+                                        <FAB
+                                            style={{backgroundColor: 'white'}}
+                                            onPress={() => {
+                                                this.props.update_rating(this.props.URL, 0)
+                                            }}
+                                            icon={'thumb-down'} color={'red'}/> :
+                                        <FAB
+                                            style={{backgroundColor: colors.foodblocksRed}}
+                                            onPress={() => {
+                                                this.props.update_rating(this.props.URL, -1)
+                                            }}
+                                            icon={'thumb-down'}/>
+                                }
+                    </View>
+                </ImageBackground>
                 <View style={{paddingBottom: 20}}>
                     <View style={{flexDirection: 'row'}}>
                         <Title style={textStyles.title}>{recipe.name}</Title>
-                        <View style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            justifyContent: 'space-around',
-                            alignItems: 'flex-end'
-                        }}>
-                            {
-                                this.props.rating === 1 ?
-                                    <IconButton
-                                        onPress={() => {
-                                            this.props.update_rating(this.props.URL, 0)
-                                        }}
-                                        icon={'thumb-up'} color={'green'}/> :
-                                    <IconButton
-                                        onPress={() => {
-                                            this.props.update_rating(this.props.URL, 1)
-                                        }}
-                                        icon={'thumb-up-outline'}/>
-                            }
-                            {
-                                this.props.rating === -1 ?
-                                    <IconButton
-                                        onPress={() => {
-                                            this.props.update_rating(this.props.URL, 0)
-                                        }}
-                                        icon={'thumb-down'} color={'red'}/> :
-                                    <IconButton
-                                        onPress={() => {
-                                            this.props.update_rating(this.props.URL, -1)
-                                        }}
-                                        icon={'thumb-down-outline'}/>
-                            }
-                        </View>
                     </View>
                     <View style={{justifyContent: 'space-around', flexDirection: 'row'}}>
                         <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
