@@ -60,41 +60,45 @@ const theme = {
     fonts: configureFonts(fontConfig),
 };
 
-export default class App extends React.Component {
+export default function App() {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            fontLoaded: false,
+    const [fontLoaded, setFontLoaded] = React.useState(false)
+
+    React.useEffect(() => {
+        if (fontLoaded) return;
+
+
+        let canceled = false;
+
+        async function effect() {
+            await Font.loadAsync({
+                'montserrat': require('./assets/fonts/Montserrat-Regular.ttf')
+            });
+
+            if (!canceled) {
+                setFontLoaded(true);
+            }
         }
-    }
 
-    async loadSplashFont() {
-        await Font.loadAsync({
-            'montserrat': require('./assets/fonts/Montserrat-Regular.ttf')
-        });
-    }
+        effect();
 
-    componentDidMount() {
-        this.loadSplashFont().then(() => this.setState({fontLoaded: true}))
-    }
+        return () => canceled = true;
+    }, [])
 
-    render() {
-        if (this.state.fontLoaded) {
-            return (
-                <Provider store={store}>
-                    <PersistGate loading={null} persistor={persistor}>
-                        <NavigationContainer>
-                            <SafeAreaProvider>
-                                <PaperProvider theme={theme}>
-                                    <AppNavigator/>
-                                </PaperProvider>
-                            </SafeAreaProvider>
-                        </NavigationContainer>
-                    </PersistGate>
-                </Provider>
-            );
-        }
-        return null;
+    if (fontLoaded) {
+        return (
+            <Provider store={store}>
+                <PersistGate loading={null} persistor={persistor}>
+                    <NavigationContainer>
+                        <SafeAreaProvider>
+                            <PaperProvider theme={theme}>
+                                <AppNavigator/>
+                            </PaperProvider>
+                        </SafeAreaProvider>
+                    </NavigationContainer>
+                </PersistGate>
+            </Provider>
+        );
     }
+    return null;
 }

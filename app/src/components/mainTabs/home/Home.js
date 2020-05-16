@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {connect} from 'react-redux'
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
-import Food from "../../Food";
+import Food from '../../Food/Food'
 import FoodBlockScroll from "../../FoodBlockScroll";
 import {Headline, Title} from "react-native-paper";
 import {ScrollView} from "react-native";
@@ -31,10 +31,11 @@ const SearchPage = withRouteParams(props => (
 ))
 
 const Home = connect(state => ({
-    username: state.user_info.username,
-    liked_foods: state.liked_foods.slice(0, 3),
-    saved_recipes: state.saved_recipes,
-}))(props => {
+        username: state.user_info.username,
+        liked_foods: Object.keys(state.ratings).filter(URL => state.ratings[URL] === 1).slice(0, 3),
+        saved_recipes: Object.keys(state.planned_foods),
+    })
+)(props => {
     const scrollLength = 200;
     const scrollProps = {
         scrollLength,

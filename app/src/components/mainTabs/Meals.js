@@ -6,7 +6,7 @@ import FoodBlockScroll from "../FoodBlockScroll";
 import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../utils/withRouteParams";
-import Food from "../Food";
+import Food from "../Food/Food";
 import SafeView from "../SafeView";
 import headlessNavigator from "../../utils/headlessNavigator";
 

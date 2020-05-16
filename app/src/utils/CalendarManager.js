@@ -1,6 +1,7 @@
 import * as Calendar from "expo-calendar";
 import {ensureEnabled} from "./PermissionManager";
 import * as Permissions from "expo-permissions";
+import colors from '../../settings/colors'
 
 const foodblock_calendar_name = 'My foodblocks';
 
@@ -59,4 +60,8 @@ export async function getBestCalendar() {
     }
 
     return calendar;
+}
+
+export async function deleteEvent(eventID) {
+    await Calendar.deleteEventAsync(eventID)
 }

@@ -1,7 +1,6 @@
 import {withTheme} from "react-native-paper";
 import React from "react";
 import {View} from 'react-native';
-import styles from '../../settings/styles'
 import SingleUserSetting from './SingleUserSetting'
 import invertTheme from "../utils/invertTheme";
 

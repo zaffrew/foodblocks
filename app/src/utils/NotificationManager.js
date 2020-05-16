@@ -6,7 +6,7 @@ async function ensureNotificationsEnabled() {
     await ensureEnabled(Permissions.NOTIFICATIONS)
 }
 
-export async function pushNotification(title, body, time) {
+export async function pushNotification(title, body, date) {
     await ensureNotificationsEnabled()
 
     const notification = {
@@ -16,8 +16,8 @@ export async function pushNotification(title, body, time) {
         }
     }
 
-    if (time) {
-        return await Notifications.scheduleLocalNotificationAsync(notification, {time});
+    if (date) {
+        return await Notifications.scheduleLocalNotificationAsync(notification, {time: date});
     } else {
         return await Notifications.presentLocalNotificationAsync(notification)
     }

@@ -1,4 +1,4 @@
-import {store, ACTIONS} from '../state/State'
+import {ACTIONS, store} from '../state/State'
 import AllRecipes from "./websites/AllRecipes";
 import Recipe from "./Recipe";
 import Delish from './websites/Delish'

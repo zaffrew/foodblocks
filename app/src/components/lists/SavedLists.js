@@ -6,7 +6,7 @@ import {Button, Headline, Modal, Surface} from "react-native-paper";
 import ListOfLists from "./ListOfLists";
 import headlessNavigator from "../../utils/headlessNavigator";
 import withRouteParams from "../../utils/withRouteParams";
-import Food from "../Food";
+import Food from "../Food/Food";
 import ListPage from "./ListPage";
 import withProps from "../../utils/withProps";
 import CreateList from "./CreateList";

@@ -6,7 +6,7 @@ import styles from "../../../../settings/styles"
 import FoodBlockScroll from "../../FoodBlockScroll";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
-import Food from "../../Food";
+import Food from '../../Food/Food'
 
 import {getSearch} from '../../../scraper/Scraper'
 import Filters from "./Filters";
