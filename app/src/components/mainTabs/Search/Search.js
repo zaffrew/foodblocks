@@ -35,32 +35,25 @@ const Search = connect(null, {
 
     //this is for updating the search results
     useEffect(() => {
-        console.log('\nuse effect')
         if (!currentSearch) return;
 
         let canceled = false;
 
         async function effect() {
-            console.log('searching')
 
             const searchRes = await getSearch(currentSearch, getActiveFilters())
-            console.log('done searching')
             props.add_search(searchRes)
 
             if (!canceled) {
                 setSearchResults(searchRes.results)
-                console.log('setting searching')
                 setCurrentSearch('')
             }
         }
 
-        console.log('calling effect()')
         effect();
-        console.log('effect called')
 
         return () => {
             canceled = true
-            console.log('canceled')
         };
     }, [currentSearch])
 
@@ -71,7 +64,6 @@ const Search = connect(null, {
 
     let mainContent;
     if (currentSearch) {
-        console.log('activity indicator')
         mainContent = <ActivityIndicator style={{alignSelf: 'center'}}/>
     } else if (searchResults.length > 0) {
         mainContent =

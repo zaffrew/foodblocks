@@ -1,9 +1,13 @@
 import {Notifications} from "expo";
-import {ensureEnabled} from "./PermissionManager";
+import * as PermissionManager from "./PermissionManager";
 import * as Permissions from 'expo-permissions';
 
-async function ensureNotificationsEnabled() {
-    await ensureEnabled(Permissions.NOTIFICATIONS)
+export async function ensureNotificationsEnabled() {
+    await PermissionManager.ensureEnabled(Permissions.NOTIFICATIONS)
+}
+
+export async function tryEnable() {
+    return await PermissionManager.tryEnable(Permissions.NOTIFICATIONS)
 }
 
 export async function pushNotification(title, body, date) {

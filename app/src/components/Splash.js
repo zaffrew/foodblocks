@@ -10,17 +10,17 @@ import {ACTIONS} from "../state/State";
 
 function SplashScreen(props) {
     useEffect(() => {
-        const timer = setTimeout(() => {
-            if (props.username) {
-                props.navigation.navigate('MainPage')
-            } else {
-                props.navigation.navigate('Login')
-            }
-        }, settings.splashTransitionTime)
-        return () => {
-            clearTimeout(timer)
-        }
-    }, [])
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            setTimeout(() => {
+                if (props.username) {
+                    props.navigation.navigate('MainPage')
+                } else {
+                    props.navigation.navigate('Login')
+                }
+            }, settings.splashTransitionTime);
+        })
+        return unsubscribe;
+    }, [props.username])
 
     const theme = invertTheme(props.theme);
 

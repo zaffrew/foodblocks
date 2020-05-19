@@ -5,7 +5,7 @@ export default function reducer(state = {}, action) {
         return {...state, [action.URL]: action.plan}
     } else if (action.type === ACTIONS.REMOVE_PLAN) {
         delete state[action.URL]
-        return state;
+        return {...state};
     }
 
     return state;
