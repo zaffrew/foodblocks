@@ -8,17 +8,19 @@ import groceries_reducer from './Groceries'
 import cache_reducer from './Cache'
 import saved_reducer from './SavedRecipes'
 import list_reducer from './Lists'
-import calendar_reducer from './FoodblocksCalendar'
+import food_metadata_reducer from './food_metadata'
+import liked_foods_reducer from './LikedFoods'
+import {AsyncStorage} from "react-native";
 
-import generalPersistConfig from './PersistConfig'
 
 const app_reducer = combineReducers({
     groceries: groceries_reducer,
     cache: cache_reducer,
     user_info: user_reducer,
     saved_recipes: saved_reducer,
-    calendar: calendar_reducer,
+    food_metadata: food_metadata_reducer,
     lists: list_reducer,
+    liked_foods: liked_foods_reducer,
 });
 
 function root_reducer(state = {}, action) {
@@ -51,7 +53,8 @@ const recipeTransform = createTransform(
 )
 
 const persistConfig = {
-    ...generalPersistConfig,
+    key: 'root',
+    storage: AsyncStorage,
     // blacklist: ['cache'],
     transforms: [recipeTransform]
 };
