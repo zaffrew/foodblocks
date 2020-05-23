@@ -32,7 +32,6 @@ export async function createFoodblocksCalendar() {
         Platform.OS === 'ios'
             ? (await Calendar.getDefaultCalendarAsync()).source
             : {isLocalAccount: true, name: foodblock_calendar_name};
-    //TODO: android for dattime picker and this thing here
 
     await Calendar.createCalendarAsync({
         title: foodblock_calendar_name,

@@ -12,8 +12,7 @@ export default function DatetimeAndroid(props) {
     const formattedDate = formatDate(date);
     const day = formattedDate.split(' ')[0] + ' ' + formattedDate.split(' ')[1];
     const time = formattedDate.split(' ')[2];
-
-
+    
     return (
         <View>
             <Text style={{fontSize: 14, color: colors.darkGrey, padding: 20}}>
@@ -31,8 +30,6 @@ export default function DatetimeAndroid(props) {
                 {time}
             </Button>
             {pickerMode !== 'hidden' && <DateTimePicker
-                testID="dateTimePickerAndroid"
-                // timeZoneOffsetInMinutes={-timezoneOffset}
                 value={date}
                 mode={pickerMode}
                 is24Hour={true}

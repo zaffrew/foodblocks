@@ -42,11 +42,8 @@ export default function DatetimeIOS(props) {
                 {'Choose your ' + (dateMode ? 'day' : 'time')}
             </Text>}
             <DateTimePicker
-                testID="dateTimePickerIOS"
-                // timeZoneOffsetInMinutes={-timezoneOffset}
                 value={date}
                 mode={dateMode ? 'date' : 'time'}
-                is24Hour={true}
                 display="default"
                 onChange={(event, selectedDate) => setDate(selectedDate)}
                 minimumDate={new Date()}
