@@ -41,7 +41,7 @@ function SingleUserSetting(props) {
                         <Paragraph>{props.invalidMessage}</Paragraph>
                     </Dialog.Content>
                     <Dialog.Actions>
-                        <Button onPress={() => setPopup(true)}>Done</Button>
+                        <Button onPress={() => setPopup(false)}>Done</Button>
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
