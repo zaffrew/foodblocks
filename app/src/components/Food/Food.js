@@ -1,4 +1,4 @@
-import {Image, View} from "react-native";
+import {ImageBackground, View} from "react-native";
 import colors from "../../../settings/colors";
 import {ActivityIndicator, Avatar, Button, Modal, Portal, Text, Title} from "react-native-paper";
 import React from "react";
@@ -84,12 +84,11 @@ function Food(props) {
 
     const main_view = (
         <View style={{backgroundColor: 'white', flex: 1}}>
-            <Image style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}/>
+            <ImageBackground style={{flex: 1, resizeMode: 'cover'}} source={{uri: recipe.image}}>
+                <Rating URL={props.URL}/>
+            </ImageBackground>
             <View style={{paddingBottom: 20}}>
-                <View style={{flexDirection: 'row'}}>
-                    <Title style={textStyles.title}>{recipe.name}</Title>
-                    <Rating URL={props.URL}/>
-                </View>
+                <Title style={textStyles.title}>{recipe.name}</Title>
                 <View style={{justifyContent: 'space-around', flexDirection: 'row'}}>
                     <Text style={[textStyles.sub, {color: 'grey'}]}>{recipe.source.toUpperCase()}</Text>
                     <ListView URL={props.URL}/>
