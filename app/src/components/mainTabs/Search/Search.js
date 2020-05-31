@@ -12,9 +12,9 @@ import {getSearch} from '../../../scraper/Scraper'
 import Filters from "./Filters";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
-import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
 import getActiveFilters from "../../../utils/getActiveFilters";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -79,7 +79,7 @@ const Search = connect(null, {
 
 
     return (
-        <SafeView bottom={false} style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
+        <SafeAreaView style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
             <View style={{
                 backgroundColor: colors.foodblocksRed,
             }}>
@@ -114,7 +114,7 @@ const Search = connect(null, {
             <View style={{flex: 1, backgroundColor: colors.grey}}>
                 {mainContent}
             </View>
-        </SafeView>
+        </SafeAreaView>
     )
 });
 

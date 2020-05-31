@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {View} from "react-native";
-import SafeView from "../SafeView";
 import colors from "../../../settings/colors";
 import {Button, Headline, Modal, Surface} from "react-native-paper";
 import ListOfLists from "./ListOfLists";
@@ -10,6 +9,7 @@ import Food from "../Food/Food";
 import ListPage from "./ListPage";
 import withProps from "../../utils/withProps";
 import CreateList from "./CreateList";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 function SavedLists(props) {
     const [addListVisible, setAddListVisible] = useState(false)
@@ -18,8 +18,8 @@ function SavedLists(props) {
     const _hideAddList = () => setAddListVisible(false)
 
     return (
-        <View style={{flex: 1}}>
-            <SafeView bottom={false} style={{backgroundColor: colors.foodblocksRed}}>
+        <View>
+            <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
                         Saved Lists
@@ -28,7 +28,7 @@ function SavedLists(props) {
                         Add List
                     </Button>
                 </View>
-            </SafeView>
+            </SafeAreaView>
             <ListOfLists onPress={name => props.navigation.navigate('List', {list_name: name})}/>
             <Modal visible={addListVisible} onDismiss={_hideAddList}>
                 <Surface style={{

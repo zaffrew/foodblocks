@@ -1,8 +1,8 @@
 import FoodBlockScroll from "../FoodBlockScroll";
 import React from "react";
 import {connect} from "react-redux";
-import SafeView from "../SafeView";
 import {Subheading, Title} from "react-native-paper";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 export default connect((state, ownProps) => ({
     URLs: state.lists.find(({name}) => ownProps.list_name === name).URLs
@@ -15,12 +15,12 @@ export default connect((state, ownProps) => ({
             <Subheading style={{alignSelf: 'center'}}> This list is empty!</Subheading>
 
         return (
-            <SafeView style={{flex: 1}}>
+            <SafeAreaView style={{flex: 1}}>
                 <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
                     {props.list_name}
                 </Title>
                 {mainContent}
-            </SafeView>
+            </SafeAreaView>
         )
     }
 )

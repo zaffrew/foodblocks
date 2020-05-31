@@ -7,8 +7,8 @@ import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../utils/withRouteParams";
 import Food from "../Food/Food";
-import SafeView from "../SafeView";
 import headlessNavigator from "../../utils/headlessNavigator";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 
 const Navigator = createStackNavigator();
@@ -17,11 +17,11 @@ const FoodWithParams = withRouteParams(Food);
 function Meals(props) {
     return (
         <View style={{flex: 1}}>
-            <SafeView bottom={false} style={{backgroundColor: colors.foodblocksRed}}>
+            <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
                 <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
                     My foodblocks
                 </Headline>
-            </SafeView>
+            </SafeAreaView>
             <FoodBlockScroll onPress={(URL) => {
                 props.navigation.navigate('Food', {URL})
             }}

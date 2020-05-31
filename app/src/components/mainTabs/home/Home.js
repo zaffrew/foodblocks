@@ -5,19 +5,19 @@ import withRouteParams from "../../../utils/withRouteParams";
 import Food from '../../Food/Food'
 import FoodBlockScroll from "../../FoodBlockScroll";
 import {Headline, Title} from "react-native-paper";
-import {ScrollView} from "react-native";
-import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
-import RecentFoods from "./RecentFoods";
-import RecentSearches from "./RecentSearches";
 import RecommendedFoods from "./ReccommendedFoods";
 import {getRecipe} from '../../../scraper/Scraper'
+import {SafeAreaView} from "react-native-safe-area-context";
+import RecentFoods from "./RecentFoods";
+import RecentSearches from "./RecentSearches";
+import {ScrollView} from "react-native";
 
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food);
 
 const SearchPage = withRouteParams(props => (
-    <SafeView style={{flex: 1}} bottom={false}>
+    <SafeAreaView style={{flex: 1}}>
         <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
             Search: {props.title}
         </Title>
@@ -27,7 +27,7 @@ const SearchPage = withRouteParams(props => (
             }}
             blocksPerCrossAxis={2} URLs={props.URLs}
             blockLength={160}/>
-    </SafeView>
+    </SafeAreaView>
 ))
 
 const Home = connect(state => ({
@@ -83,7 +83,7 @@ const Home = connect(state => ({
 
 
     return (
-        <SafeView bottom={false} style={{flex: 1}}>
+        <SafeAreaView style={{flex: 1}}>
             <ScrollView>
                 <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
                     Hello {props.username}!
@@ -101,7 +101,7 @@ const Home = connect(state => ({
                 <RecentFoods {...scrollProps}/>
                 {reccomendedFoods}
             </ScrollView>
-        </SafeView>
+        </SafeAreaView>
     )
 });
 

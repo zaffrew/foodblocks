@@ -6,7 +6,7 @@ import {ACTIONS} from "../../state/State";
 import {connect} from "react-redux";
 import InputSpinner from "react-native-input-spinner";
 import DraggableFlatList from "react-native-draggable-dynamic-flatlist";
-import SafeView from "../SafeView";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 
 function Groceries(props) {
@@ -18,7 +18,7 @@ function Groceries(props) {
             return grocery.name === text
         });
         if (matchingGroceries.length === 0) {
-            props.setGrocery(text, 1,props.groceries.length);
+            props.setGrocery(text, 1, props.groceries.length);
         }
         updateText('')
     }
@@ -49,7 +49,7 @@ function Groceries(props) {
 
     return (
         <View style={{flex: 1}}>
-            <SafeView bottom={false} style={{backgroundColor: colors.foodblocksRed}}>
+            <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
                         Grocery List
@@ -69,7 +69,7 @@ function Groceries(props) {
                     onChangeText={text => updateText(text)}
                     onSubmitEditing={submit}
                 />
-            </SafeView>
+            </SafeAreaView>
             <View style={{flex: 1}}>
                 <DraggableFlatList
                     data={props.groceries}
