@@ -1,78 +1,248 @@
-import React from 'react';
-import {Dimensions, Text, View} from 'react-native'
-import {Button} from 'react-native-paper';
-import {BarChart, PieChart} from 'react-native-chart-kit'
+import * as React from 'react';
+import { Appbar, List, getListItem, Title, Headline, configureFonts, Button } from 'react-native-paper';
+import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart
+} from 'react-native-chart-kit'
 import SafeView from '../SafeView'
 import colors from '../../../settings/colors'
 import {createStackNavigator} from "@react-navigation/stack";
-import headlessNavigator from "../../utils/headlessNavigator";
-
-const categories = [
-    'Calories',
-    'Vitamin A',
-    'Vitamin B',
-    'Vitamin C',
-    'Total Fat',
-    'Iron'
-]
 
 class MyComponent extends React.Component {
-    render() {
-        const buttons = categories.map((name, i) =>
-            <Button key={i} onPress={() => this.props.navigation.navigate(name)}>
-                {name.toUpperCase()}
-            </Button>
-        )
+  render() {
+    return (
+      <SafeView style={{backgroundColor: colors.foodblocksRed}}>
+      <Text  style={{padding: 5, fontSize: 50, color: "white", textAlign:'center',}}>Today</Text>
+        <PieChart
+          data={data}
+          width={screenWidth}
+          height={220}
+          chartConfig={chartConfigCircle}
+          accessor="population"
+          backgroundColor="transparent"
+          paddingLeft="15"
+          absolute
+        />
+    <Button onPress = {() => this.props.navigation.navigate("Calories")}
+    style={styles.c}
+    >
+      Calories
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("Proteins")}
+    style={styles.va}
+    >
+      Proteins
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("Carbs")}
+    style={styles.vb}
+    >
+      Carbs
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("Fibers")}
+    style={styles.vc}
+    >
+      Fibers
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("totalFat")}
+    style={styles.f}
+    >
+      Total fat
+    </Button>
+    <Button onPress = {() => this.props.navigation.navigate("iron")}
+    style={styles.i}
+    >
+      Iron
+    </Button>
+    </SafeView>
 
-        return (
-            <View style={{flex: 1}}>
-                <SafeView style={{backgroundColor: colors.foodblocksRed}}>
-                    <Text style={{padding: 5, fontSize: 50, color: "white", textAlign: 'center',}}>
-                        Today
-                    </Text>
-                    <PieChart
-                        data={data}
-                        width={screenWidth}
-                        height={220}
-                        chartConfig={chartConfigCircle}
-                        accessor="population"
-                        backgroundColor="transparent"
-                        paddingLeft={15}
-                    />
-                </SafeView>
-                <View style={{flex: 1, justifyContent: 'space-around'}}>
-                    {buttons}
-                </View>
-            </View>
-        );
-    }
+    );
+  }
 }
-
-function getPage(name) {
-    return () => (
-        <SafeView>
-            <Text style={{padding: 5, fontSize: 50, color: "#E62D1B", textAlign: 'center',}}>{name}</Text>
-            <BarChart
-                data={barData}
-                width={screenWidth} // screenWidth
-                height={220}
-                yAxisLabel={''}
-                chartConfig={chartConfigBar}
-            />
-        </SafeView>
+class Calories extends React.Component{
+  state = {
+    breakfast: 0,
+    lunch: 0,
+    dinner:0
+  }
+  render(){
+    return(
+      <SafeView>
+        <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Calories</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Calories suggested: 902</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Calories: suggested 644</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Calories: suggested 515</Text>
+      </SafeView>
     )
-
+  }
 }
 
-const barData = {
-    labels: ['Sunday', 'Monday', 'Tuesday', 'Wedensday', 'Thursday', 'Friday', 'Saturday'],
-    datasets: [
-        {
-            data: [20, 45, 28, 80, 99, 43, 25],
-        },
-    ],
-};
+class Proteins extends React.Component{
+  state = {
+    breakfast: 0,
+    lunch: 0,
+    dinner:0
+  }
+  render(){
+    return(
+      <SafeView >
+        <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Proteins</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Proteins suggested: 902</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Proteins: suggested 644</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Proteins: suggested 515</Text> 
 
+      </SafeView>
+    )
+  }
+}
+
+class Carbs extends React.Component{
+  state = {
+    breakfast: 0,
+    lunch: 0,
+    dinner:0
+  }
+  render(){
+    return(
+      <SafeView>
+      <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Carbs</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Carbs suggested: 902</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Carbs: suggested 644</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Carbs: suggested 515</Text> 
+
+      </SafeView>
+    )
+  }
+}
+
+class Fibers extends React.Component{
+  state = {
+    breakfast: 0,
+    lunch: 0,
+    dinner:0
+  }
+  render(){
+    return(
+      <SafeView>
+        <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Fibers</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Fibers suggested: 902</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Fibers: suggested 644</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Fibers: suggested 515</Text> 
+    </SafeView>
+    )
+  }
+}
+
+class iron extends React.Component{
+  state = {
+    breakfast: 0,
+    lunch: 0,
+    dinner:0
+  }
+  render(){
+    return(
+      <SafeView>
+        <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Iron</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Iron suggested: 902</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Iron: suggested 644</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Iron: suggested 515</Text>
+
+      </SafeView>
+    )
+  }
+}
+
+class totalFat extends React.Component{
+  state = {
+    breakfast: 0,
+    lunch: 0,
+    dinner:0
+  }
+  render(){
+    return(
+      <SafeView>
+      <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Total Fat</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Total Fat suggested: 902</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Total Fat: suggested 644</Text>
+        <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Total Fat: suggested 515</Text>
+      </SafeView>
+    )
+  }
+}
+const styles = StyleSheet.create({
+  c: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -50,
+  },
+  bottom: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: -225,
+  },
+  va: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -100,
+  },
+  vb: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -150,
+  },
+  vc: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -200,
+  },
+  f: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -250,
+  },
+  i: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -300,
+  }
+});
+const barData = {
+  labels: ['Sunday', 'Monday', 'Tuesday', 'Wedensday', 'Thursday', 'Friday', 'Saturday'],
+  datasets: [
+    {
+      data: [20, 45, 28, 80, 99, 43, 25],
+    },
+  ],
+};
 const chartConfigBar = {
     backgroundGradientFrom: "#E43938",
     backgroundGradientFromOpacity: 0.9,
@@ -92,21 +262,21 @@ const data = [
         legendFontSize: 12
     },
     {
-        name: "Vitaman A",
+        name: "Protein",
         population: 2800000,
         color: "blue",
         legendFontColor: "white",
         legendFontSize: 12
     },
     {
-        name: "Vitaman B",
+        name: "Carbs",
         population: 527612,
         color: "green",
         legendFontColor: "white",
         legendFontSize: 12
     },
     {
-        name: "Vitamin C",
+        name: "Fibers",
         population: 8538000,
         color: "orange",
         legendFontColor: "white",
@@ -137,15 +307,24 @@ const chartConfigCircle = {
     barPercentage: 0.5
 };
 
+
+
 const screenWidth = Dimensions.get("window").width;
-
 const Stack = createStackNavigator();
-const statsNavigator = (props) => {
-    const screens = categories.map((name, i) => ({name, component: getPage(name)}))
-    screens.push({
-        name: "MyComponent", component: MyComponent
-    })
+  const statsNavigator = (props) => {
+  return (
+      <Stack.Navigator initialRouteName="MyComponent"
+                       screenOptions={{headerTitle: null, headerBackTitleVisible: false,}}>
+          <Stack.Screen options={{headerShown: false}} name="MyComponent"
+                        component={(MyComponent)}/>
+          <Stack.Screen name="Calories" component={Calories}/>
+          <Stack.Screen name="Proteins" component={Proteins}/>
+          <Stack.Screen name="Carbs" component={Carbs}/>
+          <Stack.Screen name="Fibers" component={Fibers}/>
+          <Stack.Screen name="iron" component={iron}/>
+          <Stack.Screen name="totalFat" component={totalFat}/>
+      </Stack.Navigator>
+  )
+  }
+export default statsNavigator; 
 
-    return headlessNavigator(screens)
-}
-export default statsNavigator;
