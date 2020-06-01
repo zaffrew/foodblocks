@@ -1,12 +1,16 @@
 import {Notifications} from "expo";
-import {ensureEnabled} from "./PermissionManager";
+import * as PermissionManager from "./PermissionManager";
 import * as Permissions from 'expo-permissions';
 
-async function ensureNotificationsEnabled() {
-    await ensureEnabled(Permissions.NOTIFICATIONS)
+export async function ensureNotificationsEnabled() {
+    await PermissionManager.ensureEnabled(Permissions.NOTIFICATIONS)
 }
 
-export async function pushNotification(title, body, time) {
+export async function tryEnable() {
+    return await PermissionManager.tryEnable(Permissions.NOTIFICATIONS)
+}
+
+export async function pushNotification(title, body, date) {
     await ensureNotificationsEnabled()
 
     const notification = {
@@ -16,8 +20,8 @@ export async function pushNotification(title, body, time) {
         }
     }
 
-    if (time) {
-        return await Notifications.scheduleLocalNotificationAsync(notification, {time});
+    if (date) {
+        return await Notifications.scheduleLocalNotificationAsync(notification, {time: date});
     } else {
         return await Notifications.presentLocalNotificationAsync(notification)
     }

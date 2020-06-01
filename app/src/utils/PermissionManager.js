@@ -5,7 +5,11 @@ export async function isEnabled(permissionType) {
 }
 
 export async function ensureEnabled(permissionType) {
-    if (!await isEnabled(permissionType) && !(await Permissions.askAsync(permissionType)).status === 'granted') {
-        throw new Error('The user has not enabled notification permissions.')
+    if (!await tryEnable(permissionType)) {
+        throw new Error('The permission "' + permissionType + '" is not enabled.')
     }
+}
+
+export async function tryEnable(permissionType) {
+    return await isEnabled(permissionType) || (await Permissions.askAsync(permissionType)).status === 'granted'
 }

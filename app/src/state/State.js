@@ -6,10 +6,9 @@ import ACTIONS from "./ACTIONS";
 import user_reducer from './UserInfo'
 import groceries_reducer from './Groceries'
 import cache_reducer from './Cache'
-import saved_reducer from './SavedRecipes'
 import list_reducer from './Lists'
-import food_metadata_reducer from './food_metadata'
-import liked_foods_reducer from './LikedFoods'
+import ratings_reducer from './Ratings'
+import planned_foods_reducer from './PlannedFoods'
 import {AsyncStorage} from "react-native";
 
 
@@ -17,10 +16,9 @@ const app_reducer = combineReducers({
     groceries: groceries_reducer,
     cache: cache_reducer,
     user_info: user_reducer,
-    saved_recipes: saved_reducer,
-    food_metadata: food_metadata_reducer,
+    ratings: ratings_reducer,
     lists: list_reducer,
-    liked_foods: liked_foods_reducer,
+    planned_foods: planned_foods_reducer
 });
 
 function root_reducer(state = {}, action) {

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import FoodBlockScroll from "../../FoodBlockScroll";
 import * as Scraper from '../../../scraper/Scraper'
 import getActiveFilters from "../../../utils/getActiveFilters";

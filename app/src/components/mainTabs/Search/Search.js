@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {Keyboard, StyleSheet, View} from 'react-native'
 import {ActivityIndicator, Button, Modal, Portal, Searchbar, Subheading} from 'react-native-paper';
 import colors from '../../../../settings/colors'
@@ -6,16 +6,15 @@ import styles from "../../../../settings/styles"
 import FoodBlockScroll from "../../FoodBlockScroll";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
-import Food from "../../Food";
+import Food from '../../Food/Food'
 
 import {getSearch} from '../../../scraper/Scraper'
 import Filters from "./Filters";
 import {connect} from "react-redux";
 import {ACTIONS} from "../../../state/State";
-import moment from "moment";
-import SafeView from "../../SafeView";
 import headlessNavigator from "../../../utils/headlessNavigator";
 import getActiveFilters from "../../../utils/getActiveFilters";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
@@ -28,100 +27,95 @@ const Search = connect(null, {
         type: ACTIONS.ADD_SEARCH_HISTORY,
         searchRes,
     })
-})(class extends React.Component {
+})(function (props) {
+    const [query, setQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [filtersVisible, setFiltersVisible] = useState(false);
+    const [currentSearch, setCurrentSearch] = useState('')
 
-    state = {
-        searchedYet: false,
-        searching: false,
-        query: '',
-        searchURLs: [],
-        filtersVisible: false,
-        addFilterText: '',
-    };
+    //this is for updating the search results
+    useEffect(() => {
+        if (!currentSearch) return;
 
-    showModal = () => this.setState({filtersVisible: true});
-    hideModal = () => this.setState({filtersVisible: false});
+        let canceled = false;
+
+        async function effect() {
+
+            const searchRes = await getSearch(currentSearch, getActiveFilters())
+            props.add_search(searchRes)
+
+            if (!canceled) {
+                setSearchResults(searchRes.results)
+                setCurrentSearch('')
+            }
+        }
+
+        effect();
+
+        return () => {
+            canceled = true
+        };
+    }, [currentSearch])
+
+    const showModal = () => setFiltersVisible(true);
+    const hideModal = () => setFiltersVisible(false);
 
     //TODO: run search on delish and all recipe at the same time
 
-    updateSearchResults = async () => {
-        let query = this.state.query;
-        if (!query) {
-            return;
-        }
-
-        //react state is actually kinda async so i have to do await here and
-        // down on setting the new state or there will be weird behavior
-        await this.setState({searching: true, searchedYet: true, searchURLs: []});
-
-        const activeFilters = getActiveFilters();
-
-        const searchRes = await getSearch(query, activeFilters);
-        this.props.add_search(searchRes)
-        await this.setState({searching: false, searchURLs: searchRes.results})
-    };
-
-    render() {
-        return (
-            <SafeView bottom={false} style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
-                <View style={{
-                    backgroundColor: colors.foodblocksRed,
-                }}>
-                    <Portal>
-                        {/*TODO: Make a better filter design.*/}
-                        <Modal visible={this.state.filtersVisible} onDismiss={this.hideModal}>
-                            <View style={{alignItems: 'center'}}>
-                                <Filters/>
-                            </View>
-                        </Modal>
-                    </Portal>
-                    <Searchbar
-                        placeholder="Search"
-                        onChangeText={query => {
-                            this.setState({query})
-                        }}
-                        value={this.state.query}
-                        onSubmitEditing={() => {
-                            this.updateSearchResults()
-                        }}
-                    />
-                    <Button color='white'
-                            onPress={() => {
-                                Keyboard.dismiss();
-                                this.showModal()
-                            }}
-                            style={{
-                                paddingLeft: 10,
-                                paddingTop: 10,
-                                paddingBottom: 5,
-                                alignSelf: 'center'
-                            }}>
-                        Filters
-                    </Button>
-                </View>
-                <View style={{flex: 1, backgroundColor: colors.grey}}>
-                    {this.state.searchedYet ?
-                        (this.state.searching ?
-                                <ActivityIndicator/> :
-                                <FoodBlockScroll
-                                    onPress={(URL) => {
-                                        this.props.navigation.navigate('Food', {URL})
-                                    }}
-                                    blocksPerCrossAxis={2} URLs={this.state.searchURLs}
-                                    blockLength={160}/>
-                        ) : <View style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}>
-                            <Subheading style={{color: '#808080'}}>Can I get uhhhh...</Subheading>
-                        </View>
-                    }
-                </View>
-            </SafeView>
-        )
+    let mainContent;
+    if (currentSearch) {
+        mainContent = <ActivityIndicator style={{alignSelf: 'center'}}/>
+    } else if (searchResults.length > 0) {
+        mainContent =
+            <FoodBlockScroll
+                onPress={(URL) => {
+                    props.navigation.navigate('Food', {URL})
+                }}
+                blocksPerCrossAxis={2} URLs={searchResults}
+                blockLength={160}/>
+    } else {
+        mainContent = <Subheading style={{color: '#808080'}}>Can I get uhhhh...</Subheading>
     }
 
+
+    return (
+        <SafeAreaView style={[styles.container, {backgroundColor: colors.foodblocksRed}]}>
+            <View style={{
+                backgroundColor: colors.foodblocksRed,
+            }}>
+                <Portal>
+                    {/*TODO: Make a better filter design.*/}
+                    <Modal visible={filtersVisible} onDismiss={hideModal}>
+                        <View style={{alignItems: 'center'}}>
+                            <Filters/>
+                        </View>
+                    </Modal>
+                </Portal>
+                <Searchbar
+                    placeholder="Search"
+                    onChangeText={setQuery}
+                    value={query}
+                    onSubmitEditing={() => setCurrentSearch(query)}
+                />
+                <Button color='white'
+                        onPress={() => {
+                            Keyboard.dismiss();
+                            showModal()
+                        }}
+                        style={{
+                            paddingLeft: 10,
+                            paddingTop: 10,
+                            paddingBottom: 5,
+                            alignSelf: 'center'
+                        }}>
+                    Filters
+                </Button>
+            </View>
+            <View style={{flex: 1, backgroundColor: colors.grey}}>
+                {mainContent}
+            </View>
+        </SafeAreaView>
+    )
 });
 
 const cardStyle = StyleSheet.create({

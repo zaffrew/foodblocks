@@ -1,19 +1,25 @@
 import * as Calendar from "expo-calendar";
-import {ensureEnabled} from "./PermissionManager";
 import * as Permissions from "expo-permissions";
+import colors from '../../settings/colors'
+import * as PermissionManager from "./PermissionManager";
 
 const foodblock_calendar_name = 'My foodblocks';
 
-async function ensureCalendarEnabled() {
-    await ensureEnabled(Permissions.CALENDAR)
+export async function ensureCalendarEnabled() {
+    await PermissionManager.ensureEnabled(Permissions.CALENDAR)
+}
+
+export async function tryEnable() {
+    return await PermissionManager.tryEnable(Permissions.CALENDAR)
 }
 
 export async function getFoodblocksCalendarSource() {
     await ensureCalendarEnabled();
 
     const calendars = await Calendar.getCalendarsAsync();
+
     const cals = calendars.filter(each => each.title === foodblock_calendar_name);
-    if (cals && cals.length) {
+    if (cals && cals.length > 0) {
         return cals[0];
     }
     return null;
@@ -50,7 +56,11 @@ export async function getBestCalendar() {
     let calendar = await getFoodblocksCalendarSource();
     //if the calendar doesnt exist then we try and create a new one
     if (!calendar) {
-        await this.createFoodblocksCalendar();
+        try {
+            await createFoodblocksCalendar();
+        } catch (err) {
+            console.log('The foodblocks calendar could not be created, using default calendar.')
+        }
         calendar = await getFoodblocksCalendarSource();
     }
     //if it still doesnt exist we go with the default calendar
@@ -59,4 +69,8 @@ export async function getBestCalendar() {
     }
 
     return calendar;
+}
+
+export async function deleteEvent(eventID) {
+    await Calendar.deleteEventAsync(eventID)
 }

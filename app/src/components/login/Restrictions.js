@@ -5,27 +5,22 @@ import invertTheme from "../../utils/invertTheme";
 import Filters from "../mainTabs/Search/Filters";
 import React from 'react'
 
+function Restrictions(props) {
+    const theme = invertTheme(props.theme);
 
-const filterNames = ['Vegan', 'Halal', 'Gluten-free', 'Keto', 'Dairy-free'];
-
-class Restrictions extends React.Component {
-    render() {
-        const theme = invertTheme(this.props.theme);
-
-        return (
-            <View style={[styles.centeredContainer, {backgroundColor: this.props.theme.colors.primary}]}>
-                <Title theme={theme} style={{padding: 30}}>
-                    Please select any dietary restrictions or preferences
-                </Title>
-                <Filters/>
-                <IconButton
-                    icon="arrow-right-bold-circle"
-                    size={60}
-                    onPress={this.props.onSubmit}
-                />
-            </View>
-        );
-    }
+    return (
+        <View style={[styles.centeredContainer, {backgroundColor: props.theme.colors.primary}]}>
+            <Title theme={theme} style={{padding: 30}}>
+                Please select any dietary restrictions or preferences
+            </Title>
+            <Filters/>
+            <IconButton
+                icon="arrow-right-bold-circle"
+                size={60}
+                onPress={props.onSubmit}
+            />
+        </View>
+    );
 }
 
 export default withTheme(Restrictions)

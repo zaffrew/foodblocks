@@ -1,6 +1,6 @@
 import React from 'react'
 import BlockScroll from "./BlockScroll";
-import {getRecipe, getThumbnail} from "../scraper/Scraper";
+import {getThumbnail} from "../scraper/Scraper";
 
 /**
  *

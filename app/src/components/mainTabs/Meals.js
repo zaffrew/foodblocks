@@ -6,31 +6,29 @@ import FoodBlockScroll from "../FoodBlockScroll";
 import {connect} from "react-redux";
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../utils/withRouteParams";
-import Food from "../Food";
-import SafeView from "../SafeView";
+import Food from "../Food/Food";
 import headlessNavigator from "../../utils/headlessNavigator";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 
 const Navigator = createStackNavigator();
 const FoodWithParams = withRouteParams(Food);
 
-class Meals extends React.Component {
-    render() {
-        return (
-            <View style={{flex: 1}}>
-                <SafeView bottom={false} style={{backgroundColor: colors.foodblocksRed}}>
-                    <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
-                        My foodblocks
-                    </Headline>
-                </SafeView>
-                <FoodBlockScroll onPress={(URL) => {
-                    this.props.navigation.navigate('Food', {URL})
-                }}
-                                 blockLength={160}
-                                 blocksPerCrossAxis={2} URLs={this.props.recipes}/>
-            </View>
-        );
-    }
+function Meals(props) {
+    return (
+        <View style={{flex: 1}}>
+            <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
+                <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
+                    My foodblocks
+                </Headline>
+            </SafeAreaView>
+            <FoodBlockScroll onPress={(URL) => {
+                props.navigation.navigate('Food', {URL})
+            }}
+                             blockLength={160}
+                             blocksPerCrossAxis={2} URLs={props.recipes}/>
+        </View>
+    );
 }
 
 const ConnectedMeals = connect((state) => ({recipes: state.saved_recipes}))(Meals);

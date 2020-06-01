@@ -1,32 +1,38 @@
 import {ActivityIndicator, Card, Text} from "react-native-paper";
 import {Image} from "react-native";
-import React from "react";
+import React, {useEffect, useState} from "react";
 
-export default class Block extends React.Component {
+export default function Block(props) {
 
-    state = {
-        loaded: true
-    }
+    const [loaded, setLoaded] = useState(false)
+    const [title, setTitle] = useState('')
+    const [image, setImage] = useState('')
 
-    componentDidMount() {
-        this.props.getData().then(({image, title}) => {
-            this.setState({image, title, loaded: true})
+    useEffect(() => {
+        let inEffect = true;
+        props.getData().then(({image, title}) => {
+            if (inEffect) {
+                setTitle(title)
+                setImage(image)
+                setLoaded(true)
+            }
         })
-    }
+        return () => inEffect = false;
+    }, [props.getData])
 
-    render() {
-        const content = this.state.loaded ? [
-            <Card.Content key={0} style={{flex: 1}}>
-                <Text>{this.state.title}</Text>
-            </Card.Content>,
-            <Image key={1} style={{flex: 2, resizeMode: 'cover'}} source={{uri: this.state.image}}/>
-        ] : <ActivityIndicator/>
+    const content = loaded ?
+        <React.Fragment>
+            <Card.Content style={{flex: 1}}>
+                <Text>{title}</Text>
+            </Card.Content>
+            <Image style={{flex: 2, resizeMode: 'cover'}} source={{uri: image}}/>
+        </React.Fragment> :
+        <ActivityIndicator/>
 
-        return (
-            <Card style={{margin: this.props.margin, flex: 1, height: this.props.height, width: this.props.width}}
-                  onPress={this.props.onPress}>
-                {content}
-            </Card>
-        )
-    }
+    return (
+        <Card style={{margin: props.margin, flex: 1, height: props.height, width: props.width}}
+              onPress={props.onPress}>
+            {content}
+        </Card>
+    )
 }
