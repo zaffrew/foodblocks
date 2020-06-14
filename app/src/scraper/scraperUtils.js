@@ -42,7 +42,8 @@ function genericScrape(dest, $, locations) {
 }
 
 function getTime(timeStr, h, m) {
-    const splits = timeStr.replace(h, m).split(m);
+    const splits = timeStr.replace(/s/g, '') //if its hrs or mins then this removes the s
+        .replace(h, m).split(m)
     const timeMoment = moment.duration({
         hours: timeStr.includes(h) ? splits[0].trim() : 0,
         minutes: splits[timeStr.includes(h) ? 1 : 0].trim()
