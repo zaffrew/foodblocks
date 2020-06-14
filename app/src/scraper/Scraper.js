@@ -1,4 +1,4 @@
-import {store, ACTIONS} from '../state/State'
+import {ACTIONS, store} from '../state/State'
 import AllRecipes from "./websites/AllRecipes";
 import Recipe from "./Recipe";
 import Delish from './websites/Delish'
@@ -6,6 +6,9 @@ import INGREDIENT_PARSER from 'ingredients-parser'
 
 import SearchResult from "./SearchResult";
 import {executeNonBlocking} from "../utils/executeNonBlocking";
+
+import {shallowEqualArrays} from "shallow-equal";
+
 
 const SOURCES = {
     ALL_RECIPES: 'ALL_RECIPES',
@@ -24,15 +27,18 @@ const SCRAPERS = {
  * @param source
  * @returns {Promise<*>} A promise that will eventually return an array of URLs.
  */
-async function search(query, num = 20, source = SOURCES.ALL_RECIPES) {
+async function getSearch(query, filters, num = 20, source = SOURCES.ALL_RECIPES) {
     const searches = store.getState().cache.searches[query];
-    let searchRes = searches ? searches.find(searchRes => searchRes.source === source && searchRes.results.length >= num) : null;
+    let searchRes = searches ? searches.find(searchRes => {
+            return searchRes.source === source && searchRes.results.length >= num && shallowEqualArrays(searchRes.filters, filters)
+        }
+    ) : null;
 
     if (searchRes) {
         return searchRes;
     }
 
-    searchRes = new SearchResult(query, source, num);
+    searchRes = new SearchResult(query, source, num, filters);
     //load the search
     await loadSearch(searchRes);
 
@@ -112,4 +118,4 @@ async function loadRecipe(recipe) {
 }
 
 
-export {SOURCES, getRecipe, getThumbnail, search}
+export {SOURCES, getRecipe, getThumbnail, getSearch}

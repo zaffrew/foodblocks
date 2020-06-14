@@ -40,4 +40,16 @@ export default styles = StyleSheet.create({
         fontSize:
             35,
     },
+
+    surface: {
+        padding: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        elevation: 4,
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        height: '100%',
+        width: '100%',
+    }
 });

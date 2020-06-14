@@ -1,5 +1,5 @@
-import {getDOM, text, genericScrape, getHTML, getTime} from "../scraperUtils";
-import {removeRepeatedWhitespace} from "../StringUtils";
+import {genericScrape, getDOM, getTime, text} from "../scraperUtils";
+import {removeRepeatedWhitespace} from "../../utils/StringUtils";
 import URL_PARSE from "url-parse";
 import Recipe from "../Recipe";
 import moment from "moment";
@@ -8,7 +8,7 @@ import moment from "moment";
  * Fills in the searchRes object and returns the recipes loaded.
  */
 async function search(searchRes) {
-    return await getDOM(getSearchURL(searchRes.query)).then($ => {
+    const recipes = await getDOM(getSearchURL(searchRes.query, searchRes.filters)).then($ => {
         const recipes = [];
         $('article.fixed-recipe-card').each((i, e) => {
             if (i >= searchRes.num) {
@@ -33,6 +33,9 @@ async function search(searchRes) {
         });
         return recipes;
     })
+
+    searchRes.loaded = moment().toISOString();
+    return recipes;
 }
 
 async function scrape(recipe) {
@@ -106,10 +109,33 @@ function new_scrape(recipe, $) {
     recipe.image = getHighResURL($('.rec-photo').attr('src'))
 }
 
-function getSearchURL(query) {
+function getSearchURL(query, filters) {
+    //this both adds certain ingredients to the excluded list and adds the name of the filter to the front.
+
+    const excludedIngredients = []
+
+    //&ingExcl=dairy,pork
+    //is an example filter
+    if (filters.includes('Dairy-free') || filters.includes('Vegan')) {
+        excludedIngredients.push('dairy')
+    }
+    if (filters.includes('Gluten-free')) {
+        excludedIngredients.push('gluten')
+    }
+    if (filters.includes('Vegan') || filters.includes('Vegetarian')) {
+        excludedIngredients.push('meat')
+    }
+    if (filters.includes('Vegan')) {
+        excludedIngredients.push('milk')
+        excludedIngredients.push('egg')
+    }
+
+    query = filters.join(' ') + ' ' + query;
+
     const URL = new URL_PARSE('https://www.allrecipes.com/');
     URL.set('pathname', 'search/results/');
-    URL.set('query', {wt: query});
+    URL.set('query', {wt: query, ingExcl: excludedIngredients.join(',')});
+
     return URL.href
 }
 
@@ -125,13 +151,25 @@ function getHighResURL(URL) {
 //Nutrition is all per serving
 function getNutrition(str, recipe) {
     str = str.replace('Per Serving:', '');
+
+    //it can be spelt any way
     str = str.replace('Full Nutrition', '');
     str = str.replace('Full nutrition', '');
+
+    //theres a weird thing where it will seperate categories by ; but sodium is a .
+    str = str.replace('sodium.', 'sodium;')
+
     str = removeRepeatedWhitespace(str);
     const categories = str.split(';');
     categories.forEach(fact => {
         if (fact) {
-            const key = fact.split(' ').pop();
+            //special case since total fat is two words:
+            let key;
+            if (fact.includes('total fat')) {
+                key = 'total fat';
+            } else {
+                key = fact.split(' ').pop();
+            }
             fact = removeRepeatedWhitespace(fact.replace(key, ''));
             recipe.nutrition[key.toLowerCase()] = fact;
         }

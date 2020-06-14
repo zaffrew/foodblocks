@@ -6,16 +6,19 @@ import ACTIONS from "./ACTIONS";
 import user_reducer from './UserInfo'
 import groceries_reducer from './Groceries'
 import cache_reducer from './Cache'
-import saved_reducer from './SavedRecipes'
+import list_reducer from './Lists'
+import ratings_reducer from './Ratings'
+import planned_foods_reducer from './PlannedFoods'
+import {AsyncStorage} from "react-native";
 
-import generalPersistConfig from './PersistConfig'
-import {createFilter, persistFilter} from "redux-persist-transform-filter";
 
 const app_reducer = combineReducers({
     groceries: groceries_reducer,
     cache: cache_reducer,
     user_info: user_reducer,
-    saved_recipes: saved_reducer
+    ratings: ratings_reducer,
+    lists: list_reducer,
+    planned_foods: planned_foods_reducer
 });
 
 function root_reducer(state = {}, action) {
@@ -48,7 +51,8 @@ const recipeTransform = createTransform(
 )
 
 const persistConfig = {
-    ...generalPersistConfig,
+    key: 'root',
+    storage: AsyncStorage,
     // blacklist: ['cache'],
     transforms: [recipeTransform]
 };

@@ -1,87 +1,118 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {connect} from 'react-redux'
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
-import Food from "../../Food";
+import Food from '../../Food/Food'
 import FoodBlockScroll from "../../FoodBlockScroll";
-import {Headline, Text, Title} from "react-native-paper";
-import {ScrollView, View} from "react-native";
-import SafeView from "../../SafeView";
-import filterUnique from "../../../utils/filterUnique";
+import {Headline, Title} from "react-native-paper";
 import headlessNavigator from "../../../utils/headlessNavigator";
-
-const testRecipes = [
-    'https://www.allrecipes.com/recipe/8652/garlic-chicken/',
-    'https://www.allrecipes.com/recipe/217962/jans-pretzel-dogs/',
-    'https://www.delish.com/cooking/recipe-ideas/a28143935/taco-bloody-marys-recipe/',
-    'https://www.allrecipes.com/recipe/14169/mexican-bean-salad/',
-];
+import RecommendedFoods from "./ReccommendedFoods";
+import {getRecipe} from '../../../scraper/Scraper'
+import {SafeAreaView} from "react-native-safe-area-context";
+import RecentFoods from "./RecentFoods";
+import RecentSearches from "./RecentSearches";
+import {ScrollView} from "react-native";
+import LikedFoods from "./LikedFoods";
 
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food);
 
-//TODO: the home page updates before the food navigated to
+const SearchPage = withRouteParams(props => (
+    <SafeAreaView style={{flex: 1}}>
+        <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
+            Search: {props.title}
+        </Title>
+        <FoodBlockScroll
+            onPress={(URL) => {
+                props.navigation.navigate('Food', {URL})
+            }}
+            blocksPerCrossAxis={2} URLs={props.URLs}
+            blockLength={160}/>
+    </SafeAreaView>
+))
 
-//TODO: i cant navigate while things are loading
-
-const Home = connect((state) => ({
-    username: state.user_info.username,
-    //we do the splice so we only get up to 20 in recent history.
-    food_history: filterUnique(state.user_info.food_history.slice(0, 20).map(({URL}) => URL))
-}))
-(class extends React.Component {
-    openFood = (URL) => {
-        this.props.navigation.navigate('Food', {URL})
+const Home = connect(state => ({
+        username: state.user_info.username,
+        liked_foods: Object.keys(state.ratings).filter(URL => state.ratings[URL] === 1).slice(0, 3),
+        saved_recipes: Object.keys(state.planned_foods),
+    })
+)(props => {
+    const scrollLength = 150;
+    const scrollProps = {
+        scrollLength,
+        blockLength: 130,
+        onPress: URL => {
+            props.navigation.navigate('Food', {URL})
+        },
+        horizontal: true,
     };
 
-    render() {
-        const scrollLength = 200;
-        const scrollProps = {
-            scrollLength,
-            blockLength: 160,
-            onPress: this.openFood,
-            horizontal: true,
-            URLs: testRecipes,
-        };
 
-        return (
-            <SafeView bottom={false} style={{flex: 1}}>
-                <ScrollView>
-                    <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
-                        Hello {this.props.username}!
-                    </Title>
-                    <Headline>
-                        Recommended For You
-                    </Headline>
-                    <FoodBlockScroll {...scrollProps}/>
-                    <Headline>
-                        Recently Viewed
-                    </Headline>
-                    {this.props.food_history.length > 0 ?
-                        <FoodBlockScroll {...scrollProps} URLs={this.props.food_history}/>
-                        :
-                        <View style={{alignItems: 'center', justifyContent: 'center'}} height={scrollLength}>
-                            <Text>
-                                View some foods to see them appear!
-                            </Text>
-                        </View>
-                    }
-                    <Headline>
-                        Next up
-                    </Headline>
-                    <FoodBlockScroll {...scrollProps}/>
-                    <Headline>
-                        Popular in your area
-                    </Headline>
-                    <FoodBlockScroll {...scrollProps}/>
-                </ScrollView>
-            </SafeView>
-        )
-    }
+    //get the liked foods
+    const [likedFoodNames, updateLikedFoodNames] = useState([]);
+
+    useEffect(() => {
+        async function effect() {
+            const foodNames = []
+            for (const URL of props.liked_foods) {
+                const name = (await getRecipe(URL)).name
+                foodNames.push(name)
+            }
+            updateLikedFoodNames(foodNames);
+        }
+
+        effect();
+    }, [props.liked_foods])
+
+    const reccomendedFoods = likedFoodNames
+        .map(name => (
+            <React.Fragment key={name}>
+                <Headline>
+                    Because you liked {name}
+                </Headline>
+                <RecommendedFoods foodName={name} {...scrollProps}/>
+            </React.Fragment>
+        ));
+
+    const savedMealComponent = props.saved_recipes.length > 0 ?
+        <React.Fragment>
+            <Headline>
+                Saved Meals
+            </Headline>
+            <FoodBlockScroll {...scrollProps} URLs={props.saved_recipes}/>
+        </React.Fragment> : null
+
+
+    return (
+        <SafeAreaView style={{flex: 1}}>
+            <ScrollView>
+                <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
+                    Hello {props.username}!
+                </Title>
+                {savedMealComponent}
+                <Headline>
+                    Recently Searched
+                </Headline>
+                <RecentSearches onSearchPress={(title, URLs) => {
+                    props.navigation.navigate('SearchPage', {URLs, title})
+                }}{...scrollProps}/>
+                <Headline>
+                    Liked Foods
+                </Headline>
+                <LikedFoods {...scrollProps}/>
+                <Headline>
+                    Recently Viewed
+                </Headline>
+                <RecentFoods {...scrollProps}/>
+                {reccomendedFoods}
+            </ScrollView>
+        </SafeAreaView>
+    )
 });
 
 
-export default props => headlessNavigator([
+export default headlessNavigator([
     {name: 'Home', component: Home, mainPage: true},
-    {name: 'Food', component: FoodWithProps}
+    {name: 'Food', component: FoodWithProps},
+    {name: 'SearchPage', component: SearchPage}
 ])
