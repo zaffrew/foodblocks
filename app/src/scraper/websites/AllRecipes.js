@@ -82,7 +82,7 @@ function old_scrape(recipe, $) {
         if (key === 'servings') {
             recipe.servings = value;
         } else if (key === 'additional') {
-            recipe.time.other = value;
+            recipe.time.other = getTime(value, 'hr', 'min');
         } else if (key === 'prep' || key === 'cook' || key === 'total') {
             recipe.time[key] = getTime(value, 'hr', 'min');
         }
