@@ -3,6 +3,7 @@ import * as CalendarManager from "./CalendarManager";
 import * as NotificationManager from "./NotificationManager";
 import {tryEnable} from "./NotificationManager";
 import {ACTIONS, store} from "../state/State";
+import {Linking} from "expo";
 
 export async function scheduleMeal(recipe, date) {
     await CalendarManager.ensureCalendarEnabled(); //this will error if the calendar is not enabled
@@ -15,7 +16,10 @@ export async function scheduleMeal(recipe, date) {
     const notes =
         'Time to play chef!\n\n' +
         'Open this on foodblocks\n' +
-        'link.to.app\n\n' +
+        Linking.makeUrl('murphy', {
+            URL: recipe.URL
+        }) +
+        '\n\n' +
         `Open this on ${recipe.source}\n` +
         `${recipe.URL}`;
 

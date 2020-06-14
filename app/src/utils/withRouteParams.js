@@ -1,11 +1,9 @@
 import React from "react";
-
-import withProps from './withProps'
+import withDerivedProps from "./withDerivedProps";
 
 /**
  * Applies the params passed through navigator to the normal list of params.
  */
-export default WrappedComponent => (props => {
-    const Wrap = withProps(WrappedComponent, props.route.params);
-    return <Wrap{...props}/>
-})
+export default function withRouteParams(Component) {
+    return withDerivedProps(Component, props => props.route.params)
+}

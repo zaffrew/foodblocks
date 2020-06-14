@@ -50,7 +50,7 @@ export default function SavedListNavigator(props) {
         {name: 'SavedLists', component: SavedLists, mainPage: true},
         {
             name: 'List',
-            component: withRouteParams(withProps(ListPage, {onPress: URL => props.navigation.navigate('FoodFromList', {URL})}))
+            component: withProps(ListPage, {onPress: URL => props.navigation.navigate('FoodFromList', {URL})})
         },
         {name: 'FoodFromList', component: withRouteParams(Food)},
     ])

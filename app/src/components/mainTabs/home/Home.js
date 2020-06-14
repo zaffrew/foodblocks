@@ -13,9 +13,6 @@ import RecentFoods from "./RecentFoods";
 import RecentSearches from "./RecentSearches";
 import {ScrollView} from "react-native";
 
-const HomeStack = createStackNavigator();
-const FoodWithProps = withRouteParams(Food);
-
 const SearchPage = withRouteParams(props => (
     <SafeAreaView style={{flex: 1}}>
         <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
@@ -108,6 +105,6 @@ const Home = connect(state => ({
 
 export default headlessNavigator([
     {name: 'Home', component: Home, mainPage: true},
-    {name: 'Food', component: FoodWithProps},
+    {name: 'Food', component: Food},
     {name: 'SearchPage', component: SearchPage}
 ])

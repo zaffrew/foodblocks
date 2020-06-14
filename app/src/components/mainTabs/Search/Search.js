@@ -16,8 +16,6 @@ import headlessNavigator from "../../../utils/headlessNavigator";
 import getActiveFilters from "../../../utils/getActiveFilters";
 import {SafeAreaView} from "react-native-safe-area-context";
 
-const Navigator = createStackNavigator();
-const FoodWithParams = withRouteParams(Food);
 
 //TODO: validate that a search has enough valid results i.e. it wont have info missing
 //TODO: the search bar jumps up and down slightly when the keyboard is opened, probably something to do with SafeView not being the root component
@@ -160,5 +158,5 @@ const chipStyle = StyleSheet.create({
 
 export default headlessNavigator([
     {name: 'Search', component: Search, mainPage: true},
-    {name: 'Food', component: FoodWithParams}
+    {name: 'Food', component: Food}
 ])

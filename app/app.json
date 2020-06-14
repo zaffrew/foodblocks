@@ -1,12 +1,13 @@
 {
   "expo": {
+    "scheme": "foodblocks",
     "name": "foodblocks v0.0.Ian",
     "slug": "foodblocksIan",
     "privacy": "public",
     "platforms": [
       "ios",
       "android",
-      "web"
+      "web",
     ],
     "version": "1.0.0",
     "orientation": "portrait",

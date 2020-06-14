@@ -63,7 +63,7 @@ function MainPage(props) {
                     return (getImage("ListsPage", focused, color))
                 }
             }}/>
-            <Tab.Screen name="User" component={UserPage} options={{
+            <Tab.Screen name="UserPage" component={UserPage} options={{
                 tabBarIcon: (focused, color) => {
                     return (getImage("UserPage", focused, color))
                 }

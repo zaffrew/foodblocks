@@ -9,6 +9,7 @@ import AppNavigator from "./src/components/AppNavigator";
 import {NavigationContainer} from '@react-navigation/native';
 
 import {persistor, store} from './src/state/State'
+import {Linking} from "expo";
 
 const fontWeights = {
     Thin: '100',
@@ -60,14 +61,23 @@ const theme = {
     fonts: configureFonts(fontConfig),
 };
 
+import decode from 'urldecode';
+
+
 export default function App() {
+    const linking = {
+        prefixes: [Linking.makeUrl('/')],
+        config: {
+            "Food": {
+                path: 'murphy',
+            },
+        }
+    };
 
     const [fontLoaded, setFontLoaded] = React.useState(false)
 
     React.useEffect(() => {
         if (fontLoaded) return;
-
-
         let canceled = false;
 
         async function effect() {
@@ -85,11 +95,12 @@ export default function App() {
         return () => canceled = true;
     }, [])
 
+
     if (fontLoaded) {
         return (
             <Provider store={store}>
                 <PersistGate loading={null} persistor={persistor}>
-                    <NavigationContainer>
+                    <NavigationContainer linking={linking}>
                         <SafeAreaProvider>
                             <PaperProvider theme={theme}>
                                 <AppNavigator/>

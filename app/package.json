@@ -39,7 +39,8 @@
     "redux-persist": "^6.0.0",
     "redux-persist-transform-filter": "^0.0.20",
     "shallow-equal": "^1.2.1",
-    "url-parse": "^1.4.7"
+    "url-parse": "^1.4.7",
+    "urldecode": "^1.0.1"
   },
   "devDependencies": {
     "babel-preset-expo": "^8.1.0",

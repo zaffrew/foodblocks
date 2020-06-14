@@ -11,25 +11,32 @@ import moment from "moment";
 import {connect} from "react-redux";
 import ACTIONS from "../../state/ACTIONS";
 import ListView from "./ListView";
+import withRouteParams from "../../utils/withRouteParams";
+import withDerivedProps from "../../utils/withDerivedProps";
+import decode from "urldecode";
 
 
-export default connect((state, ownProps) => {
-    const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
-        return ownProps.URL === URL;
-    }).length === 1;
+export default withRouteParams(withDerivedProps(
+    connect((state, ownProps) => {
+        const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
+            return ownProps.URL === URL;
+        }).length === 1;
 
-    return {saved}
-}, {
-    add_to_history: URL => ({
-        type: ACTIONS.ADD_FOOD_HISTORY,
-        URL,
-        time: moment().toISOString(),
-    }),
-})(Food)
+        return {saved}
+    }, {
+        add_to_history: URL => ({
+            type: ACTIONS.ADD_FOOD_HISTORY,
+            URL,
+            time: moment().toISOString(),
+        }),
+    })(Food),
+    function (props) {
+        return {URL: decode(props.URL)}
+    })
+)
 
 function Food(props) {
     const [recipeVisible, setRecipeVisible] = React.useState(false);
-    const [listViewVisible, setListViewVisible] = React.useState(false);
     const [recipe, setRecipe] = React.useState(null);
 
     //load the recipe
