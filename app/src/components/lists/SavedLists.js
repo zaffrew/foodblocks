@@ -18,7 +18,7 @@ function SavedLists(props) {
     const _hideAddList = () => setAddListVisible(false)
 
     return (
-        <View>
+        <React.Fragment>
             <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
@@ -41,7 +41,7 @@ function SavedLists(props) {
                     <CreateList onSubmit={_hideAddList}/>
                 </Surface>
             </Modal>
-        </View>
+        </React.Fragment>
     );
 }
 
