@@ -12,6 +12,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import RecentFoods from "./RecentFoods";
 import RecentSearches from "./RecentSearches";
 import {ScrollView} from "react-native";
+import LikedFoods from "./LikedFoods";
 
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food);
@@ -36,10 +37,10 @@ const Home = connect(state => ({
         saved_recipes: Object.keys(state.planned_foods),
     })
 )(props => {
-    const scrollLength = 200;
+    const scrollLength = 150;
     const scrollProps = {
         scrollLength,
-        blockLength: 160,
+        blockLength: 130,
         onPress: URL => {
             props.navigation.navigate('Food', {URL})
         },
@@ -95,6 +96,10 @@ const Home = connect(state => ({
                 <RecentSearches onSearchPress={(title, URLs) => {
                     props.navigation.navigate('SearchPage', {URLs, title})
                 }}{...scrollProps}/>
+                <Headline>
+                    Liked Foods
+                </Headline>
+                <LikedFoods {...scrollProps}/>
                 <Headline>
                     Recently Viewed
                 </Headline>
