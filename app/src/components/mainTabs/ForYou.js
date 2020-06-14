@@ -1,22 +1,17 @@
 import * as React from 'react';
-import { Appbar, List, getListItem, Title, Headline, configureFonts, Button } from 'react-native-paper';
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import { Button } from 'react-native-paper';
+import { StyleSheet, Text, Dimensions } from 'react-native';
 import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart
+  PieChart
 } from 'react-native-chart-kit'
-import SafeView from '../SafeView'
 import colors from '../../../settings/colors'
 import {createStackNavigator} from "@react-navigation/stack";
+import {SafeAreaView} from "react-native-safe-area-context";
 
 class MyComponent extends React.Component {
   render() {
     return (
-      <SafeView style={{backgroundColor: colors.foodblocksRed}}>
+      <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
       <Text  style={{padding: 5, fontSize: 50, color: "white", textAlign:'center',}}>Today</Text>
         <PieChart
           data={data}
@@ -58,7 +53,7 @@ class MyComponent extends React.Component {
     >
       Iron
     </Button>
-    </SafeView>
+    </SafeAreaView>
 
     );
   }
@@ -71,7 +66,7 @@ class Calories extends React.Component{
   }
   render(){
     return(
-      <SafeView>
+      <SafeAreaView>
         <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Calories</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Calories suggested: 902</Text>
@@ -79,7 +74,7 @@ class Calories extends React.Component{
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Calories: suggested 644</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Calories: suggested 515</Text>
-      </SafeView>
+      </SafeAreaView>
     )
   }
 }
@@ -92,16 +87,16 @@ class Proteins extends React.Component{
   }
   render(){
     return(
-      <SafeView >
+      <SafeAreaView >
         <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Proteins</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Proteins suggested: 902</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Proteins: suggested 644</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
-        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Proteins: suggested 515</Text> 
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Proteins: suggested 515</Text>
 
-      </SafeView>
+      </SafeAreaView>
     )
   }
 }
@@ -114,16 +109,16 @@ class Carbs extends React.Component{
   }
   render(){
     return(
-      <SafeView>
+      <SafeAreaView>
       <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Carbs</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Carbs suggested: 902</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Carbs: suggested 644</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
-        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Carbs: suggested 515</Text> 
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Carbs: suggested 515</Text>
 
-      </SafeView>
+      </SafeAreaView>
     )
   }
 }
@@ -136,15 +131,15 @@ class Fibers extends React.Component{
   }
   render(){
     return(
-      <SafeView>
+      <SafeAreaView>
         <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Fibers</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Fibers suggested: 902</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -125}}>Lunch: {this.state.lunch}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Fibers: suggested 644</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
-        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Fibers: suggested 515</Text> 
-    </SafeView>
+        <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Fibers: suggested 515</Text>
+    </SafeAreaView>
     )
   }
 }
@@ -157,7 +152,7 @@ class iron extends React.Component{
   }
   render(){
     return(
-      <SafeView>
+      <SafeAreaView>
         <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Iron</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Iron suggested: 902</Text>
@@ -166,7 +161,7 @@ class iron extends React.Component{
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Iron: suggested 515</Text>
 
-      </SafeView>
+      </SafeAreaView>
     )
   }
 }
@@ -179,7 +174,7 @@ class totalFat extends React.Component{
   }
   render(){
     return(
-      <SafeView>
+      <SafeAreaView>
       <Text style={{padding: 5, fontSize: 50, color: colors.foodblocksRed, textAlign:'center', bottom: -25}}>Total Fat</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -50}}>Breakfast: {this.state.breakfast}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -50}}>Total Fat suggested: 902</Text>
@@ -187,7 +182,7 @@ class totalFat extends React.Component{
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -125}}>Total Fat: suggested 644</Text>
         <Text style={{padding: 5, fontSize: 25, color: "blue", left : 0, right: 25, bottom: -200}}>Dinner: {this.state.dinner}</Text>
         <Text style={{padding: 5, fontSize: 15, color: "grey", left : 0, right: 25, bottom: -200}}>Total Fat: suggested 515</Text>
-      </SafeView>
+      </SafeAreaView>
     )
   }
 }
@@ -326,5 +321,5 @@ const Stack = createStackNavigator();
       </Stack.Navigator>
   )
   }
-export default statsNavigator; 
+export default statsNavigator;
 

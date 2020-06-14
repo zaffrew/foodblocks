@@ -74,22 +74,12 @@ const Home = connect(state => ({
             </React.Fragment>
         ));
 
-    const savedMealComponent = props.saved_recipes.length > 0 ?
-        <React.Fragment>
-            <Headline>
-                Saved Meals
-            </Headline>
-            <FoodBlockScroll {...scrollProps} URLs={props.saved_recipes}/>
-        </React.Fragment> : null
-
-
     return (
         <SafeAreaView style={{flex: 1}}>
             <ScrollView>
                 <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
                     Hello {props.username}!
                 </Title>
-                {savedMealComponent}
                 <Headline>
                     Recently Searched
                 </Headline>
