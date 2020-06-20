@@ -12,6 +12,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import RecentFoods from "./RecentFoods";
 import RecentSearches from "./RecentSearches";
 import {ScrollView} from "react-native";
+import LikedFoods from "./LikedFoods";
 
 const SearchPage = withRouteParams(props => (
     <SafeAreaView style={{flex: 1}}>
@@ -33,10 +34,10 @@ const Home = connect(state => ({
         saved_recipes: Object.keys(state.planned_foods),
     })
 )(props => {
-    const scrollLength = 200;
+    const scrollLength = 150;
     const scrollProps = {
         scrollLength,
-        blockLength: 160,
+        blockLength: 130,
         onPress: URL => {
             props.navigation.navigate('Food', {URL})
         },
@@ -70,28 +71,22 @@ const Home = connect(state => ({
             </React.Fragment>
         ));
 
-    const savedMealComponent = props.saved_recipes.length > 0 ?
-        <React.Fragment>
-            <Headline>
-                Saved Meals
-            </Headline>
-            <FoodBlockScroll {...scrollProps} URLs={props.saved_recipes}/>
-        </React.Fragment> : null
-
-
     return (
         <SafeAreaView style={{flex: 1}}>
             <ScrollView>
                 <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
                     Hello {props.username}!
                 </Title>
-                {savedMealComponent}
                 <Headline>
                     Recently Searched
                 </Headline>
                 <RecentSearches onSearchPress={(title, URLs) => {
                     props.navigation.navigate('SearchPage', {URLs, title})
                 }}{...scrollProps}/>
+                <Headline>
+                    Liked Foods
+                </Headline>
+                <LikedFoods {...scrollProps}/>
                 <Headline>
                     Recently Viewed
                 </Headline>
