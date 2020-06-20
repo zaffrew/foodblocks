@@ -68,8 +68,8 @@ export default function App() {
     const linking = {
         prefixes: [Linking.makeUrl('/')],
         config: {
-            "Food": {
-                path: 'murphy',
+            "HomeFood": {
+                path: 'food',
             },
         }
     };

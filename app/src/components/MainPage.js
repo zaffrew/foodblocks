@@ -16,6 +16,7 @@ import {withTheme} from "react-native-paper";
 import Home from "./mainTabs/home/Home";
 import SavedLists from "./lists/SavedLists";
 import ForYou from "./mainTabs/ForYou";
+import Food from "./Food/Food";
 
 const iconMap = {
     Home: homeButton,

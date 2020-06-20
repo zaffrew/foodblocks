@@ -16,7 +16,7 @@ export async function scheduleMeal(recipe, date) {
     const notes =
         'Time to play chef!\n\n' +
         'Open this on foodblocks\n' +
-        Linking.makeUrl('murphy', {
+        Linking.makeUrl('food', {
             URL: recipe.URL
         }) +
         '\n\n' +

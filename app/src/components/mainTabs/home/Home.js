@@ -21,7 +21,7 @@ const SearchPage = withRouteParams(props => (
         </Title>
         <FoodBlockScroll
             onPress={(URL) => {
-                props.navigation.navigate('Food', {URL})
+                props.navigation.navigate('HomeFood', {URL})
             }}
             blocksPerCrossAxis={2} URLs={props.URLs}
             blockLength={160}/>
@@ -39,7 +39,7 @@ const Home = connect(state => ({
         scrollLength,
         blockLength: 130,
         onPress: URL => {
-            props.navigation.navigate('Food', {URL})
+            props.navigation.navigate('HomeFood', {URL})
         },
         horizontal: true,
     };
@@ -100,6 +100,6 @@ const Home = connect(state => ({
 
 export default headlessNavigator([
     {name: 'Home', component: Home, mainPage: true},
-    {name: 'Food', component: Food},
+    {name: 'HomeFood', component: Food},
     {name: 'SearchPage', component: SearchPage}
 ])
