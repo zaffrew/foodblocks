@@ -1,8 +1,9 @@
 import {ActivityIndicator, Card, Text} from "react-native-paper";
-import {Image} from "react-native";
+import {Image, StyleSheet, View} from "react-native";
 import React, {useEffect, useState} from "react";
 
 export default function Block(props) {
+
 
     const [loaded, setLoaded] = useState(false)
     const [title, setTitle] = useState('')
@@ -22,17 +23,21 @@ export default function Block(props) {
 
     const content = loaded ?
         <React.Fragment>
-            <Card.Content style={{flex: 1}}>
-                <Text>{title}</Text>
+            <View style={{shadowColor: '#6c6f73', shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.2, shadowRadius: 4, flex: 2, elevation: 1}}>
+                <Image style={{borderRadius: 20, flex: 2, resizeMode: 'cover'}} source={{uri: image}}/>
+            </View>
+            <Card.Content style={{flex: 1, padding: 5}}>
+                <Text style={{color: 'white'}}>{title}</Text>
             </Card.Content>
-            <Image style={{flex: 2, resizeMode: 'cover'}} source={{uri: image}}/>
         </React.Fragment> :
         <ActivityIndicator/>
 
     return (
-        <Card style={{margin: props.margin, flex: 1, height: props.height, width: props.width}}
+        <Card style={{shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.8, shadowRadius: 4, shadowColor: '#FF5A5A', 
+        elevation: 5, borderRadius: 20, backgroundColor: '#FF5A5A', margin: props.margin, flex: 1, height: props.height, width: props.width}}
               onPress={props.onPress}>
             {content}
         </Card>
     )
 }
+
