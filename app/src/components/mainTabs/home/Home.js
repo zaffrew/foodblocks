@@ -3,25 +3,27 @@ import {connect} from 'react-redux'
 import {createStackNavigator} from "@react-navigation/stack";
 import withRouteParams from "../../../utils/withRouteParams";
 import Food from '../../Food/Food'
+import UserPage from '../userPage/UserPage.js';
 import FoodBlockScroll from "../../FoodBlockScroll";
-import {Headline, Title, FAB, Subheading, Text} from "react-native-paper";
+import {Headline, Title, FAB, Subheading, Text, Card} from "react-native-paper";
 import headlessNavigator from "../../../utils/headlessNavigator";
-import RecommendedFoods from "./ReccommendedFoods";
+import RecommendedFoods from "./RecommendedFoods";
 import {getRecipe} from '../../../scraper/Scraper'
 import {SafeAreaView} from "react-native-safe-area-context";
 import RecentFoods from "./RecentFoods";
 import RecentSearches from "./RecentSearches";
-import {ScrollView, StyleSheet, View} from "react-native";
+import {ScrollView, StyleSheet, View, Image} from "react-native";
 import LikedFoods from "./LikedFoods";
 import colors from "../../../../settings/colors";
+import NextUpBlock from "../../NextUpBlock.js"
 
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food);
 
 const SearchPage = withRouteParams(props => (
     <SafeAreaView style={{flex: 1}}>
-        <Title style={{padding: 20, fontSize: 40, textAlign: 'center'}}>
-            Search: {props.title}
+        <Title style={{padding: 20, fontSize: 24, textAlign: 'center'}}>
+            {props.title}
         </Title>
         <FoodBlockScroll
             onPress={(URL) => {
@@ -80,7 +82,6 @@ const Home = connect(state => ({
             </React.Fragment>
         ));
 
-
     return (
         <SafeAreaView style={{flex: 1}}>
 
@@ -94,7 +95,8 @@ const Home = connect(state => ({
                     <View>
                         <FAB
                         style={styles.userButton}
-                        icon='account'/>
+                        icon='account'
+                        onPress={() => props.navigation.navigate('UserPage')}/>
                     </View>
                 </View>
 
@@ -103,8 +105,32 @@ const Home = connect(state => ({
                         My lists
                     </Text>
                     <Text style={styles.subheading}>
-                        Collections curated. By you.
+                        Collections curated, by you
                     </Text>
+                </View>
+
+                <View style={styles.section, {padding: 20}}>
+                    <Text style={styles.headline}>
+                        Next up
+                    </Text>
+                    <Text style={styles.subheading}>
+                        Your next foodblock
+                    </Text>
+                    <Card style={styles.nextUpBlock}>
+                        <View style={{flexDirection: 'row'}}>
+                            <Image source={require('../../../../assets/curry.jpg')}
+                            style={{width: 150, height: 150, borderRadius: 20, resizeMode: 'cover'}}/>
+                            <Card.Content>
+                                <View style={{flexDirection: 'row', padding: 10}}>
+                                    <Text style={{color: 'white', fontSize: 18, padding: 18}}>Curry</Text>
+                                    <View>
+                                        <FAB icon='calendar' style={styles.calendarButton}></FAB>
+                                    </View>
+                                </View>
+                            </Card.Content>
+
+                        </View>
+                    </Card>
                 </View>
 
                 <View style={styles.section}>
@@ -158,7 +184,8 @@ const Home = connect(state => ({
 export default headlessNavigator([
     {name: 'Home', component: Home, mainPage: true},
     {name: 'Food', component: FoodWithProps},
-    {name: 'SearchPage', component: SearchPage}
+    {name: 'SearchPage', component: SearchPage},
+    {name: 'UserPage', component: UserPage}
 ])
 
 const styles = StyleSheet.create({
@@ -169,6 +196,13 @@ const styles = StyleSheet.create({
     userButton: {
         backgroundColor: colors.foodblocksRed,
         shadowColor: colors.foodblocksRed,
+        shadowOffset: {width: 0, height: 0}, shadowOpacity: 0.8, shadowRadius: 6,
+        elevation: 5,
+    },
+    calendarButton: {
+        backgroundColor: 'white',
+        color: '#A8D600',
+        shadowColor: 'white',
         shadowOffset: {width: 0, height: 0}, shadowOpacity: 0.8, shadowRadius: 6,
         elevation: 5,
     },
@@ -184,5 +218,17 @@ const styles = StyleSheet.create({
     },
     section: {
         paddingVertical: 16,
+    },
+    nextUpBlock: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#A8D600',
+        elevation: 5,
+        borderRadius: 8,
+        shadowColor: '#A8D600',
+        borderRadius: 20,
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.8,
+        shadowRadius: 12
     },
 })

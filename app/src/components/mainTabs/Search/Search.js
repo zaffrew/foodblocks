@@ -64,7 +64,7 @@ const Search = connect(null, {
 
     let mainContent;
     if (currentSearch) {
-        mainContent = <ActivityIndicator style={{alignSelf: 'center'}}/>
+        mainContent = <ActivityIndicator size={'large'} style={{alignSelf: 'center', justifyContent: 'center', flex: 1}}/>
     } else if (searchResults.length > 0) {
         mainContent =
             <FoodBlockScroll
@@ -74,7 +74,7 @@ const Search = connect(null, {
                 blocksPerCrossAxis={2} URLs={searchResults}
                 blockLength={160}/>
     } else {
-        mainContent = <Subheading style={{color: '#808080'}}>Can I get uhhhh...</Subheading>
+        mainContent = <Subheading style={{color: colors.darkGrey, flex: 1, justifyContent: 'center', alignContent: 'center'}}>Can I get uhhhh...</Subheading>
     }
 
 

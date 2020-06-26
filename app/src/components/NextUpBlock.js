@@ -2,7 +2,7 @@ import {ActivityIndicator, Card, Text} from "react-native-paper";
 import {Image, StyleSheet, View} from "react-native";
 import React, {useEffect, useState} from "react";
 
-export default function Block(props) {
+export default function NextUpBlock(props) {
 
 
     const [loaded, setLoaded] = useState(false)
@@ -33,8 +33,8 @@ export default function Block(props) {
         <ActivityIndicator color={'white'} size={(props.height + props.width) / 2} style={{alignSelf: 'center', justifyContent: 'center', flex: 1}}/>
 
     return (
-        <Card style={{shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.8, shadowRadius: 4, shadowColor: '#FF5A5A', 
-        elevation: 5, borderRadius: 20, backgroundColor: '#FF5A5A', margin: props.margin, flex: 1, height: props.height, width: props.width}}
+        <Card style={{shadowOffset: {width: 0, height: 2}, shadowOpacity: 0.8, shadowRadius: 4, shadowColor: '#A8D600', 
+        elevation: 5, borderRadius: 20, backgroundColor: '#A8D600', margin: props.margin, flex: 1, height: props.height, width: props.width}}
               onPress={props.onPress}>
             {content}
         </Card>

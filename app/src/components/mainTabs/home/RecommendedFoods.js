@@ -3,7 +3,7 @@ import FoodBlockScroll from "../../FoodBlockScroll";
 import * as Scraper from '../../../scraper/Scraper'
 import getActiveFilters from "../../../utils/getActiveFilters";
 
-export default function ReccommendedFoods(props) {
+export default function RecommendedFoods(props) {
 
     //TODO: never show the user foods that they have disliked here, and in the search, or lower the search ranking
 
