@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "foodblocks v0.0.Ian",
-    "slug": "foodblocksIan",
+    "name": "foodblocks v1.0",
+    "slug": "foodblocks",
     "privacy": "public",
     "platforms": [
       "ios",
@@ -23,7 +23,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.foodblocks.foodblocks"
+    },
+    "android": {
+      "package": "com.foodblocks.foodblocks",
+      "versionCode": 1
     }
   }
 }

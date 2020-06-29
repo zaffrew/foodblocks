@@ -67,6 +67,10 @@ const Home = connect(state => ({
         effect();
     }, [props.liked_foods])
 
+    // name of planned food
+    // time of planned food
+    // picture of planned food
+
     const recommendedFoods = likedFoodNames
         .map(name => (
             <React.Fragment key={name}>
@@ -116,30 +120,30 @@ const Home = connect(state => ({
                     <Text style={styles.subheading}>
                         Your next foodblock
                     </Text>
-                    <Card style={styles.nextUpBlock}>
-                        <View style={{flexDirection: 'row'}}>
-                            <Image source={require('../../../../assets/curry.jpg')}
-                            style={{width: 150, height: 150, borderRadius: 20, resizeMode: 'cover'}}/>
-                            <Card.Content>
-                                <View style={{flexDirection: 'row', padding: 10}}>
-                                    <Text style={{color: 'white', fontSize: 18, padding: 18}}>Curry</Text>
-                                    <View>
-                                        <FAB icon='calendar' style={styles.calendarButton}></FAB>
-                                    </View>
-                                </View>
-                            </Card.Content>
 
+                    <View style={styles.nextUpBlock}>
+                        
+                        <View style={styles.nextUpImage}>
+                            <Image source={require('../../../../assets/curry.jpg')} style={styles.nextUpImage}/>
                         </View>
-                    </Card>
-                </View>
 
-                <View style={styles.section}>
-                    <Text style={styles.headline}>
-                        Recommended
-                    </Text>
-                    <Text style={styles.subheading}>
-                        Based on your searches
-                    </Text>
+                        <View style={styles.nextUpContents}>
+                            <Text numberOfLines={3} style={styles.nextUpTitle}>
+                                 Chicken Curry with Basmati Rice
+                            </Text>
+                            <View>
+                                <Text style={styles.nextUpSub}>
+                                    TODAY AT 24PM
+                                </Text>
+                            </View>
+                        </View>
+
+                        <View style={{padding: 10, alignSelf: 'flex-start'}}>
+                            <FAB icon='calendar' style={styles.calendarButton}></FAB>
+                        </View>
+
+                    </View>
+
                 </View>
 
                 <View style={styles.section}>
@@ -205,30 +209,65 @@ const styles = StyleSheet.create({
         shadowColor: 'white',
         shadowOffset: {width: 0, height: 0}, shadowOpacity: 0.8, shadowRadius: 6,
         elevation: 5,
+        height: 44,
+        width: 44,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     headline: {
         fontSize: 18,
         textAlign: 'center',
+        paddingTop: 10,
     },
     subheading: {
         fontSize: 14,
         color: colors.darkGrey,
         textAlign: 'center',
-        paddingBottom: 10,
+        paddingBottom: 16,
     },
     section: {
         paddingVertical: 16,
     },
     nextUpBlock: {
+        height: 150,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#A8D600',
+        justifyContent: 'space-between',
+        backgroundColor: colors.foodblocksRed,
         elevation: 5,
         borderRadius: 8,
-        shadowColor: '#A8D600',
+        shadowColor: colors.foodblocksRed,
         borderRadius: 20,
         shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.8,
         shadowRadius: 12
     },
+    nextUpImage: {
+        width: 150,
+        height: 150,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        shadowColor: colors.darkGrey,
+        shadowOffset: {width: 0, height: 2},
+        shadowRadius: 4,
+        shadowOpacity: 0.8,
+        elevation: 4
+    },
+    nextUpContents: {
+        paddingVertical: 10,
+        padding: 6,
+        flex: 1
+    },
+    nextUpTitle: {
+        fontSize: 18,
+        color: 'white',
+        padding: 6,
+    },
+    nextUpSub: {
+        fontSize: 14,
+        color: 'white',
+        padding: 6,
+    }
 })
