@@ -1,15 +1,45 @@
 import React, {useState} from 'react'
 import {TouchableOpacity, View} from 'react-native'
 import {Button, Headline, IconButton, List, TextInput} from 'react-native-paper';
-import colors from '../../../settings/colors'
-import {ACTIONS} from "../../state/State";
+import colors from '../../../../settings/colors'
+import {ACTIONS} from "../../../state/State";
 import {connect} from "react-redux";
 import InputSpinner from "react-native-input-spinner";
 import DraggableFlatList from "react-native-draggable-dynamic-flatlist";
 import {SafeAreaView} from "react-native-safe-area-context";
+import GroceryList from "./GroceryList";
 
 
 function Groceries(props) {
+    const [data, setData] = React.useState([1,2,3,4,5,6,7,8,9])
+
+    return (
+        <View style={{flex: 1}}>
+            <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
+                        Grocery List
+                    </Headline>
+                    {/*<Button icon="dots-horizontal" mode="contained"*/}
+                    {/*        style={{justifyContent: 'center'}}*/}
+                    {/*        onPress={() => updateEditMode(!editMode)}*/}
+                    {/*        color={'white'}>*/}
+                    {/*    Edit*/}
+                    {/*</Button>*/}
+                </View>
+                {/*<TextInput*/}
+                {/*    style={[{paddingVertical: 5}, {paddingHorizontal: 20}, {paddingBottom: 20}]}*/}
+                {/*    mode='outlined'*/}
+                {/*    placeholder='Add item'*/}
+                {/*    value={text}*/}
+                {/*    onChangeText={text => updateText(text)}*/}
+                {/*    onSubmitEditing={submit}*/}
+                {/*/>*/}
+            </SafeAreaView>
+            <GroceryList data={data} setData={setData}/>
+        </View>
+    );
+
     const [text, updateText] = useState('')
     const [editMode, updateEditMode] = useState(false)
 

@@ -1,13 +1,13 @@
 import {ACTIONS, store} from '../state/State'
 import AllRecipes from "./websites/AllRecipes";
 import Recipe from "./Recipe";
-import Delish from './websites/Delish'
-import INGREDIENT_PARSER from 'ingredients-parser'
-
+import Delish from './websites/Delish';
+import INGREDIENT_PARSER from 'ingredients-parser'; //this library is dead for 3 years
 import SearchResult from "./SearchResult";
 import {executeNonBlocking} from "../utils/executeNonBlocking";
 
 import {shallowEqualArrays} from "shallow-equal";
+import simplifyFractions from "../utils/simplifyFractions";
 
 
 const SOURCES = {
@@ -112,10 +112,10 @@ async function loadRecipe(recipe) {
     //the actual scraping takes ~100-200ms
     await executeNonBlocking(() => scraper.scrape(recipe))
 
-    recipe.cleanIngredients = recipe.ingredients.map(ingredient => INGREDIENT_PARSER.parse(ingredient));
-
+    //anything after the comma is unneeded
+    recipe.cleanIngredients = recipe.ingredients.map(ingredient =>
+        INGREDIENT_PARSER.parse(simplifyFractions(ingredient.split(',')[0])));
     return recipe;
 }
-
 
 export {SOURCES, getRecipe, getThumbnail, getSearch}

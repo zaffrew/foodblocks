@@ -4,18 +4,10 @@
  */
 import ACTIONS from "./ACTIONS";
 
-export default function reducer(state = [], action) {
-    if (action.type === ACTIONS.REMOVE_GROCERY) {
-        state = state.slice();
-        state.splice(action.index, 1);
-        return state
-    } else if (action.type === ACTIONS.SET_GROCERY) {
-        state = state.slice();
-        state[action.index] = {name: action.name, number: action.number};
-        return state;
-    } else if (action.type === ACTIONS.OVERWRITE_GROCERIES) {
-        return action.data.slice()
-    } else {
-        return state;
+export default function reducer(state = {have: [], need: []}, action) {
+    if (action.type === ACTIONS.ADD_NEED_GROCERY) {
+        return {...state, need: [...state.need, action.grocery]}
     }
+
+    return state;
 }
