@@ -50,8 +50,7 @@ const Home = connect(state => ({
         horizontal: true,
     };
 
-
-    //get the liked foods
+    //get the liked foods and saved foods
     const [likedFoodNames, updateLikedFoodNames] = useState([]);
 
     useEffect(() => {
@@ -67,10 +66,6 @@ const Home = connect(state => ({
         effect();
     }, [props.liked_foods])
 
-    // name of planned food
-    // time of planned food
-    // picture of planned food
-
     const recommendedFoods = likedFoodNames
         .map(name => (
             <React.Fragment key={name}>
@@ -85,6 +80,14 @@ const Home = connect(state => ({
                 </View>
             </React.Fragment>
         ));
+
+    async function openRecipe() {
+        const name = await getRecipe(saved_recipes[0]);
+        console.log(name);
+    };
+
+    const saved_food_name = '';
+    const saved_food_time = 'Today at 7 PM';
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -129,17 +132,17 @@ const Home = connect(state => ({
 
                         <View style={styles.nextUpContents}>
                             <Text numberOfLines={3} style={styles.nextUpTitle}>
-                                 Chicken Curry with Basmati Rice
+                                 {saved_food_name}
                             </Text>
                             <View>
                                 <Text style={styles.nextUpSub}>
-                                    TODAY AT 24PM
+                                    {saved_food_time}
                                 </Text>
                             </View>
                         </View>
 
                         <View style={{padding: 10, alignSelf: 'flex-start'}}>
-                            <FAB icon='calendar' style={styles.calendarButton}></FAB>
+                            <FAB icon='arrow-right' style={styles.openRecipeButton} onPress={() => openRecipe()}></FAB>
                         </View>
 
                     </View>
@@ -203,7 +206,7 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 0, height: 0}, shadowOpacity: 0.8, shadowRadius: 6,
         elevation: 5,
     },
-    calendarButton: {
+    openRecipeButton: {
         backgroundColor: 'white',
         color: '#A8D600',
         shadowColor: 'white',
