@@ -6,12 +6,36 @@ import {textStyles} from '../../../styles/styles'
 import React from "react";
 import {capitalizeFirstLetter} from "../../utils/StringUtils";
 import moment from "moment";
+import {connect} from 'react-redux'
 
-export default function RecipeInfo(props) {
+export default connect(state => ({
+    want: state.groceries.want,
+    have: state.groceries.have,
+}))(RecipeInfo)
+
+function RecipeInfo(props) {
+    const [colors, setColors] = React.useState(new Array(props.recipe.cleanIngredients.length));
+
+    React.useEffect(() => {
+        setColors(props.recipe.cleanIngredients.map(({ingredient}) => {
+            for (const grocery of props.have) {
+                if (ingredient.includes(grocery)) {
+                    return 'green';
+                }
+            }
+            for (const grocery of props.want) {
+                if (ingredient.includes(grocery)) {
+                    return 'blue';
+                }
+            }
+            return 'red';
+        }))
+    }, [props.groceries, props.recipe.cleanIngredients])
 
     const ingredients = props.recipe.ingredients.map((text, i) =>
         <View key={i} style={(i % 2 === 0) ? bodyStyle.even : bodyStyle.odd}>
             <Text style={textStyles.body}>{text}</Text>
+            <Avatar.Text size={10} style={{backgroundColor: colors[i]}}/>
         </View>
     );
 
@@ -38,7 +62,6 @@ export default function RecipeInfo(props) {
     });
 
     return (
-        // <View style={{flexWrap: 'wrap'}}>
         <Surface style={styles.surface}>
             <Button color={colors.foodblocksRed} icon='close' onPress={props.onDismiss}/>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -74,7 +97,6 @@ export default function RecipeInfo(props) {
                 </View>
             </ScrollView>
         </Surface>
-        // </View>
     )
 }
 
@@ -83,11 +105,17 @@ const bodyStyle = StyleSheet.create({
         backgroundColor: '#ffffff',
         padding: 4,
         flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     even: {
         backgroundColor: colors.lightGrey2,
         padding: 4,
         flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     }
 });
 

@@ -8,6 +8,7 @@ import {executeNonBlocking} from "../utils/executeNonBlocking";
 
 import {shallowEqualArrays} from "shallow-equal";
 import simplifyFractions from "../utils/simplifyFractions";
+import ignoreAfter from "../utils/ignoreAfter";
 
 
 const SOURCES = {
@@ -114,7 +115,8 @@ async function loadRecipe(recipe) {
 
     //anything after the comma is unneeded
     recipe.cleanIngredients = recipe.ingredients.map(ingredient =>
-        INGREDIENT_PARSER.parse(simplifyFractions(ingredient.split(',')[0])));
+        INGREDIENT_PARSER.parse(simplifyFractions(
+            ignoreAfter(ingredient, ['-', ',']).trim())));
     return recipe;
 }
 

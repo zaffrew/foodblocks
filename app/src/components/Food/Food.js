@@ -13,13 +13,7 @@ import ACTIONS from "../../state/ACTIONS";
 import ListView from "./ListView";
 
 
-export default connect((state, ownProps) => {
-    const saved = state.saved_recipes && state.saved_recipes.filter(URL => {
-        return ownProps.URL === URL;
-    }).length === 1;
-
-    return {saved}
-}, {
+export default connect(null, {
     add_to_history: URL => ({
         type: ACTIONS.ADD_FOOD_HISTORY,
         URL,
@@ -29,7 +23,6 @@ export default connect((state, ownProps) => {
 
 function Food(props) {
     const [recipeVisible, setRecipeVisible] = React.useState(false);
-    const [listViewVisible, setListViewVisible] = React.useState(false);
     const [recipe, setRecipe] = React.useState(null);
 
     //load the recipe

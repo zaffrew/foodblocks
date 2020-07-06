@@ -1,134 +1,81 @@
-import React, {useState} from 'react'
-import {TouchableOpacity, View} from 'react-native'
-import {Button, Headline, IconButton, List, TextInput} from 'react-native-paper';
+import React from 'react'
+import {View} from 'react-native'
+import {Headline, Subheading, TextInput} from 'react-native-paper';
 import colors from '../../../../settings/colors'
 import {ACTIONS} from "../../../state/State";
 import {connect} from "react-redux";
-import InputSpinner from "react-native-input-spinner";
-import DraggableFlatList from "react-native-draggable-dynamic-flatlist";
 import {SafeAreaView} from "react-native-safe-area-context";
 import GroceryList from "./GroceryList";
 
+export default connect((state) => {
+    console.log(state.groceries)
+    return {
+        want: state.groceries.want,
+        have: state.groceries.have
+    }
+}, {
+    setWantGroceries: groceries => ({
+        type: ACTIONS.SET_WANT_GROCERIES,
+        groceries
+    }),
+    setHaveGroceries: groceries => ({
+        type: ACTIONS.SET_HAVE_GROCERIES,
+        groceries
+    }),
+    deleteWantGrocery: grocery => ({
+        type: ACTIONS.REMOVE_WANT_GROCERY,
+        grocery
+    }),
+    deleteHaveGrocery: grocery => ({
+        type: ACTIONS.REMOVE_HAVE_GROCERY,
+        grocery
+    }),
+    addWantGrocery: grocery => ({
+        type: ACTIONS.ADD_WANT_GROCERY,
+        grocery
+    }),
+    addHaveGrocery: grocery => ({
+        type: ACTIONS.ADD_HAVE_GROCERY,
+        grocery
+    }),
+})(Groceries)
 
 function Groceries(props) {
-    const [data, setData] = React.useState([1,2,3,4,5,6,7,8,9])
+    console.log(props.have, props.want)
+
+    const listHeight = 25;
+
+    const [addWant, setAddWant] = React.useState('')
+    const [addHave, setAddHave] = React.useState('')
 
     return (
         <View style={{flex: 1}}>
-            <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
-                        Grocery List
-                    </Headline>
-                    {/*<Button icon="dots-horizontal" mode="contained"*/}
-                    {/*        style={{justifyContent: 'center'}}*/}
-                    {/*        onPress={() => updateEditMode(!editMode)}*/}
-                    {/*        color={'white'}>*/}
-                    {/*    Edit*/}
-                    {/*</Button>*/}
-                </View>
-                {/*<TextInput*/}
-                {/*    style={[{paddingVertical: 5}, {paddingHorizontal: 20}, {paddingBottom: 20}]}*/}
-                {/*    mode='outlined'*/}
-                {/*    placeholder='Add item'*/}
-                {/*    value={text}*/}
-                {/*    onChangeText={text => updateText(text)}*/}
-                {/*    onSubmitEditing={submit}*/}
-                {/*/>*/}
+            <SafeAreaView
+                style={{backgroundColor: colors.foodblocksRed, flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
+                    Grocery List
+                </Headline>
             </SafeAreaView>
-            <GroceryList data={data} setData={setData}/>
-        </View>
-    );
-
-    const [text, updateText] = useState('')
-    const [editMode, updateEditMode] = useState(false)
-
-    function submit() {
-        const matchingGroceries = props.groceries.filter((grocery) => {
-            return grocery.name === text
-        });
-        if (matchingGroceries.length === 0) {
-            props.setGrocery(text, 1, props.groceries.length);
-        }
-        updateText('')
-    }
-
-    function renderGrocery({item, index, move, moveEnd}) {
-        return (
-            <List.Item title={item.name}
-                       style={{paddingVertical: 0}}
-                       left={() => {
-                           return editMode ?
-                               (
-                                   <IconButton onPress={() => props.removeGrocery(index)} icon="delete"/>
-                               ) :
-                               (
-                                   <TouchableOpacity onPressIn={move} onPressOut={moveEnd}>
-                                       <IconButton icon="drag-horizontal"/>
-                                   </TouchableOpacity>
-                               )
-
-                       }}
-                       right={() =>
-                           <InputSpinner value={item.number}
-                                         onChange={(number) => props.setGrocery(item.name, number, index)}/>
-                       }
-            />
-        )
-    }
-
-    return (
-        <View style={{flex: 1}}>
-            <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
-                        Grocery List
-                    </Headline>
-                    <Button icon="dots-horizontal" mode="contained"
-                            style={{justifyContent: 'center'}}
-                            onPress={() => updateEditMode(!editMode)}
-                            color={'white'}>
-                        Edit
-                    </Button>
-                </View>
-                <TextInput
-                    style={[{paddingVertical: 5}, {paddingHorizontal: 20}, {paddingBottom: 20}]}
-                    mode='outlined'
-                    placeholder='Add item'
-                    value={text}
-                    onChangeText={text => updateText(text)}
-                    onSubmitEditing={submit}
-                />
-            </SafeAreaView>
-            <View style={{flex: 1}}>
-                <DraggableFlatList
-                    data={props.groceries}
-                    renderItem={(params) => renderGrocery(params)}
-                    keyExtractor={(item) => `draggable-item-${item.name}`}
-                    onMoveEnd={({data}) => {
-                        props.overwriteGroceries(data)
-                    }}
-                />
+            <View style={{flex: 1 / 2}}>
+                <Subheading style={{marginLeft: 15}}>WANT</Subheading>
+                <GroceryList delete={props.deleteWantGrocery} height={listHeight} setData={props.setWantGroceries}
+                             data={props.want}/>
+                <TextInput label={'Add wanted grocery'} value={addWant} onChangeText={setAddWant}
+                           onSubmitEditing={() => {
+                               props.addWantGrocery(addWant)
+                               setAddWant('')
+                           }}/>
+            </View>
+            <View style={{flex: 1 / 2}}>
+                <Subheading style={{marginLeft: 15}}>HAVE</Subheading>
+                <GroceryList delete={props.deleteHaveGrocery} height={listHeight} setData={props.setHaveGroceries}
+                             data={props.have}/>
+                <TextInput label={'Add needed grocery'} value={addHave} onChangeText={setAddHave}
+                           onSubmitEditing={() => {
+                               props.addHaveGrocery(addHave)
+                               setAddHave('')
+                           }}/>
             </View>
         </View>
     );
 }
-
-export default connect((state) => {
-    return {groceries: state.groceries}
-}, {
-    setGrocery: (name, number, index) => ({
-        type: ACTIONS.SET_GROCERY,
-        name,
-        number,
-        index,
-    }),
-    removeGrocery: (index) => ({
-        type: ACTIONS.REMOVE_GROCERY,
-        index
-    }), overwriteGroceries: (data) => ({
-        type: ACTIONS.OVERWRITE_GROCERIES,
-        data
-    })
-})(Groceries)
-
