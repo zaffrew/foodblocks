@@ -16,6 +16,7 @@ import {ScrollView, StyleSheet, View, Image} from "react-native";
 import LikedFoods from "./LikedFoods";
 import colors from "../../../../settings/colors";
 import NextUpBlock from "../../NextUpBlock.js"
+import { SourceType } from "expo-calendar";
 
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food);
@@ -57,23 +58,86 @@ const Home = connect(state => ({
     const plannedURLs = Object.keys(props.planned_foods)
     console.log(plannedURLs)
 
+    function convertDate(date) {
+        // take date object as input
+        let dateString = '';
+        let current = new Date();
+
+        let days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+        let months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+
+        let hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours();
+        let am_or_pm = date.getHours() > 12 ? 'PM' : 'AM';
+
+        if (current.getFullYear() === date.getFullYear() &&
+            current.getMonth() === date.getMonth()) {
+                if (current.getDate() === date.getDate()) {
+                    dateString = 'TODAY AT ' + hours + ' ' + am_or_pm;
+                } else if (current.getDate() === date.getDate() - 1) {
+                    dateString = 'TOMORROW AT ' + hours + ' ' + am_or_pm;
+                } else if (date.getDate() - current.getDate() < 8) {
+                    dateString = days[date.getDay()] + ' at ' + hours + ' ' + am_or_pm; 
+                } else {
+                    dateString = months[date.getMonth()] + ' ' + date.getDate() + ' at ' + hours + ' ' + am_or_pm;
+                }
+        }
+
+        return dateString;
+    }
+
+    function compare(a, b) {
+        const dateA = new Date(a[1].eventDate);
+        const dateB = new Date(b[1].eventDate);
+        if (dateA <= dateB) {
+            return -1;
+        } else {
+            return 1;
+        }
+    }
+
+    let next_up = '';
+    let saved_food_name = '';
+    let saved_food_time = '';
+    let saved_food_url = '';
+
     //most recent planned food
     if (plannedURLs.length > 0) {
+
+        let planned = Object.entries(props.planned_foods);
+        console.log('planned', planned)
+        planned.sort(compare)
+
+        console.log('planned sorted', planned);
+        console.log('-----');
+
         let minURL = plannedURLs[0]
         let minDate = props.planned_foods[plannedURLs[0]];
+        let current = new Date();
 
-        for (const [key, value] of Object.entries(props.planned_foods)) {
-            const date = new Date(value.eventDate)
-            if (date < minDate) {
+        for (const [key, value] of planned) {
+            const date = new Date(value.eventDate);
+            if (date >= current) {
                 minDate = date;
                 minURL = key;
+                break;
             }
         }
+
+        // for (const [key, value] of Object.entries(props.planned_foods)) {
+        //     const date = new Date(value.eventDate);
+        //     if (date < minDate && date >= current) {
+        //         minDate = date;
+        //         minURL = key;
+        //     }
+        // }
 
         console.log('min', minURL)
 
         //recipe data of min URL
-        getRecipe(minURL).then(console.log)
+        getRecipe(minURL).then(recipe => (saved_food_name = recipe['name']));
+        console.log(saved_food_name);
+        saved_food_time = convertDate(minDate);
+        saved_food_url = minURL;
     }
 
     //get the liked foods and saved foods
@@ -107,13 +171,40 @@ const Home = connect(state => ({
             </React.Fragment>
         ));
 
-    async function openRecipe() {
-        const name = await getRecipe(saved_recipes[0]);
-        console.log(name);
-    };
+    const NextUpBlock = (
+        <View style={styles.section}>
+            <Text style={styles.headline}>
+                Next up
+            </Text>
+            <Text style={styles.subheading}>
+                Your next foodblock
+            </Text>
+            <View style={styles.nextUpBlock}>
+                <View style={styles.nextUpImage}>
+                    <Image source={require('../../../../assets/curry.jpg')} style={styles.nextUpImage}/>
+                </View>
 
-    const saved_food_name = '';
-    const saved_food_time = 'Today at 7 PM';
+                <View style={styles.nextUpContents}>
+                    <Text numberOfLines={3} style={styles.nextUpTitle}>
+                            {saved_food_name}
+                    </Text>
+                    <View>
+                        <Text style={styles.nextUpSub}>
+                            {saved_food_time}
+                        </Text>
+                    </View>
+                </View>
+
+                <View style={{padding: 10, alignSelf: 'flex-start'}}>
+                    <FAB icon='arrow-right' style={styles.openRecipeButton} onPress={openRecipe(saved_food_url)}></FAB>
+                </View>
+            </View>
+        </View>
+    )
+
+    async function openRecipe(URL) {
+        props.navigation.navigate('Food', URL)
+    };
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -142,38 +233,7 @@ const Home = connect(state => ({
                     </Text>
                 </View>
 
-                <View style={styles.section, {padding: 20}}>
-                    <Text style={styles.headline}>
-                        Next up
-                    </Text>
-                    <Text style={styles.subheading}>
-                        Your next foodblock
-                    </Text>
-
-                    <View style={styles.nextUpBlock}>
-                        
-                        <View style={styles.nextUpImage}>
-                            <Image source={require('../../../../assets/curry.jpg')} style={styles.nextUpImage}/>
-                        </View>
-
-                        <View style={styles.nextUpContents}>
-                            <Text numberOfLines={3} style={styles.nextUpTitle}>
-                                 {saved_food_name}
-                            </Text>
-                            <View>
-                                <Text style={styles.nextUpSub}>
-                                    {saved_food_time}
-                                </Text>
-                            </View>
-                        </View>
-
-                        <View style={{padding: 10, alignSelf: 'flex-start'}}>
-                            <FAB icon='arrow-right' style={styles.openRecipeButton} onPress={() => openRecipe()}></FAB>
-                        </View>
-
-                    </View>
-
-                </View>
+                {NextUpBlock}
 
                 <View style={styles.section}>
                     <Text style={styles.headline}>
@@ -259,6 +319,8 @@ const styles = StyleSheet.create({
     },
     nextUpBlock: {
         height: 150,
+        width: 350,
+        alignSelf: 'center',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -282,7 +344,6 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 0, height: 2},
         shadowRadius: 4,
         shadowOpacity: 0.8,
-        elevation: 4
     },
     nextUpContents: {
         paddingVertical: 10,
