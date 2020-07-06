@@ -37,7 +37,7 @@ const SearchPage = withRouteParams(props => (
 const Home = connect(state => ({
         username: state.user_info.username,
         liked_foods: Object.keys(state.ratings).filter(URL => state.ratings[URL] === 1).slice(0, 3),
-        saved_recipes: Object.keys(state.planned_foods),
+        planned_foods: state.planned_foods,
     })
 )(props => {
     const scrollLength = 150;
@@ -49,6 +49,32 @@ const Home = connect(state => ({
         },
         horizontal: true,
     };
+
+    //All planned events with data
+    console.log(props.planned_foods)
+
+    //planned URLs
+    const plannedURLs = Object.keys(props.planned_foods)
+    console.log(plannedURLs)
+
+    //most recent planned food
+    if (plannedURLs.length > 0) {
+        let minURL = plannedURLs[0]
+        let minDate = props.planned_foods[plannedURLs[0]];
+
+        for (const [key, value] of Object.entries(props.planned_foods)) {
+            const date = new Date(value.eventDate)
+            if (date < minDate) {
+                minDate = date;
+                minURL = key;
+            }
+        }
+
+        console.log('min', minURL)
+
+        //recipe data of min URL
+        getRecipe(minURL).then(console.log)
+    }
 
     //get the liked foods and saved foods
     const [likedFoodNames, updateLikedFoodNames] = useState([]);
