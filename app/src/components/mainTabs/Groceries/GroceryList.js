@@ -39,8 +39,6 @@ export default function GroceryList(props) {
         );
     }
 
-    console.log('data',props.data)
-
     return (
         <View style={{flex:1}}>
             <DraggableFlatList

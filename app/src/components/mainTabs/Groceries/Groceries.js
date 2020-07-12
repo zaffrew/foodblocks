@@ -8,7 +8,6 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import GroceryList from "./GroceryList";
 
 export default connect((state) => {
-    console.log(state.groceries)
     return {
         want: state.groceries.want,
         have: state.groceries.have
@@ -41,8 +40,6 @@ export default connect((state) => {
 })(Groceries)
 
 function Groceries(props) {
-    console.log(props.have, props.want)
-
     const listHeight = 25;
 
     const [addWant, setAddWant] = React.useState('')

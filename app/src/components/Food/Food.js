@@ -106,7 +106,8 @@ function Food(props) {
     return (
         <View style={{flex: 1, backgroundColor: colors.foodblocksRed}}>
             <Portal>
-                <Modal visible={recipeVisible} onDismiss={() => setRecipeVisible(false)}>
+                <Modal visible={recipeVisible}
+                       onDismiss={() => setRecipeVisible(false)}>
                     <RecipeInfo onDismiss={() => setRecipeVisible(false)} recipe={recipe}
                                 addFoodblockButton={addFoodblockButton}/>
                 </Modal>

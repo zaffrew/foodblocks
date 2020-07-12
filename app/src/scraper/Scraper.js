@@ -116,7 +116,7 @@ async function loadRecipe(recipe) {
     //anything after the comma is unneeded
     recipe.cleanIngredients = recipe.ingredients.map(ingredient =>
         INGREDIENT_PARSER.parse(simplifyFractions(
-            ignoreAfter(ingredient, ['-', ',']).trim())));
+            ignoreAfter(ingredient, [',']).trim())));
     return recipe;
 }
 
