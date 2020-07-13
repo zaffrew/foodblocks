@@ -3,12 +3,13 @@ import React from "react";
 import {connect} from "react-redux";
 
 
-export default connect(state => {
-    return {lists: state.lists}
-})
+export default connect(state => ({
+    lists: state.lists.order
+}))
 (props => {
-    const list = props.lists.map((list, i) => {
-        return <List.Item key={i} title={list.name} onPress={() => props.onPress(list.name)}/>
+    const list = props.lists.map(name => {
+        return <List.Item key={name} title={name} onPress={() => props.onPress(name)}
+                          right={props.right && (() => props.right(name))}/>
     })
 
     return (

@@ -1,17 +1,57 @@
 import {ScrollView, StyleSheet, View} from "react-native";
-import {Avatar, Button, Surface, Text, Title} from "react-native-paper";
+import {Avatar, Button, IconButton, Surface, Text, Title} from "react-native-paper";
 import colors from "../../../settings/colors";
 import styles from '../../../settings/styles'
 import {textStyles} from '../../../styles/styles'
 import React from "react";
 import {capitalizeFirstLetter} from "../../utils/StringUtils";
 import moment from "moment";
+import {connect} from 'react-redux'
+import ACTIONS from "../../state/ACTIONS";
 
-export default function RecipeInfo(props) {
+export default connect(state => ({
+    want: state.groceries.want,
+    have: state.groceries.have,
+}), {
+    addIngredient: grocery => ({
+        type: ACTIONS.ADD_WANT_GROCERY,
+        grocery
+    })
+})(RecipeInfo)
+
+function RecipeInfo(props) {
+    const [colors, setColors] = React.useState(new Array(props.recipe.cleanIngredients.length));
+
+    React.useEffect(() => {
+        setColors(props.recipe.cleanIngredients.map(({ingredient}) => {
+            for (const grocery of props.have) {
+                if (ingredient.toLowerCase().includes(grocery.toLowerCase())) {
+                    return 'green';
+                }
+            }
+            for (const grocery of props.want) {
+                if (ingredient.includes(grocery)) {
+                    return 'blue';
+                }
+            }
+            return 'red';
+        }))
+    }, [props.want, props.have, props.recipe.cleanIngredients])
 
     const ingredients = props.recipe.ingredients.map((text, i) =>
         <View key={i} style={(i % 2 === 0) ? bodyStyle.even : bodyStyle.odd}>
             <Text style={textStyles.body}>{text}</Text>
+            <View style={{justifyContent: 'center', flexDirection: 'row', alignItems: 'center'}}>
+                {
+                    colors[i] == 'red' &&
+                    <IconButton size={15} icon={'plus'} onPress={() => {
+                        console.log(props.recipe.cleanIngredients[i].ingredient)
+                        props.addIngredient(props.recipe.cleanIngredients[i].ingredient)
+                    }}
+                    />
+                }
+                <Avatar.Text size={10} style={{backgroundColor: colors[i]}}/>
+            </View>
         </View>
     );
 
@@ -38,7 +78,6 @@ export default function RecipeInfo(props) {
     });
 
     return (
-        // <View style={{flexWrap: 'wrap'}}>
         <Surface style={styles.surface}>
             <Button color={colors.foodblocksRed} icon='close' onPress={props.onDismiss}/>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -74,7 +113,6 @@ export default function RecipeInfo(props) {
                 </View>
             </ScrollView>
         </Surface>
-        // </View>
     )
 }
 
@@ -82,12 +120,16 @@ const bodyStyle = StyleSheet.create({
     odd: {
         backgroundColor: '#ffffff',
         padding: 4,
-        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     even: {
         backgroundColor: colors.lightGrey2,
         padding: 4,
-        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     }
 });
 

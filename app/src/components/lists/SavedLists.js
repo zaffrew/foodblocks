@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {View} from "react-native";
 import colors from "../../../settings/colors";
-import {Button, Headline, Modal, Surface} from "react-native-paper";
+import {Button, Headline, IconButton, Modal, Surface} from "react-native-paper";
 import ListOfLists from "./ListOfLists";
 import headlessNavigator from "../../utils/headlessNavigator";
 import withRouteParams from "../../utils/withRouteParams";
@@ -18,7 +18,7 @@ function SavedLists(props) {
     const _hideAddList = () => setAddListVisible(false)
 
     return (
-        <View>
+        <React.Fragment>
             <SafeAreaView style={{backgroundColor: colors.foodblocksRed}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Headline style={[{color: 'white'}, {paddingVertical: 5}, {paddingHorizontal: 10}]}>
@@ -29,7 +29,9 @@ function SavedLists(props) {
                     </Button>
                 </View>
             </SafeAreaView>
-            <ListOfLists onPress={name => props.navigation.navigate('List', {list_name: name})}/>
+            <ListOfLists onPress={name => props.navigation.navigate('List', {list_name: name})}
+                         right={() => <IconButton icon={'chevron-right'}/>}
+            />
             <Modal visible={addListVisible} onDismiss={_hideAddList}>
                 <Surface style={{
                     alignSelf: 'center',
@@ -41,7 +43,7 @@ function SavedLists(props) {
                     <CreateList onSubmit={_hideAddList}/>
                 </Surface>
             </Modal>
-        </View>
+        </React.Fragment>
     );
 }
 

@@ -4583,6 +4583,11 @@ react-native-draggable-dynamic-flatlist@^1.0.4:
   resolved "https://registry.yarnpkg.com/react-native-draggable-dynamic-flatlist/-/react-native-draggable-dynamic-flatlist-1.0.4.tgz#9195ffb6220edeedabed7fb2069779013503c7f7"
   integrity sha512-FSpwSaN6riqqLF70izzcQOZ5D+LvYWV0EzFWll5tBtIzLWI88tXrwFd/rNH8IKl3X5Bd4pl2MNUCEbP1LO51xw==
 
+react-native-draggable-flatlist@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-2.3.3.tgz#2fde54253095aefa0db18c2ac05e99cf35cb1c96"
+  integrity sha512-dtac81r3e826a3G7gHGPGfdBb06UE9M2Vu7dcAyoVlOYsUuB4AhNnHR/AHtPBuQfRee/Lrb967fou89uETNAoQ==
+
 react-native-gesture-handler@~1.6.0:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.6.1.tgz#678e2dce250ed66e93af409759be22cd6375dd17"
@@ -4660,6 +4665,11 @@ react-native-svg@11.0.1:
   dependencies:
     css-select "^2.1.0"
     css-tree "^1.0.0-alpha.39"
+
+react-native-swipeable-item@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-swipeable-item/-/react-native-swipeable-item-1.5.0.tgz#95fe917dc2542acf41c0c442b50f4436bd22c7d3"
+  integrity sha512-GX9AZcbYR+6jIYeXLA1g1Gaqes0auyWCisRq/VWsoJ1XDgOC0BorcOFZkubDNuctDRe+uPwLADOvdkELQokcvA==
 
 react-native-view-shot@3.1.2:
   version "3.1.2"

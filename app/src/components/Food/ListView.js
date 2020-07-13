@@ -1,4 +1,4 @@
-import {Button, List, Modal, Portal, Surface} from "react-native-paper";
+import {Button, IconButton, List, Modal, Portal, Surface} from "react-native-paper";
 import {View} from 'react-native'
 import React from "react";
 import ListOfLists from "../lists/ListOfLists";
@@ -6,7 +6,9 @@ import ACTIONS from "../../state/ACTIONS";
 import CreateList from "../lists/CreateList";
 import {connect} from 'react-redux'
 
-export default connect(null, {
+export default connect(state => ({
+    lists: state.lists.lists
+}), {
     add_to_list: (URL, listName) => ({
         type: ACTIONS.ADD_TO_LIST,
         URL,
@@ -32,7 +34,13 @@ function ListView(props) {
                                 Create new list
                             </Button>
                         </View>
-                        <ListOfLists onPress={name => props.add_to_list(props.URL, name)}/>
+                        <ListOfLists right={listName => {
+                            if (!props.lists[listName]) return;
+                            //TODO: sometimes this happens immediately after adding a new list for some reason
+
+                            const icon = props.lists[listName].includes(props.URL) ? 'check' : 'plus';
+                            return <IconButton icon={icon}/>
+                        }} onPress={name => props.add_to_list(props.URL, name)}/>
                     </Surface>
                 </Modal>
                 <Modal visible={addListVisible} onDismiss={() => setAddListVisible(false)}>
