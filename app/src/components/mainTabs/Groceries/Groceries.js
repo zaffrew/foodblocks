@@ -5,7 +5,7 @@ import colors from '../../../../settings/colors'
 import {ACTIONS} from "../../../state/State";
 import {connect} from "react-redux";
 import {SafeAreaView} from "react-native-safe-area-context";
-import GroceryList from "./GroceryList";
+import ReorederableList from "./ReorederableList";
 
 export default connect((state) => {
     return {
@@ -55,8 +55,8 @@ function Groceries(props) {
             </SafeAreaView>
             <View style={{flex: 1 / 2}}>
                 <Subheading style={{marginLeft: 15}}>WANT</Subheading>
-                <GroceryList delete={props.deleteWantGrocery} height={listHeight} setData={props.setWantGroceries}
-                             data={props.want}/>
+                <ReorederableList delete={props.deleteWantGrocery} height={listHeight} setData={props.setWantGroceries}
+                                  data={props.want}/>
                 <TextInput label={'Add wanted grocery'} value={addWant} onChangeText={setAddWant}
                            onSubmitEditing={() => {
                                props.addWantGrocery(addWant)
@@ -65,9 +65,9 @@ function Groceries(props) {
             </View>
             <View style={{flex: 1 / 2}}>
                 <Subheading style={{marginLeft: 15}}>HAVE</Subheading>
-                <GroceryList delete={props.deleteHaveGrocery} height={listHeight} setData={props.setHaveGroceries}
-                             data={props.have}/>
-                <TextInput label={'Add needed grocery'} value={addHave} onChangeText={setAddHave}
+                <ReorederableList delete={props.deleteHaveGrocery} height={listHeight} setData={props.setHaveGroceries}
+                                  data={props.have}/>
+                <TextInput label={'Add grocery you have'} value={addHave} onChangeText={setAddHave}
                            onSubmitEditing={() => {
                                props.addHaveGrocery(addHave)
                                setAddHave('')

@@ -3,7 +3,7 @@ import React from "react";
 import {IconButton, Text} from "react-native-paper";
 import {TouchableWithoutFeedback, View} from "react-native";
 
-export default function GroceryList(props) {
+export default function ReorederableList(props) {
     function renderItem({item, index, drag, isActive}) {
         const color = (150 - (index / props.data.length) * 75)
 

@@ -7,7 +7,7 @@ import CreateList from "../lists/CreateList";
 import {connect} from 'react-redux'
 
 export default connect(state => ({
-    lists: state.lists
+    lists: state.lists.lists
 }), {
     add_to_list: (URL, listName) => ({
         type: ACTIONS.ADD_TO_LIST,
@@ -35,12 +35,10 @@ function ListView(props) {
                             </Button>
                         </View>
                         <ListOfLists right={listName => {
-                            const list = props.lists.find(({name}) => name === listName);
+                            if (!props.lists[listName]) return;
+                            //TODO: sometimes this happens immediately after adding a new list for some reason
 
-                            if (list === undefined) return;
-                            //for some strange reason this happens sometimes when adding a list
-
-                            const icon = list.URLs.includes(props.URL) ? 'check' : 'plus';
+                            const icon = props.lists[listName].includes(props.URL) ? 'check' : 'plus';
                             return <IconButton icon={icon}/>
                         }} onPress={name => props.add_to_list(props.URL, name)}/>
                     </Surface>
