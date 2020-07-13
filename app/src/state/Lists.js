@@ -8,9 +8,10 @@ export default function reducer(state = [], action) {
         }
         return [{name: action.name, URLs: []}, ...state]
     } else if (action.type === ACTIONS.ADD_TO_LIST) {
-        state.find(({name}) => action.name === name).URLs.push(action.URL)
-        return [...state]; //we take the slice so it updates
-    } else {
-        return state;
+        const list = state.find(({name}) => action.name === name);
+        if (list.URLs.includes(action.URL)) return state;
+        list.URLs.push(action.URL);
+        return [...state];
     }
+    return state;
 }
