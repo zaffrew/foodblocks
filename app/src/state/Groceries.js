@@ -1,21 +1,23 @@
-/**
- * this reducer is rather stupid in that it simply sets the data given to it in the index it is given.
- * the actual state management is handled in Groceries.js
- */
 import ACTIONS from "./ACTIONS";
 
-export default function reducer(state = [], action) {
-    if (action.type === ACTIONS.REMOVE_GROCERY) {
-        state = state.slice();
-        state.splice(action.index, 1);
-        return state
-    } else if (action.type === ACTIONS.SET_GROCERY) {
-        state = state.slice();
-        state[action.index] = {name: action.name, number: action.number};
-        return state;
-    } else if (action.type === ACTIONS.OVERWRITE_GROCERIES) {
-        return action.data.slice()
-    } else {
-        return state;
+export default function reducer(state = {have: [], want: []}, action) {
+    if (action.type === ACTIONS.ADD_WANT_GROCERY) {
+        if(state.want.includes(action.grocery)) return state;
+        return {...state, want: [...state.want, action.grocery]}
+    } else if (action.type === ACTIONS.SET_WANT_GROCERIES) {
+        return {...state, want: action.groceries}
+    } else if (action.type === ACTIONS.REMOVE_WANT_GROCERY) {
+        return {...state, want: state.want.filter(grocery => grocery !== action.grocery)}
     }
+
+    else if (action.type === ACTIONS.ADD_HAVE_GROCERY) {
+        if(state.have.includes(action.grocery)) return state;
+        return {...state, have: [...state.have, action.grocery]}
+    } else if (action.type === ACTIONS.SET_HAVE_GROCERIES) {
+        return {...state, have: action.groceries}
+    } else if (action.type === ACTIONS.REMOVE_HAVE_GROCERY) {
+        return {...state, have: state.have.filter(grocery => grocery !== action.grocery)}
+    }
+
+    return state;
 }
