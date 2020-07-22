@@ -5,42 +5,42 @@ import withRouteParams from "../../../utils/withRouteParams";
 import Food from '../../Food/Food'
 import UserPage from '../userPage/UserPage.js';
 import FoodBlockScroll from "../../FoodBlockScroll";
-import {Headline, Title, FAB, Subheading, Text, Card} from "react-native-paper";
+import {FAB, Text, Title} from "react-native-paper";
 import headlessNavigator from "../../../utils/headlessNavigator";
 import RecommendedFoods from "./RecommendedFoods";
 import {getRecipe} from '../../../scraper/Scraper'
 import {SafeAreaView} from "react-native-safe-area-context";
 import RecentFoods from "./RecentFoods";
 import RecentSearches from "./RecentSearches";
-import {ScrollView, StyleSheet, View, Image} from "react-native";
+import {Image, ScrollView, StyleSheet, View} from "react-native";
 import LikedFoods from "./LikedFoods";
 import colors from "../../../../settings/colors";
-import NextUpBlock from "../../NextUpBlock.js"
-import { SourceType } from "expo-calendar";
 
 const HomeStack = createStackNavigator();
 const FoodWithProps = withRouteParams(Food);
 
-const SearchPage = withRouteParams(props => (
-    <SafeAreaView style={{flex: 1}}>
-        <Title style={{padding: 20, fontSize: 24, textAlign: 'center'}}>
-            {props.title}
-        </Title>
-        <FoodBlockScroll
-            onPress={(URL) => {
-                props.navigation.navigate('Food', {URL})
-            }}
-            blocksPerCrossAxis={2} URLs={props.URLs}
-            blockLength={160}/>
-    </SafeAreaView>
-))
+const SearchPage = withRouteParams(function SearchPage(props) {
+    return (
+        <SafeAreaView style={{flex: 1}}>
+            <Title style={{padding: 20, fontSize: 24, textAlign: 'center'}}>
+                {props.title}
+            </Title>
+            <FoodBlockScroll
+                onPress={(URL) => {
+                    props.navigation.navigate('Food', {URL})
+                }}
+                blocksPerCrossAxis={2} URLs={props.URLs}
+                blockLength={160}/>
+        </SafeAreaView>
+    )
+})
 
 const Home = connect(state => ({
         username: state.user_info.username,
         liked_foods: Object.keys(state.ratings).filter(URL => state.ratings[URL] === 1).slice(0, 3),
         planned_foods: state.planned_foods,
     })
-)(props => {
+)(function Home(props) {
     const scrollLength = 150;
     const scrollProps = {
         scrollLength,
@@ -58,6 +58,7 @@ const Home = connect(state => ({
     const plannedURLs = Object.keys(props.planned_foods)
     console.log(plannedURLs)
 
+
     function convertDate(date) {
         // take date object as input
         let dateString = '';
@@ -71,15 +72,15 @@ const Home = connect(state => ({
 
         if (current.getFullYear() === date.getFullYear() &&
             current.getMonth() === date.getMonth()) {
-                if (current.getDate() === date.getDate()) {
-                    dateString = 'TODAY AT ' + hours + ' ' + am_or_pm;
-                } else if (current.getDate() === date.getDate() - 1) {
-                    dateString = 'TOMORROW AT ' + hours + ' ' + am_or_pm;
-                } else if (date.getDate() - current.getDate() < 8) {
-                    dateString = days[date.getDay()] + ' at ' + hours + ' ' + am_or_pm; 
-                } else {
-                    dateString = months[date.getMonth()] + ' ' + date.getDate() + ' at ' + hours + ' ' + am_or_pm;
-                }
+            if (current.getDate() === date.getDate()) {
+                dateString = 'TODAY AT ' + hours + ' ' + am_or_pm;
+            } else if (current.getDate() === date.getDate() - 1) {
+                dateString = 'TOMORROW AT ' + hours + ' ' + am_or_pm;
+            } else if (date.getDate() - current.getDate() < 8) {
+                dateString = days[date.getDay()] + ' at ' + hours + ' ' + am_or_pm;
+            } else {
+                dateString = months[date.getMonth()] + ' ' + date.getDate() + ' at ' + hours + ' ' + am_or_pm;
+            }
         }
 
         return dateString;
@@ -99,6 +100,7 @@ const Home = connect(state => ({
     let saved_food_name = '';
     let saved_food_time = '';
     let saved_food_url = '';
+
 
     //most recent planned food
     if (plannedURLs.length > 0) {
@@ -160,13 +162,13 @@ const Home = connect(state => ({
         .map(name => (
             <React.Fragment key={name}>
                 <View style={styles.section}>
-                        <Text style={styles.headline}>
-                            Because you liked
-                        </Text>
-                        <Text style={styles.subheading}>
-                            Similar to "{name}"
-                        </Text>
-                        <RecommendedFoods foodName={name} {...scrollProps}/>
+                    <Text style={styles.headline}>
+                        Because you liked
+                    </Text>
+                    <Text style={styles.subheading}>
+                        Similar to "{name}"
+                    </Text>
+                    <RecommendedFoods foodName={name} {...scrollProps}/>
                 </View>
             </React.Fragment>
         ));
@@ -186,7 +188,7 @@ const Home = connect(state => ({
 
                 <View style={styles.nextUpContents}>
                     <Text numberOfLines={3} style={styles.nextUpTitle}>
-                            {saved_food_name}
+                        {saved_food_name}
                     </Text>
                     <View>
                         <Text style={styles.nextUpSub}>
@@ -196,15 +198,17 @@ const Home = connect(state => ({
                 </View>
 
                 <View style={{padding: 10, alignSelf: 'flex-start'}}>
-                    <FAB icon='arrow-right' style={styles.openRecipeButton} onPress={openRecipe(saved_food_url)}></FAB>
+                    <FAB icon='arrow-right' style={styles.openRecipeButton}
+                         onPress={() => openRecipe(saved_food_url)}></FAB>
                 </View>
             </View>
         </View>
-    )
+    );
 
     async function openRecipe(URL) {
         props.navigation.navigate('Food', URL)
     };
+
 
     return (
         <SafeAreaView style={{flex: 1}}>
@@ -218,9 +222,9 @@ const Home = connect(state => ({
                     </Title>
                     <View>
                         <FAB
-                        style={styles.userButton}
-                        icon='account'
-                        onPress={() => props.navigation.navigate('UserPage')}/>
+                            style={styles.userButton}
+                            icon='account'
+                            onPress={() => props.navigation.navigate('UserPage')}/>
                     </View>
                 </View>
 
@@ -243,8 +247,8 @@ const Home = connect(state => ({
                         Foods on your radar
                     </Text>
                     <RecentSearches onSearchPress={(title, URLs) => {
-                    props.navigation.navigate('SearchPage', {URLs, title})
-                }}{...scrollProps}/>
+                        props.navigation.navigate('SearchPage', {URLs, title})
+                    }}{...scrollProps}/>
                 </View>
 
                 <View style={styles.section}>
@@ -326,7 +330,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: colors.foodblocksRed,
         elevation: 5,
-        borderRadius: 8,
         shadowColor: colors.foodblocksRed,
         borderRadius: 20,
         shadowOffset: {width: 0, height: 2},

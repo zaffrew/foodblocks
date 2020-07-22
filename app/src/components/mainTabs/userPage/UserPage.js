@@ -14,8 +14,6 @@ import withProps from "../../../utils/withProps";
 import headlessNavigator from "../../../utils/headlessNavigator";
 import {SafeAreaView} from "react-native-safe-area-context";
 
-const Stack = createStackNavigator();
-
 export default function UserPage(props) {
     const this_Username = withProps(Username, {
         onSubmit: () => {
