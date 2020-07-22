@@ -39,8 +39,11 @@ const Home = connect(state => ({
         username: state.user_info.username,
         liked_foods: Object.keys(state.ratings).filter(URL => state.ratings[URL] === 1).slice(0, 3),
         planned_foods: state.planned_foods,
+        lists: state.lists.lists,
     })
 )(function Home(props) {
+    console.log(props.lists)
+
     const scrollLength = 150;
     const scrollProps = {
         scrollLength,
