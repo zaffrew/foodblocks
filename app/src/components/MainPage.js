@@ -10,7 +10,7 @@ import groceries from "../../assets/grocceries.png";
 import meals from "../../assets/plate.png";
 
 import Search from "./mainTabs/Search/Search";
-import Groceries from "./mainTabs/Groceries";
+import Groceries from "./mainTabs/Groceries/Groceries";
 import UserPage from "./mainTabs/userPage/UserPage";
 import {withTheme} from "react-native-paper";
 import Home from "./mainTabs/home/Home";
