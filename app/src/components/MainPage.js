@@ -15,7 +15,6 @@ import UserPage from "./mainTabs/userPage/UserPage";
 import {withTheme} from "react-native-paper";
 import Home from "./mainTabs/home/Home";
 import SavedLists from "./lists/SavedLists";
-import ForYou from "./mainTabs/ForYou";
 
 const iconMap = {
     Home: homeButton,
@@ -24,7 +23,6 @@ const iconMap = {
     Meals: meals,
     UserPage: forYou,
     ListsPage: meals,
-    ForYou: forYou,
 };
 
 const Tab = createMaterialBottomTabNavigator();
@@ -53,11 +51,6 @@ function MainPage(props) {
             <Tab.Screen name="Search" component={Search} options={{
                 tabBarIcon: (focused, color) => {
                     return (getImage("Search", focused, color))
-                }
-            }}/>
-            <Tab.Screen name="ForYou" component={ForYou} options={{
-                tabBarIcon: (focused, color) => {
-                    return (getImage("ForYou", focused, color))
                 }
             }}/>
             <Tab.Screen name="Groceries" component={Groceries} options={{

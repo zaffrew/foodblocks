@@ -1,8 +1,6 @@
 import React from 'react'
 import {Avatar, IconButton, List, Subheading, Surface, Title} from 'react-native-paper';
 import {createStackNavigator} from "@react-navigation/stack";
-import Payment from "./Payment";
-import Help from "./Help";
 import Username from "../../login/Username";
 
 import {connect} from 'react-redux'
@@ -13,8 +11,6 @@ import {ACTIONS} from "../../../state/State";
 import withProps from "../../../utils/withProps";
 import headlessNavigator from "../../../utils/headlessNavigator";
 import {SafeAreaView} from "react-native-safe-area-context";
-
-const Stack = createStackNavigator();
 
 export default function UserPage(props) {
     const this_Username = withProps(Username, {
@@ -32,8 +28,6 @@ export default function UserPage(props) {
         {name: 'UserScreen', component: UserScreen, mainPage: true},
         {name: 'Username', component: this_Username},
         {name: 'Email', component: this_Email},
-        {name: 'Help', component: Help},
-        {name: 'Payment Information', component: Payment}
     ])
 
     return <HeadlessNavigator/>
@@ -67,8 +61,6 @@ const UserScreen = connect((state) => {
                 <List.Section>
                     {getListItem('Username', 'account', props.navigation)}
                     {getListItem('Email', 'email', props.navigation)}
-                    {getListItem('Payment Information', 'currency-usd', props.navigation)}
-                    {getListItem('Help', 'help-rhombus', props.navigation)}
                 </List.Section>
                 <List.Section>
                     <List.Item
