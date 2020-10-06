@@ -10,18 +10,6 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import {persistor, store} from './src/state/State'
 
-const fontWeights = {
-    Thin: '100',
-    UltraLight: '200',
-    Light: '300',
-    Regular: '400',
-    Medium: '500',
-    Semibold: '600',
-    Bold: '700',
-    Heavy: '800',
-    Black: '900',
-};
-
 //TODO: android has a problem with fonts that are certain weights other than normal
 
 const platformFontConfig = {
@@ -92,6 +80,7 @@ export default function App() {
                     <NavigationContainer>
                         <SafeAreaProvider>
                             <PaperProvider theme={theme}>
+                                {/* PaperProvider also includes Portal.Host */}
                                 <AppNavigator/>
                             </PaperProvider>
                         </SafeAreaProvider>
